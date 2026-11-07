@@ -1,0 +1,11 @@
+{
+  "source": "androidx.core:core-location-altitude:1.0.1",
+  "url": "https://dl.google.com/dl/android/maven2/androidx/core/core-location-altitude/1.0.1/core-location-altitude-1.0.1.aar",
+  "asset": "assets/database/geoid-height-map-v0.db",
+  "asset_sha256": "aa4f7a49d67ffd72df3c1e6ce3c2e8b5cd00d433f149591dae2ac25ff9b876d7",
+  "decoder": "libjpeg-turbo JDCT_ISLOW; PNG blue channel added modulo 256",
+  "decoded_sha256": "f296345ce9894951a53489a2abba02a27cbe962767a95581dc51a78977325a24",
+  "scale_meters": 193.0,
+  "offset_meters": -107.0,
+  "rmse_meters": 0.27
+}
