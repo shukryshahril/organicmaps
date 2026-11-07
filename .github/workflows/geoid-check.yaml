@@ -1,0 +1,23 @@
+name: Geoid Model Check
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [master]
+    paths: &geoid-paths
+      - tools/python/geoid/**
+      - android/sdk/src/main/java/app/organicmaps/sdk/location/GeoidData.java
+      - .github/workflows/geoid-check.yaml
+  pull_request:
+    paths: *geoid-paths
+
+permissions:
+  contents: read
+
+jobs:
+  geoid:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Verify embedded geoid data
+        run: python3 tools/python/geoid/generate_geoid.py --check
