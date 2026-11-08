@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate the Java geoid table from the pinned, decoded AndroidX model.
+"""Validate the bundled AndroidX geoid model and generate its Java metadata.
 
 The source is assets/database/geoid-height-map-v0.db in
 androidx.core:core-location-altitude:1.0.1 (Apache-2.0). The SQLite asset has SHA-256
@@ -9,10 +9,10 @@ Its six JPEG faces were decoded with libjpeg-turbo JDCT_ISLOW, then the PNG blue
 channel corrections were added modulo 256. Runtime image decoding is deliberately
 avoided: Android 5's decoder produces different samples from newer Android.
 
-model.bin pins these numeric samples as 384 independent, lossless tiles. It has
+The model.bin asset pins these samples as 384 independent, lossless tiles. It has
 an eight-byte magic, 384 little-endian uint16 stream lengths, and zlib streams.
 Within each 64x64 tile, samples are predicted by left + up - upper-left, modulo
-256. Reading and regenerating the Java source requires only Python's standard
+256. Validating the asset and regenerating Java metadata use only Python's standard
 library. --from-raw recreates model.bin from the six face-major 512x512 byte grids
 when updating the reference model; update and review its metadata at that time.
 """
@@ -29,7 +29,8 @@ import zlib
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[2]
 OUTPUT = ROOT / "android/sdk/src/main/java/app/organicmaps/sdk/location/GeoidData.java"
-MODEL = HERE / "model.bin"
+ASSET_PATH = "organicmaps/geoid/model.bin"
+MODEL = ROOT / "android/sdk/src/main/assets" / ASSET_PATH
 METADATA = HERE / "model.json"
 MAGIC = b"OMGEOID1"
 FACES = 6
@@ -101,7 +102,7 @@ def decode(streams):
     return grid
 
 
-def java_source(streams, metadata):
+def java_source(metadata):
     lines = [
         "/*",
         " * Copyright 2022 The Android Open Source Project",
@@ -125,48 +126,22 @@ def java_source(streams, metadata):
         f'// Decoded model SHA-256: {metadata["decoded_sha256"]}',
         "final class GeoidData",
         "{",
+        f'  static final String ASSET_PATH = "{ASSET_PATH}";',
+        f'  static final long MODEL_MAGIC = 0x{MAGIC.hex()}L;',
         f'  static final double SCALE_METERS = {metadata["scale_meters"]};',
         f'  static final double OFFSET_METERS = {metadata["offset_meters"]};',
         f'  static final double RMSE_METERS = {metadata["rmse_meters"]};',
         "",
         "  private GeoidData() {}",
-        "",
-        "  // Factories allocate only the requested tile and keep each method below Java's size limit.",
-        "  // clang-format off",
-        "  static byte[] getTile(int tile)",
-        "  {",
-        "    return switch (tile)",
-        "    {",
-    ]
-    for tile in range(len(streams)):
-        lines.append(f"    case {tile} -> tile{tile}();")
-    lines.extend([
-        '    default -> throw new IndexOutOfBoundsException("Invalid geoid tile: " + tile);',
-        "    };",
-        "  }",
-    ])
-    for tile, stream in enumerate(streams):
-        lines.extend([
-            "",
-            f"  private static byte[] tile{tile}()",
-            "  {",
-            "    return new byte[] {",
-        ])
-        for offset in range(0, len(stream), 16):
-            values = (str(value if value < 128 else value - 256) for value in stream[offset:offset + 16])
-            lines.append("      " + ", ".join(values) + ",")
-        lines.extend(["    };", "  }"])
-    lines.extend([
-        "  // clang-format on",
         "}",
         "",
-    ])
+    ]
     return "\n".join(lines)
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--check", action="store_true", help="Verify the generated Java file")
+    parser.add_argument("--check", action="store_true", help="Verify the model and generated Java metadata")
     parser.add_argument("--from-raw", type=Path, help="Recreate model.bin from a decoded byte grid")
     args = parser.parse_args()
     metadata = json.loads(METADATA.read_text())
@@ -180,7 +155,7 @@ def main():
     else:
         streams = read_model()
     validate_grid(decode(streams), metadata)
-    generated = java_source(streams, metadata)
+    generated = java_source(metadata)
     if args.check:
         if not OUTPUT.exists() or OUTPUT.read_text() != generated:
             sys.exit(f"Regenerate {OUTPUT.relative_to(ROOT)}")
