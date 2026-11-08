@@ -7,7 +7,6 @@
 #include "base/logging.hpp"
 #include "base/math.hpp"
 
-#include <atomic>
 #include <chrono>
 #include <memory>
 #include <utility>
@@ -40,10 +39,18 @@ private:
 
 bool IsSameFix(location::GpsInfo const & lhs, location::GpsInfo const & rhs)
 {
+  // Keep this comparison in sync with GpsInfo, including any new measurement metadata.
   return lhs.m_source == rhs.m_source && lhs.m_timestamp == rhs.m_timestamp && lhs.m_latitude == rhs.m_latitude &&
          lhs.m_longitude == rhs.m_longitude && lhs.m_horizontalAccuracy == rhs.m_horizontalAccuracy &&
          lhs.m_altitude == rhs.m_altitude && lhs.m_verticalAccuracy == rhs.m_verticalAccuracy &&
-         lhs.m_bearing == rhs.m_bearing && lhs.m_speed == rhs.m_speed;
+         lhs.m_bearing == rhs.m_bearing && lhs.m_speed == rhs.m_speed && lhs.m_timing == rhs.m_timing;
+}
+
+double TimeBetween(location::GpsInfo const & first, location::GpsInfo const & second)
+{
+  return first.m_timing && second.m_timing
+           ? std::chrono::duration<double>(second.m_timing->m_observedAt - first.m_timing->m_observedAt).count()
+           : second.m_timestamp - first.m_timestamp;
 }
 }  // namespace
 
@@ -52,13 +59,17 @@ namespace extrapolation
 location::GpsInfo LinearExtrapolation(location::GpsInfo const & gpsInfo1, location::GpsInfo const & gpsInfo2,
                                       uint64_t timeAfterPoint2Ms)
 {
-  if (gpsInfo2.m_timestamp <= gpsInfo1.m_timestamp)
+  if (!gpsInfo1.HasSameClock(gpsInfo2) || TimeBetween(gpsInfo1, gpsInfo2) <= 0)
   {
     ASSERT(false, ("Incorrect gps data"));
     return gpsInfo2;
   }
 
-  auto const timeBetweenPointsMs = static_cast<uint64_t>((gpsInfo2.m_timestamp - gpsInfo1.m_timestamp) * 1000);
+  auto const timeBetweenPointsMs = gpsInfo1.m_timing
+                                     ? std::chrono::duration_cast<std::chrono::milliseconds>(
+                                           gpsInfo2.m_timing->m_observedAt - gpsInfo1.m_timing->m_observedAt)
+                                           .count()
+                                     : static_cast<int64_t>(TimeBetween(gpsInfo1, gpsInfo2) * 1000);
   if (timeBetweenPointsMs == 0)
     return gpsInfo2;
 
@@ -85,12 +96,12 @@ location::GpsInfo LinearExtrapolation(location::GpsInfo const & gpsInfo1, locati
 
 bool AreCoordsGoodForExtrapolation(location::GpsInfo const & info1, location::GpsInfo const & info2)
 {
-  if (!info1.IsValid() || !info2.IsValid())
+  if (!info1.IsValid() || !info2.IsValid() || !info1.HasSameClock(info2))
     return false;
 
   double const distM = ms::DistanceOnEarth(info1.m_latitude, info1.m_longitude, info2.m_latitude, info2.m_longitude);
 
-  double const timeS = info2.m_timestamp - info1.m_timestamp;
+  double const timeS = TimeBetween(info1, info2);
   if (timeS <= 0.0)
     return false;
 
@@ -129,9 +140,8 @@ struct Extrapolator::State
 {
   ExtrapolatedLocationUpdateFn m_update;
   NowFn m_now;
-  BackgroundTaskFn m_background;
-  GuiTaskFn m_gui;
-  std::atomic<uint64_t> m_generation = 0;
+  ScheduleFn m_schedule;
+  uint64_t m_generation = 0;
   bool m_enabled = false;
   location::GpsInfo m_last;
   location::GpsInfo m_beforeLast;
@@ -139,19 +149,19 @@ struct Extrapolator::State
 };
 
 Extrapolator::Extrapolator(ExtrapolatedLocationUpdateFn const & update)
-  : Extrapolator(update, [] { return Clock::now(); }, [](std::chrono::milliseconds delay, Task task) {
-    GetPlatform().RunDelayedTask(Platform::Thread::Background, delay, std::move(task));
-  }, [](Task task) { GetPlatform().RunTask(Platform::Thread::Gui, std::move(task)); })
+  : Extrapolator(update, [] { return Clock::now(); }, [](std::chrono::milliseconds delay, Task task)
+{
+  GetPlatform().RunDelayedTask(Platform::Thread::Background, delay, [task = std::move(task)]() mutable
+  { GetPlatform().RunTask(Platform::Thread::Gui, std::move(task)); });
+})
 {}
 
-Extrapolator::Extrapolator(ExtrapolatedLocationUpdateFn const & update, NowFn now, BackgroundTaskFn background,
-                           GuiTaskFn gui)
+Extrapolator::Extrapolator(ExtrapolatedLocationUpdateFn const & update, NowFn now, ScheduleFn schedule)
   : m_state(std::make_shared<State>())
 {
   m_state->m_update = update;
   m_state->m_now = std::move(now);
-  m_state->m_background = std::move(background);
-  m_state->m_gui = std::move(gui);
+  m_state->m_schedule = std::move(schedule);
 }
 
 Extrapolator::~Extrapolator()
@@ -161,25 +171,41 @@ Extrapolator::~Extrapolator()
 
 void Extrapolator::OnLocationUpdate(location::GpsInfo const & gpsInfo)
 {
+  if (!gpsInfo.IsValid())
+  {
+    Reset();
+    return;
+  }
+
   auto const state = m_state;
+  auto const now = state->m_now();
+  if (gpsInfo.m_timing && gpsInfo.m_timing->m_observedAt > now)
+    return;
+
+  if (state->m_last.IsValid() && !state->m_last.HasSameClock(gpsInfo))
+    Reset();
+
   if (state->m_last.IsValid() && IsSameFix(state->m_last, gpsInfo))
     return;
 
-  auto const now = state->m_now();
-  bool const correction = state->m_last.IsValid() && state->m_last.m_timestamp == gpsInfo.m_timestamp;
+  double const delta = state->m_last.IsValid() ? TimeBetween(state->m_last, gpsInfo) : 0;
+  if (gpsInfo.m_timing && state->m_last.IsValid() && delta < 0)
+    return;
+
+  bool const correction = state->m_last.IsValid() && delta == 0;
   if (!correction)
   {
     // UTC can roll back. Start a new baseline instead of extrapolating across the change.
-    state->m_beforeLast = gpsInfo.m_timestamp > state->m_last.m_timestamp ? state->m_last : location::GpsInfo{};
-    state->m_lastDistinctUpdate = now;
+    state->m_beforeLast = delta > 0 ? state->m_last : location::GpsInfo{};
+    state->m_lastDistinctUpdate = gpsInfo.m_timing ? gpsInfo.m_timing->m_observedAt : now;
   }
-  state->m_last = gpsInfo;
+  location::GpsInfo const measurement = gpsInfo;
+  state->m_last = measurement;
 
   auto const generation = ++state->m_generation;
-  if (correction && now - state->m_lastDistinctUpdate >= std::chrono::milliseconds(kMaxExtrapolationTimeMs))
-    return;
-
-  Schedule(state, generation, true /* isUpdate */, std::chrono::milliseconds::zero());
+  state->m_update(measurement, UpdateType::Measurement);
+  if (state->m_generation == generation)
+    Schedule(state, generation);
 }
 
 void Extrapolator::Enable(bool enabled)
@@ -187,8 +213,10 @@ void Extrapolator::Enable(bool enabled)
   if (m_state->m_enabled == enabled)
     return;
 
-  Reset();
+  auto const generation = ++m_state->m_generation;
   m_state->m_enabled = enabled;
+  if (enabled)
+    Schedule(m_state, generation);
 }
 
 void Extrapolator::Reset()
@@ -198,42 +226,39 @@ void Extrapolator::Reset()
   m_state->m_beforeLast = {};
 }
 
-void Extrapolator::Schedule(std::shared_ptr<State> const & state, uint64_t generation, bool isUpdate,
-                            std::chrono::milliseconds delay)
+void Extrapolator::Schedule(std::shared_ptr<State> const & state, uint64_t generation)
 {
-  std::weak_ptr<State> const weak = state;
-  state->m_background(delay, [weak, generation, isUpdate]
+  if (!state->m_enabled || !AreCoordsGoodForExtrapolation(state->m_beforeLast, state->m_last) ||
+      state->m_now() - state->m_lastDistinctUpdate >= std::chrono::milliseconds(kMaxExtrapolationTimeMs))
   {
-    auto const state = weak.lock();
-    if (!state || state->m_generation != generation)
-      return;
+    return;
+  }
 
-    state->m_gui([weak, generation, isUpdate]
-    {
-      if (auto const state = weak.lock())
-        Deliver(state, generation, isUpdate);
-    });
+  std::weak_ptr<State> const weak = state;
+  state->m_schedule(std::chrono::milliseconds(kExtrapolationPeriodMs), [weak, generation]
+  {
+    if (auto const state = weak.lock())
+      Deliver(state, generation);
   });
 }
 
-void Extrapolator::Deliver(std::shared_ptr<State> const & state, uint64_t generation, bool isUpdate)
+void Extrapolator::Deliver(std::shared_ptr<State> const & state, uint64_t generation)
 {
   if (state->m_generation != generation || !state->m_last.IsValid())
     return;
 
   auto const elapsed =
       std::chrono::duration_cast<std::chrono::milliseconds>(state->m_now() - state->m_lastDistinctUpdate);
-  bool const expired = elapsed >= std::chrono::milliseconds(kMaxExtrapolationTimeMs);
-  bool const canPredict = state->m_enabled && AreCoordsGoodForExtrapolation(state->m_beforeLast, state->m_last);
-  if (!isUpdate && (expired || !canPredict))
+  if (!state->m_enabled || elapsed >= std::chrono::milliseconds(kMaxExtrapolationTimeMs) ||
+      !AreCoordsGoodForExtrapolation(state->m_beforeLast, state->m_last))
+  {
     return;
+  }
 
-  location::GpsInfo const gpsInfo = !isUpdate && canPredict
-                                      ? LinearExtrapolation(state->m_beforeLast, state->m_last, elapsed.count())
-                                      : state->m_last;
-  state->m_update(gpsInfo, isUpdate ? UpdateType::Measurement : UpdateType::Prediction);
+  location::GpsInfo const gpsInfo = LinearExtrapolation(state->m_beforeLast, state->m_last, elapsed.count());
+  state->m_update(gpsInfo, UpdateType::Prediction);
 
-  if (!expired && canPredict && state->m_generation == generation)
-    Schedule(state, generation, false /* isUpdate */, std::chrono::milliseconds(kExtrapolationPeriodMs));
+  if (state->m_generation == generation)
+    Schedule(state, generation);
 }
 }  // namespace extrapolation

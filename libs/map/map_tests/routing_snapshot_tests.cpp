@@ -152,13 +152,13 @@ public:
   void Update(double longitude, double speed, double y = 1.0)
   {
     Manager().OnLocationUpdate(Gps(longitude, speed, y));
-    m_gui->RunUntil([&] { return m_received == m_sequence; });
+    TEST_EQUAL(m_received, m_sequence, ("Received measurements publish their snapshot synchronously."));
   }
 
   void UpdateWithoutListener(double longitude, double speed)
   {
     Manager().OnLocationUpdate(Gps(longitude, speed));
-    m_gui->RunUntil([&] { return Manager().RoutingSession().GetCompletionPercent() > 0.0; });
+    TEST_GREATER(Manager().RoutingSession().GetCompletionPercent(), 0.0, ());
   }
 
   location::GpsInfo Gps(double longitude, double speed, double y = 1.0)
@@ -273,5 +273,22 @@ UNIT_CLASS_TEST(RoutingSnapshotTest, UnmatchedMeasurementDoesNotReuseAPreviousCa
   TEST(alerts[0], ());
   TEST(!alerts[1], ());
   TEST_LESS(limits[1], 0.0, ("The retained route does not establish the new fix's road limit."));
+}
+
+UNIT_CLASS_TEST(RoutingSnapshotTest, HistoricalMeasurementCannotPublishGuidanceOrConsumeThePendingBeep)
+{
+  UpdateWithoutListener(1.0015, 20);
+  auto const completion = Manager().RoutingSession().GetCompletionPercent();
+  bool published = false;
+  Manager().SetRouteFollowingListener([&](routing::FollowingInfo const &) { published = true; });
+  auto historical = Gps(1.002, 40);
+  auto const now = location::Clock::now();
+  historical.m_timing = location::GpsInfo::Timing{now - std::chrono::seconds(40), now - std::chrono::seconds(35)};
+  Manager().OnLocationUpdate(historical);
+
+  TEST(!published, ());
+  TEST_EQUAL(Manager().RoutingSession().GetCompletionPercent(), completion, ());
+  TEST(!Manager().IsRouteFinished(), ());
+  TEST(Manager().GetSpeedCamManager().ShouldPlayBeepSignal(), ("Historical output must not consume the live alert."));
 }
 }  // namespace

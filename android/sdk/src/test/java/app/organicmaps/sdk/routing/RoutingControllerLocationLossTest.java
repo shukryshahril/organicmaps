@@ -6,20 +6,21 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.CALLS_REAL_METHODS;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 import static org.robolectric.Shadows.shadowOf;
 
 import android.app.Application;
-import android.content.Context;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Looper;
+import android.os.SystemClock;
 import app.organicmaps.sdk.Framework;
 import app.organicmaps.sdk.Router;
 import app.organicmaps.sdk.location.BaseLocationProvider;
 import app.organicmaps.sdk.location.LocationHelper;
-import app.organicmaps.sdk.location.LocationListener;
+import app.organicmaps.sdk.location.LocationState;
 import app.organicmaps.sdk.location.LocationUtils;
 import app.organicmaps.sdk.location.SensorHelper;
 import app.organicmaps.sdk.util.Distance;
@@ -47,7 +48,8 @@ import org.robolectric.annotation.LooperMode;
 @RunWith(RobolectricTestRunner.class)
 @Config(application = Application.class, manifest = Config.NONE, sdk = 33,
         shadows = {RoutingControllerLocationLossTest.NativeRouting.class,
-                   RoutingControllerLocationLossTest.NativeFormatting.class})
+                   RoutingControllerLocationLossTest.NativeFormatting.class,
+                   RoutingControllerLocationLossTest.NativeLocation.class})
 @LooperMode(LooperMode.Mode.PAUSED)
 public class RoutingControllerLocationLossTest
 {
@@ -64,10 +66,12 @@ public class RoutingControllerLocationLossTest
   @Before
   public void setUp() throws ReflectiveOperationException
   {
+    NativeLocation.resets = 0;
+    NativeLocation.resetsWithFix = 0;
     mLogger = mockStatic(Logger.class);
     mRouter = mockStatic(Router.class);
     mNetwork = mockStatic(NetworkPolicy.class);
-    mLocations = mockStatic(LocationUtils.class);
+    mLocations = mockStatic(LocationUtils.class, CALLS_REAL_METHODS);
     mLocations.when(() -> LocationUtils.checkLocationPermission(any())).thenReturn(true);
     mController = new RoutingController();
     RoutingControllerRoutingInfoTest.setState(mController, "NAVIGATION");
@@ -114,6 +118,7 @@ public class RoutingControllerLocationLossTest
     NativeRouting.listener.onRoutingInfoUpdated(RoutingControllerRoutingInfoTest.snapshot(25, 10, true));
     shadowOf(Looper.getMainLooper()).idleFor(Duration.ofSeconds(31));
     assertFalse(mHelper.isActive());
+    assertEquals(1, NativeLocation.resets);
     assertEquals(2, mReceived.size());
     assertNull(mReceived.get(1));
     assertNull(mController.getCachedRoutingInfo());
@@ -140,6 +145,26 @@ public class RoutingControllerLocationLossTest
     shadowOf(Looper.getMainLooper()).idle();
     assertEquals(1, mReceived.size());
     assertSame(cached, mController.getCachedRoutingInfo());
+  }
+
+  @Test
+  public void freshSourceHandoffResetsPredictionWithoutInvalidatingHealthyGuidance() throws ReflectiveOperationException
+  {
+    final RoutingInfo cached = mController.getCachedRoutingInfo();
+    final Location precise = new Location(mHelper.getSavedLocation());
+    precise.setProvider(LocationUtils.FUSED_PROVIDER);
+    precise.setAccuracy(4);
+    mHelper.onLocationChanged(precise);
+    assertTrue(mHelper.isActive());
+    assertEquals(0, NativeLocation.resets);
+    assertEquals(2, NativeLocation.resetsWithFix);
+    assertEquals(1, mReceived.size());
+    assertSame(cached, mController.getCachedRoutingInfo());
+
+    NativeRouting.listener.onRoutingInfoUpdated(RoutingControllerRoutingInfoTest.snapshot(5, 10, false));
+    assertEquals(2, mReceived.size());
+    assertEquals(5, mReceived.get(1).currentSpeedMps, 0);
+    assertFalse(mReceived.get(1).shouldPlayWarningSignal());
   }
 
   @Test
@@ -210,9 +235,13 @@ public class RoutingControllerLocationLossTest
 
   private void reportRawFix() throws ReflectiveOperationException
   {
-    final Field lossListener = RoutingController.class.getDeclaredField("mLocationLossListener");
-    lossListener.setAccessible(true);
-    ((LocationListener) lossListener.get(mController)).onLocationUpdated(mock(Location.class));
+    final Location location = new Location(LocationManager.GPS_PROVIDER);
+    location.setLatitude(49);
+    location.setLongitude(8);
+    location.setAccuracy(5);
+    location.setTime(System.currentTimeMillis());
+    location.setElapsedRealtimeNanos(SystemClock.elapsedRealtimeNanos());
+    mHelper.onLocationChanged(location);
   }
 
   @Implements(value = Framework.class, isInAndroidSdk = false)
@@ -243,6 +272,28 @@ public class RoutingControllerLocationLossTest
     public static Distance nativeFormatDistance(double meters)
     {
       return new Distance(meters / 0.3048, "feet", (byte) Distance.Units.Feet.ordinal());
+    }
+  }
+
+  @Implements(value = LocationState.class, isInAndroidSdk = false)
+  public static class NativeLocation
+  {
+    static int resets;
+    static int resetsWithFix;
+
+    @Implementation
+    public static void nativeLocationUpdated(long utc, double latitude, double longitude, float accuracy,
+                                             double altitude, float altitudeAccuracy, float speed, float bearing,
+                                             long elapsed, long liveUntil, boolean reset)
+    {
+      if (reset)
+        ++resetsWithFix;
+    }
+
+    @Implementation
+    public static void nativeResetLocationPrediction()
+    {
+      ++resets;
     }
   }
 }

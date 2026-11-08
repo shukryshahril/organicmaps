@@ -469,6 +469,17 @@ void RoutingManager::OnLocationUpdate(location::GpsInfo const & info)
   m_extrapolator.OnLocationUpdate(info);
 }
 
+void RoutingManager::ResetLocationPrediction()
+{
+  m_extrapolator.Reset();
+  // Keep a pending position for display, without treating the stopped source as live.
+  if (m_gpsInfoCache && m_gpsInfoCache->m_timing)
+  {
+    auto & deadline = m_gpsInfoCache->m_timing->m_liveUntil;
+    deadline = std::min(deadline, location::Clock::now());
+  }
+}
+
 RouterType RoutingManager::GetBestRouter(m2::PointD const & startPoint, m2::PointD const & finalPoint) const
 {
   // todo Implement something more sophisticated here (or delete the method).
@@ -1521,6 +1532,9 @@ bool RoutingManager::MatchLocationToRoute(location::GpsInfo & location, location
 
 location::RouteMatchingInfo RoutingManager::GetRouteMatchingInfo(location::GpsInfo & info, bool * matchedToRoute)
 {
+  if (!info.IsFresh())
+    return {};
+
   CheckLocationForRouting(info);
 
   location::RouteMatchingInfo routeMatchingInfo;
@@ -1539,7 +1553,10 @@ void RoutingManager::SetDrapeEngine(ref_ptr<df::DrapeEngine> engine, bool is3dAl
   // Apply gps info which was set before drape engine creation.
   if (m_gpsInfoCache != nullptr)
   {
-    auto routeMatchingInfo = GetRouteMatchingInfo(*m_gpsInfoCache);
+    // This fix was already processed; attaching a renderer must not advance navigation again.
+    location::RouteMatchingInfo routeMatchingInfo;
+    if (m_gpsInfoCache->IsFresh())
+      MatchLocationToRoute(*m_gpsInfoCache, routeMatchingInfo);
     m_drapeEngine.SafeCall(&df::DrapeEngine::SetGpsInfo, *m_gpsInfoCache, m_routingSession.IsNavigable(),
                            routeMatchingInfo);
     m_gpsInfoCache.reset();
@@ -1801,7 +1818,7 @@ std::vector<RouteMarkData> RoutingManager::GetRoutePointsToSave() const
 
 void RoutingManager::OnLocationError()
 {
-  m_extrapolator.Reset();
+  ResetLocationPrediction();
   if (m_routeFollowingCallback)
     m_routeFollowingCallback({});
 }
@@ -1816,7 +1833,8 @@ void RoutingManager::OnExtrapolatedLocationUpdate(location::GpsInfo const & info
   auto routeMatchingInfo = GetRouteMatchingInfo(gpsInfo, &matchedToRoute);
   m_drapeEngine.SafeCall(&df::DrapeEngine::SetGpsInfo, gpsInfo, m_routingSession.IsNavigable(), routeMatchingInfo);
 
-  if (type == extrapolation::UpdateType::Measurement && m_routingSession.IsFollowing() && m_routeFollowingCallback)
+  if (type == extrapolation::UpdateType::Measurement && gpsInfo.IsFresh() && m_routingSession.IsFollowing() &&
+      m_routeFollowingCallback)
   {
     routing::FollowingInfo followingInfo;
     GetRouteFollowingInfo(followingInfo);
