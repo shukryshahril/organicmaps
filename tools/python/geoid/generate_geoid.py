@@ -18,7 +18,6 @@ when updating the reference model; update and review its metadata at that time.
 """
 
 import argparse
-import base64
 import hashlib
 import json
 from pathlib import Path
@@ -132,23 +131,33 @@ def java_source(streams, metadata):
         "",
         "  private GeoidData() {}",
         "",
-        "  static String getTile(int tile)",
+        "  // Factories allocate only the requested tile and keep each method below Java's size limit.",
+        "  // clang-format off",
+        "  static byte[] getTile(int tile)",
         "  {",
-        "    // clang-format off",
         "    return switch (tile)",
         "    {",
     ]
-    for tile, stream in enumerate(streams):
-        encoded = base64.b64encode(stream).decode("ascii")
-        chunks = [encoded[i:i + 96] for i in range(0, len(encoded), 96)]
-        lines.append(f'    case {tile} -> "{chunks[0]}"' + (";" if len(chunks) == 1 else ""))
-        for i, chunk in enumerate(chunks[1:], 1):
-            lines.append(f'        + "{chunk}"' + (";" if i == len(chunks) - 1 else ""))
+    for tile in range(len(streams)):
+        lines.append(f"    case {tile} -> tile{tile}();")
     lines.extend([
         '    default -> throw new IndexOutOfBoundsException("Invalid geoid tile: " + tile);',
         "    };",
-        "    // clang-format on",
         "  }",
+    ])
+    for tile, stream in enumerate(streams):
+        lines.extend([
+            "",
+            f"  private static byte[] tile{tile}()",
+            "  {",
+            "    return new byte[] {",
+        ])
+        for offset in range(0, len(stream), 16):
+            values = (str(value if value < 128 else value - 256) for value in stream[offset:offset + 16])
+            lines.append("      " + ", ".join(values) + ",")
+        lines.extend(["    };", "  }"])
+    lines.extend([
+        "  // clang-format on",
         "}",
         "",
     ])
