@@ -17,7 +17,6 @@
 package app.organicmaps.sdk.location;
 
 import java.util.Arrays;
-import java.util.Base64;
 import java.util.zip.DataFormatException;
 import java.util.zip.Inflater;
 
@@ -108,11 +107,10 @@ final class Geoid
 
   private static void decodeTile(int tile, byte[] output)
   {
-    byte[] compressed = Base64.getDecoder().decode(GeoidData.getTile(tile));
     Inflater inflater = new Inflater();
     try
     {
-      inflater.setInput(compressed);
+      inflater.setInput(GeoidData.getTile(tile));
       if (inflater.inflate(output) != output.length || !inflater.finished())
         throw new IllegalStateException("Invalid bundled geoid tile: " + tile);
     }
