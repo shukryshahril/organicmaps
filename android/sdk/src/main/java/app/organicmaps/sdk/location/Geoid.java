@@ -16,13 +16,16 @@
 
 package app.organicmaps.sdk.location;
 
+import java.io.DataInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.zip.DataFormatException;
 import java.util.zip.Inflater;
 
 /**
  * Geoid heights above WGS84, adapted from AndroidX AltitudeConverter/S2CellIdUtils to use direct
- * face coordinates and embedded numeric tiles, with a four-tile cache owned by the converter.
+ * face coordinates and bundled numeric tiles, with a four-tile cache owned by the converter.
  */
 final class Geoid
 {
@@ -39,12 +42,23 @@ final class Geoid
   private static final int TILES_PER_FACE = TILES_PER_AXIS * TILES_PER_AXIS;
   private static final int CACHE_TILES = 4;
 
+  private final byte[] mData;
+  private final int[] mOffsets = new int[6 * TILES_PER_FACE + 1];
   private final byte[][] mTiles = new byte[CACHE_TILES][TILE_SIZE * TILE_SIZE];
   private final int[] mTileIds = new int[CACHE_TILES];
   private int mNextTile;
 
-  Geoid()
+  Geoid(InputStream input) throws IOException
   {
+    DataInputStream stream = new DataInputStream(input);
+    if (stream.readLong() != GeoidData.MODEL_MAGIC)
+      throw new IOException("Invalid bundled geoid model header");
+    byte[] lengths = new byte[2 * (mOffsets.length - 1)];
+    stream.readFully(lengths);
+    for (int tile = 0; tile < mOffsets.length - 1; ++tile)
+      mOffsets[tile + 1] = mOffsets[tile] + (lengths[2 * tile] & 255) + ((lengths[2 * tile + 1] & 255) << 8);
+    mData = new byte[mOffsets[mOffsets.length - 1]];
+    stream.readFully(mData);
     Arrays.fill(mTileIds, -1);
   }
 
@@ -105,12 +119,12 @@ final class Geoid
     return mTiles[slot][(j & TILE_MASK) * TILE_SIZE + (i & TILE_MASK)] & 255;
   }
 
-  private static void decodeTile(int tile, byte[] output)
+  private void decodeTile(int tile, byte[] output)
   {
     Inflater inflater = new Inflater();
     try
     {
-      inflater.setInput(GeoidData.getTile(tile));
+      inflater.setInput(mData, mOffsets[tile], mOffsets[tile + 1] - mOffsets[tile]);
       if (inflater.inflate(output) != output.length || !inflater.finished())
         throw new IllegalStateException("Invalid bundled geoid tile: " + tile);
     }

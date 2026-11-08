@@ -6,6 +6,7 @@ on:
     branches: [master]
     paths: &geoid-paths
       - tools/python/geoid/**
+      - android/sdk/src/main/assets/organicmaps/geoid/**
       - android/sdk/src/main/java/app/organicmaps/sdk/location/GeoidData.java
       - .github/workflows/geoid-check.yaml
   pull_request:

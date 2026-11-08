@@ -1,10 +1,13 @@
 package app.organicmaps.sdk.location;
 
+import android.content.Context;
 import android.location.Location;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 import androidx.core.location.LocationCompat;
+import java.io.IOException;
+import java.io.InputStream;
 
 /** Adds MSL metadata synchronously on the main thread, preserving the provider's ellipsoidal altitude. */
 final class MslAltitudeConverter
@@ -15,7 +18,7 @@ final class MslAltitudeConverter
   private MslAltitudeConverter() {}
 
   @UiThread
-  static void addMslAltitude(@NonNull Location location)
+  static void addMslAltitude(@NonNull Context context, @NonNull Location location)
   {
     if (LocationCompat.hasMslAltitude(location) && Double.isFinite(LocationCompat.getMslAltitudeMeters(location)))
       return;
@@ -25,7 +28,16 @@ final class MslAltitudeConverter
       return;
 
     if (sGeoid == null)
-      sGeoid = new Geoid();
+    {
+      try (InputStream input = context.getAssets().open(GeoidData.ASSET_PATH))
+      {
+        sGeoid = new Geoid(input);
+      }
+      catch (IOException e)
+      {
+        throw new IllegalStateException("Cannot load bundled geoid model", e);
+      }
+    }
     double geoidHeight = sGeoid.getHeight(location.getLatitude(), location.getLongitude());
     LocationCompat.setMslAltitudeMeters(location, location.getAltitude() - geoidHeight);
     LocationCompat.removeMslAltitudeAccuracy(location);

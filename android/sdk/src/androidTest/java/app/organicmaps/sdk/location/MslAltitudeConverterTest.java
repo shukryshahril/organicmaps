@@ -29,7 +29,10 @@ public class MslAltitudeConverterTest
 
   private static void convert(Location location)
   {
-    InstrumentationRegistry.getInstrumentation().runOnMainSync(() -> MslAltitudeConverter.addMslAltitude(location));
+    InstrumentationRegistry.getInstrumentation().runOnMainSync(
+        ()
+            -> MslAltitudeConverter.addMslAltitude(InstrumentationRegistry.getInstrumentation().getTargetContext(),
+                                                   location));
   }
 
   @Test

@@ -231,7 +231,7 @@ public class LocationHelper implements BaseLocationProvider.Listener
       }
     }
 
-    MslAltitudeConverter.addMslAltitude(location);
+    MslAltitudeConverter.addMslAltitude(mContext, location);
     mSavedLocation = location;
     mMyPosition = null;
     notifyLocationUpdated();

@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
@@ -13,10 +14,19 @@ import org.junit.Test;
 
 public class GeoidTest
 {
+  private static Geoid loadGeoid() throws IOException
+  {
+    try (InputStream input = GeoidTest.class.getResourceAsStream("/model.bin"))
+    {
+      assertNotNull(input);
+      return new Geoid(input);
+    }
+  }
+
   @Test
   public void matchesEverySampleInThePinnedModel() throws Exception
   {
-    Geoid geoid = new Geoid();
+    Geoid geoid = loadGeoid();
     byte[] samples = new byte[6 * 512 * 512];
     // Visit tiles in order so the integrity check does not repeatedly inflate the same tile.
     for (int tile = 0; tile < 384; ++tile)
@@ -43,7 +53,7 @@ public class GeoidTest
   @Test
   public void matchesAndroidxProjectionAtCitiesPolesAndCubeEdges() throws Exception
   {
-    Geoid geoid = new Geoid();
+    Geoid geoid = loadGeoid();
     // These fixtures use AndroidX's original S2CellIdUtils/AltitudeConverter, independently of
     // Geoid's direct face projection, with the same pinned numeric model.
     InputStream input = getClass().getResourceAsStream("geoid_reference.csv");

@@ -90,6 +90,10 @@ android {
     }
   }
 
+  sourceSets {
+    test.resources.srcDir 'src/main/assets/organicmaps/geoid'
+  }
+
   compileOptions {
     coreLibraryDesugaringEnabled = true
   }
