@@ -64,7 +64,7 @@
                                             <rect key="frame" x="0.0" y="0.0" width="72" height="72"/>
                                             <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
                                             <userDefinedRuntimeAttributes>
-                                                <userDefinedRuntimeAttribute type="string" keyPath="styleName" value="MWMWhite"/>
+                                                <userDefinedRuntimeAttribute type="string" keyPath="styleName" value="TurnGlyphOnAccent"/>
                                             </userDefinedRuntimeAttributes>
                                         </imageView>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="1" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="teB-QQ-oib">
@@ -73,7 +73,7 @@
                                             <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             <nil key="highlightedColor"/>
                                             <userDefinedRuntimeAttributes>
-                                                <userDefinedRuntimeAttribute type="string" keyPath="styleName" value="whiteText"/>
+                                                <userDefinedRuntimeAttribute type="string" keyPath="styleName" value="TurnTextOnAccent"/>
                                             </userDefinedRuntimeAttributes>
                                         </label>
                                     </subviews>
@@ -94,7 +94,7 @@
                                     <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                     <nil key="highlightedColor"/>
                                     <userDefinedRuntimeAttributes>
-                                        <userDefinedRuntimeAttribute type="string" keyPath="styleName" value="whiteText"/>
+                                        <userDefinedRuntimeAttribute type="string" keyPath="styleName" value="TurnTextOnAccent"/>
                                     </userDefinedRuntimeAttributes>
                                 </label>
                             </subviews>
@@ -122,7 +122,7 @@
                                         <constraint firstAttribute="height" constant="24" id="Fxo-9b-MUJ"/>
                                     </constraints>
                                     <userDefinedRuntimeAttributes>
-                                        <userDefinedRuntimeAttribute type="string" keyPath="styleName" value="MWMBlack"/>
+                                        <userDefinedRuntimeAttribute type="string" keyPath="styleName" value="TurnGlyphAccent"/>
                                     </userDefinedRuntimeAttributes>
                                 </imageView>
                             </subviews>
@@ -271,6 +271,9 @@
                         <constraint firstAttribute="height" constant="56" id="cvr-aL-Qfk"/>
                     </constraints>
                     <state key="normal" image="ic_routing_search_light"/>
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="string" keyPath="styleName" value="ButtonMapSearch"/>
+                    </userDefinedRuntimeAttributes>
                     <connections>
                         <action selector="searchMainButtonTouchUpInside" destination="iN0-l3-epB" eventType="touchUpInside" id="gd5-zu-3i5"/>
                     </connections>

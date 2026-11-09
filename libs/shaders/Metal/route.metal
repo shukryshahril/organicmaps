@@ -65,12 +65,24 @@ vertex RouteFragment_T vsRoute(const RouteVertex_T in [[stage_in]],
 fragment float4 fsRoute(const RouteFragment_T in [[stage_in]],
                         constant Uniforms_T & uniforms [[buffer(1)]])
 {
-  if (in.lengthParams.x < in.lengthParams.z)
-    discard_fragment();
-  
   constexpr float kAntialiasingThreshold = 0.92;
   constexpr float kOutlineThreshold1 = 0.81;
   constexpr float kOutlineThreshold2 = 0.71;
+  // The driven part stays as a thin trail that fades out over this many route half-widths.
+  constexpr float kTrailFadeHalfWidths = 40.0;
+  constexpr float kTrailHalfWidth = 0.4;
+
+  float behind = in.lengthParams.z - in.lengthParams.x;
+  if (behind > 0.0)
+  {
+    float fade = 1.0 - clamp(behind / (uniforms.u_routeParams.y * kTrailFadeHalfWidths), 0.0, 1.0);
+    float side = abs(in.lengthParams.y);
+    if (fade <= 0.0 || side > kTrailHalfWidth)
+      discard_fragment();
+    float alpha = 0.85 * fade * (1.0 - smoothstep(kTrailHalfWidth - 0.08, kTrailHalfWidth, side));
+    return float4(mix(uniforms.u_fakeColor.rgb, uniforms.u_maskColor.rgb, uniforms.u_maskColor.a),
+                  alpha * uniforms.u_fakeColor.a);
+  }
   
   float2 fb = uniforms.u_fakeBorders;
   float2 coefs = step(in.lengthParams.xx, fb);
@@ -82,7 +94,6 @@ fragment float4 fsRoute(const RouteFragment_T in [[stage_in]],
   
   float4 color = mix(mix(mainColor, float4(in.color.rgb, 1.0), in.color.a), mainColor,
                      step(uniforms.u_routeParams.w, 0.0));
-  color = mix(color, mainOutlineColor, step(kOutlineThreshold1, abs(in.lengthParams.y)));
   color = mix(color, mainOutlineColor,
               smoothstep(kOutlineThreshold2, kOutlineThreshold1, abs(in.lengthParams.y)));
   color.a *= (1.0 - smoothstep(kAntialiasingThreshold, 1.0, abs(in.lengthParams.y)));
@@ -167,6 +178,9 @@ fragment RouteArrowFragment_Output fsRouteArrow(const RouteArrowFragment_T in [[
   RouteArrowFragment_Output output;
   float4 color = u_colorTex.sample(u_colorTexSampler, in.texCoords);
   color.a *= uniforms.u_opacity;
+  // The artwork is white with a coloured outline; the outline follows the route outline colour.
+  float whiteness = smoothstep(0.2, 0.9, min(color.r, min(color.g, color.b)));
+  color.rgb = mix(uniforms.u_outlineColor.rgb, float3(1.0), whiteness);
   output.depth = in.position.z;
   if (color.a < 0.001)
     output.depth = 1.0;

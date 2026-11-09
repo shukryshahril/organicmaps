@@ -38,6 +38,10 @@ final class NavigationControlView: SolidTouchView {
 
   @IBOutlet private var trackRecordingButton: MWMButton!
 
+  // Summary row: remaining time, then distance and arrival as a subtitle, with Stop beside them.
+  private let durationLabel = UILabel()
+  private let tripDetailsLabel = UILabel()
+
   private lazy var dimBackground: DimBackground = .init(mainView: self, tapAction: { [weak self] in
     self?.diminish()
   })
@@ -109,8 +113,76 @@ final class NavigationControlView: SolidTouchView {
     configureButton(ttsButton)
     configureButton(trackRecordingButton)
     configureStopButton(stopButton)
+    buildSummaryRow()
 
     MWMTextToSpeech.add(self)
+  }
+
+  /// Replaces the metric columns, the info toggle and the More button with one roomier row.
+  /// Record and voice now live with the map's side buttons, so the extended panel is not used.
+  private func buildSummaryRow() {
+    guard let metricsRow = speedBackground.superview, let panel = metricsRow.superview else { return }
+    metricsRow.removeFromSuperview()
+    panel.subviews.compactMap { $0 as? UIButton }.forEach { $0.removeFromSuperview() }
+    stopButton.removeFromSuperview()
+    ttsButton.removeFromSuperview()
+    extendedView.isHidden = true
+    // The route progress line is dropped; the view only anchors the panel's bottom edge now.
+    progressView.isHidden = true
+
+    durationLabel.font = UIFont.bold28.dynamic(maxSize: 34)
+    tripDetailsLabel.font = UIFont.medium16.dynamic(maxSize: 22)
+    for label in [durationLabel, tripDetailsLabel] {
+      label.adjustsFontForContentSizeCategory = true
+      label.configureSingleLineAutoScaling()
+    }
+
+    let texts = UIStackView(arrangedSubviews: [durationLabel, tripDetailsLabel])
+    texts.axis = .vertical
+    texts.spacing = 2
+    configureVoiceButton()
+    let row = UIStackView(arrangedSubviews: [texts, ttsButton, stopButton])
+    row.axis = .horizontal
+    row.alignment = .center
+    row.spacing = 16
+    row.translatesAutoresizingMaskIntoConstraints = false
+    stopButton.setContentHuggingPriority(.required, for: .horizontal)
+    stopButton.setContentCompressionResistancePriority(.required, for: .horizontal)
+    panel.addSubview(row)
+    NSLayoutConstraint.activate([
+      row.leadingAnchor.constraint(equalTo: panel.leadingAnchor, constant: 20),
+      row.trailingAnchor.constraint(equalTo: panel.trailingAnchor, constant: -16),
+      row.topAnchor.constraint(equalTo: panel.topAnchor, constant: 18),
+      progressView.topAnchor.constraint(equalTo: row.bottomAnchor, constant: 8),
+    ])
+    applySummaryColors()
+  }
+
+  private func configureVoiceButton() {
+    let symbol = UIImage.SymbolConfiguration(pointSize: 20, weight: .semibold)
+    ttsButton.setImage(UIImage(systemName: "speaker.slash.fill", withConfiguration: symbol), for: .normal)
+    ttsButton.setImage(UIImage(systemName: "speaker.wave.2.fill", withConfiguration: symbol), for: .selected)
+    ttsButton.setImage(UIImage(systemName: "speaker.wave.2.fill", withConfiguration: symbol), for: [.selected, .highlighted])
+    ttsButton.contentEdgeInsets = .zero
+    ttsButton.contentHorizontalAlignment = .center
+    ttsButton.contentVerticalAlignment = .center
+    ttsButton.layer.cornerRadius = 22
+    ttsButton.layer.cornerCurve = .continuous
+    ttsButton.coloring = .blue
+    ttsButton.accessibilityIdentifier = "navigationVoiceButton"
+    ttsButton.accessibilityLabel = L("pref_tts_enable_title")
+    ttsButton.translatesAutoresizingMaskIntoConstraints = false
+    NSLayoutConstraint.activate([
+      ttsButton.widthAnchor.constraint(equalToConstant: 44),
+      ttsButton.heightAnchor.constraint(equalToConstant: 44),
+    ])
+  }
+
+  private func applySummaryColors() {
+    durationLabel.textColor = InterfaceStyleSheet.ink
+    tripDetailsLabel.textColor = InterfaceStyleSheet.ink.withAlphaComponent(0.65)
+    ttsButton.backgroundColor = InterfaceStyleSheet.background
+    ttsButton.tintColor = InterfaceStyleSheet.accent
   }
 
   private func configureMetricLabel(_ label: UILabel, font: UIFont) {
@@ -165,7 +237,8 @@ final class NavigationControlView: SolidTouchView {
     extendedConstraint = bottomAnchor.constraint(equalTo: ownerView.bottomAnchor)
     extendedConstraint.isActive = false
 
-    notExtendedConstraint = progressView.bottomAnchor.constraint(equalTo: lg.bottomAnchor)
+    // The row sits partly inside the home-indicator inset so the panel hugs the screen bottom.
+    notExtendedConstraint = progressView.bottomAnchor.constraint(equalTo: lg.bottomAnchor, constant: 16)
     notExtendedConstraint.isActive = true
 
     updateVisibleViewportArea()
@@ -216,6 +289,10 @@ final class NavigationControlView: SolidTouchView {
         NSAttributedString.Key.foregroundColor: UIColor.blackSecondaryText,
         NSAttributedString.Key.font: Constants.metricLegendFont,
       ]
+
+    durationLabel.text = DurationFormatter.routingDurationString(from: TimeInterval(info.timeToTarget))
+    let distance = [info.targetDistance, info.targetUnits].compactMap { $0 }.joined(separator: " ")
+    tripDetailsLabel.text = [distance, info.arrival ?? ""].filter { !$0.isEmpty }.joined(separator: " · ")
 
     if timePageControl.currentPage == 0 {
       timeLabel.text = DurationFormatter.routingDurationString(from: TimeInterval(info.timeToTarget))
@@ -353,6 +430,7 @@ final class NavigationControlView: SolidTouchView {
 
   override func applyTheme() {
     super.applyTheme()
+    applySummaryColors()
     onTTSStatusUpdated()
     setTrackRecordingState(TrackRecordingManager.shared.recordingState)
   }
@@ -376,6 +454,7 @@ extension NavigationControlView: MWMTextToSpeechObserver {
     ttsButton.isHidden = !MWMTextToSpeech.isTTSEnabled()
     if !ttsButton.isHidden {
       ttsButton.isSelected = MWMTextToSpeech.tts().active
+      ttsButton.accessibilityValue = L(ttsButton.isSelected ? "on" : "off")
     }
     refreshDiminishTimer()
   }

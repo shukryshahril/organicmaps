@@ -9,11 +9,16 @@ enum MapStyleSheet: String, CaseIterable {
   case mapButtonFollow = "ButtonFollow"
   case mapButtonFollowAndRotate = "ButtonFollowAndRotate"
   case mapButtonMapBookmarks = "ButtonMapBookmarks"
+  case mapButtonMapSearch = "ButtonMapSearch"
+  case mapButtonNavigationRecord = "ButtonMapNavigationRecord"
   case mapPromoDiscoveryButton = "PromoDiscroveryButton"
   case mapButtonBookmarksBack = "ButtonBookmarksBack"
   case mapButtonBookmarksBackOpaque = "ButtonBookmarksBackOpaque"
   case mapFirstTurnView = "FirstTurnView"
   case mapSecondTurnView = "SecondTurnView"
+  case mapTurnGlyphOnAccent = "TurnGlyphOnAccent"
+  case mapTurnTextOnAccent = "TurnTextOnAccent"
+  case mapTurnGlyphAccent = "TurnGlyphAccent"
   case mapAutoupdateView = "MapAutoupdateView"
   case mapGuidesNavigationBar = "GuidesNavigationBar"
 }
@@ -89,13 +94,29 @@ extension MapStyleSheet: IStyleSheet {
       return .add { s in
         InterfaceStyleSheet.floatingSurface(s)
         s.cornerRadius = .custom(InterfaceStyleSheet.isPixel ? 2 : 20)
-        s.coloring = .whiteText
-        s.backgroundColor = InterfaceStyleSheet.filledAccent
+        // Glass like the other map buttons; the accent icon marks the active heading mode.
+        s.coloring = .blue
         s.mwmImage = "btn_follow_and_rotate"
       }
     case .mapButtonMapBookmarks:
       return .add { s in
+        InterfaceStyleSheet.floatingSurface(s)
+        s.cornerRadius = .custom(InterfaceStyleSheet.isPixel ? 2 : 20)
+        s.coloring = .blue
         s.mwmImage = "ic_routing_bookmark"
+      }
+    case .mapButtonNavigationRecord:
+      return .add { s in
+        InterfaceStyleSheet.floatingSurface(s)
+        s.cornerRadius = .custom(InterfaceStyleSheet.isPixel ? 2 : 20)
+        s.mwmImage = "ic_menu_track_recording"
+      }
+    case .mapButtonMapSearch:
+      // The search state sets the icon in code; this only gives the button the shared floating surface.
+      return .add { s in
+        InterfaceStyleSheet.floatingSurface(s)
+        s.cornerRadius = .custom(InterfaceStyleSheet.isPixel ? 2 : 20)
+        s.coloring = .blue
       }
     case .mapPromoDiscoveryButton:
       return .add { s in
@@ -111,7 +132,7 @@ extension MapStyleSheet: IStyleSheet {
       }
     case .mapFirstTurnView:
       return .add { s in
-        s.backgroundColor = .linkBlue
+        s.backgroundColor = InterfaceStyleSheet.filledAccent
         s.cornerRadius = .buttonSmall
         s.shadowRadius = 2
         s.shadowColor = .blackHintText
@@ -120,7 +141,19 @@ extension MapStyleSheet: IStyleSheet {
       }
     case .mapSecondTurnView:
       return .addFrom(Self.mapFirstTurnView) { s in
-        s.backgroundColor = .whitePrimary
+        s.backgroundColor = InterfaceStyleSheet.surface
+      }
+    case .mapTurnGlyphOnAccent:
+      return .add { s in
+        s.tintColor = .white
+      }
+    case .mapTurnTextOnAccent:
+      return .add { s in
+        s.fontColor = .white
+      }
+    case .mapTurnGlyphAccent:
+      return .add { s in
+        s.tintColor = InterfaceStyleSheet.accent
       }
     case .mapAutoupdateView:
       return .add { s in

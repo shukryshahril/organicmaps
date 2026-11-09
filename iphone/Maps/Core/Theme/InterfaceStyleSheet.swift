@@ -34,6 +34,19 @@ enum InterfaceStyleSheet: String, CaseIterable {
   static var filledAccent: UIColor { uiColor(InterfacePalette.current.colors(isDark: false).accent) }
   static var switchAccent: UIColor { filledAccent }
 
+  /// The map's position arrow and route line follow the palette accent of the current light or dark map style.
+  static func applyMapAccent() {
+    let palette = InterfacePalette.current
+    let light = uiColor(palette.colors(isDark: false).accent)
+    let dark = uiColor(palette.colors(isDark: true).accent)
+    FrameworkHelper.setMapColor("Arrow3D", lightColor: light, darkColor: dark)
+    // Routes use a brighter mid-tone of the accent so they read against parks and roads.
+    FrameworkHelper.setMapColor("Route", lightColor: light.routeTone(brightness: 0.56, saturation: 1.1),
+                                darkColor: dark.routeTone(brightness: 0.8, saturation: 1.2))
+    FrameworkHelper.setMapColor("RouteOutline", lightColor: light.routeTone(brightness: 0.36, saturation: 1.1),
+                                darkColor: dark.routeTone(brightness: 0.48, saturation: 1.3))
+  }
+
   static var headingFont: FontStyle {
     .dynamic(isPixel ? .monospacedSystemFont(ofSize: 17, weight: .semibold) : .semibold17)
   }
@@ -102,4 +115,13 @@ extension InterfaceStyleSheet: IStyleSheet {
 final class InterfaceColors: NSObject {
   @objc static var accent: UIColor { InterfaceStyleSheet.accent }
   @objc static var highlightedAccent: UIColor { InterfaceStyleSheet.accent.withAlphaComponent(0.7) }
+}
+
+private extension UIColor {
+  func routeTone(brightness: CGFloat, saturation scale: CGFloat) -> UIColor {
+    var (h, s, b, a): (CGFloat, CGFloat, CGFloat, CGFloat) = (0, 0, 0, 0)
+    getHue(&h, saturation: &s, brightness: &b, alpha: &a)
+    // Near-grey palettes still need a route that stands apart from the grey driven trail.
+    return UIColor(hue: h, saturation: min(1, max(0.35, s * scale)), brightness: brightness, alpha: a)
+  }
 }

@@ -1,4 +1,5 @@
 #import "MWMNavigationDashboardManager.h"
+#import "MWMSideButtons.h"
 #import "MWMLocationManager.h"
 #import "MWMNavigationDashboardView.h"
 #import "MWMRouter.h"
@@ -158,6 +159,7 @@
   else
     [self.searchManager addObserver:self];
   _state = state;
+  [MWMSideButtons buttons].navigationButtonsVisible = state == MWMNavigationDashboardStateNavigation;
   switch (state)
   {
   case MWMNavigationDashboardStateClosed: [self stateClosed]; break;
@@ -235,7 +237,7 @@
 
 - (void)routingStartButtonDidTap
 {
-  [MWMRouter startRouting];
+  [MWMRouter startRoutingWhenReady];
 }
 
 - (void)routePreviewDidPressDrivingOptions

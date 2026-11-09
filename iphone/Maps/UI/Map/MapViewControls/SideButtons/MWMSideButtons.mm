@@ -2,6 +2,8 @@
 #import "MWMButton.h"
 #import "MWMLocationManager.h"
 #import "MWMMapViewControlsManager.h"
+#import "MWMNavigationDashboardManager.h"
+#import "RoutePreviewView.h"
 #import "MWMRouter.h"
 #import "MWMSettings.h"
 #import "MWMSideButtonsView.h"
@@ -56,9 +58,53 @@ NSString * const kUDDidShowLongTapToShowSideButtonsToast = @"kUDDidShowLongTapTo
     [self.sideView setNeedsLayout];
     self.zoomSwipeEnabled = NO;
     self.zoomHidden = NO;
+    [self setUpNavigationButtons];
   }
   return self;
 }
+
+- (void)dealloc
+{
+  [TrackRecordingManager.shared removeObserver:self];
+}
+
+#pragma mark - Navigation buttons
+
+- (void)setUpNavigationButtons
+{
+  MWMSideButtonsView * view = self.sideView;
+  view.recordButton.coloring = MWMButtonColoringBlue;
+  [view.recordButton addTarget:self action:@selector(recordTouchUpInside) forControlEvents:UIControlEventTouchUpInside];
+  view.recordButton.accessibilityLabel = L(@"start_track_recording");
+
+  __weak __typeof(self) weakSelf = self;
+  [TrackRecordingManager.shared addObserver:self
+          recordingIsActiveDidChangeHandler:^(TrackRecordingState state, TrackInfo * _Nonnull,
+                                              ElevationProfileData * _Nullable (^)()) {
+            BOOL const recording = state == TrackRecordingStateActive;
+            MWMButton * record = weakSelf.sideView.recordButton;
+            record.coloring = recording ? MWMButtonColoringRed : MWMButtonColoringBlue;
+            record.accessibilityLabel = L(recording ? @"stop_track_recording" : @"start_track_recording");
+          }];
+}
+
+- (void)setNavigationButtonsVisible:(BOOL)navigationButtonsVisible
+{
+  _navigationButtonsVisible = navigationButtonsVisible;
+  self.sideView.navigationButtonsVisible = navigationButtonsVisible;
+}
+
+- (id<RouteNavigationControlsDelegate>)navigationControls
+{
+  return (id<RouteNavigationControlsDelegate>)[MWMNavigationDashboardManager sharedManager];
+}
+
+- (void)recordTouchUpInside
+{
+  [self.navigationControls trackRecordingButtonDidTap];
+}
+
+
 
 + (void)updateAvailableArea:(CGRect)frame
 {

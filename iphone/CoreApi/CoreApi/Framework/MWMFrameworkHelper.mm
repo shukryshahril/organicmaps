@@ -8,6 +8,8 @@
 
 #include "Framework.h"
 
+#include "drape_frontend/color_constants.hpp"
+
 #include "base/sunrise_sunset.hpp"
 
 #include "platform/local_country_file_utils.hpp"
@@ -75,6 +77,20 @@ static Framework::ProductsPopupCloseReason ConvertProductPopupCloseReasonToCore(
 
   if (style != newStyle)
     f.SetMapStyle(newStyle);
+}
+
++ (void)setMapColor:(NSString *)name lightColor:(UIColor *)lightColor darkColor:(UIColor *)darkColor
+{
+  auto const toDrape = [](UIColor * color)
+  {
+    CGFloat r = 0, g = 0, b = 0, a = 0;
+    [color getRed:&r green:&g blue:&b alpha:&a];
+    return dp::Color(static_cast<uint8_t>(r * 255), static_cast<uint8_t>(g * 255), static_cast<uint8_t>(b * 255),
+                     static_cast<uint8_t>(a * 255));
+  };
+  df::SetColorConstantOverride(name.UTF8String, toDrape(lightColor), toDrape(darkColor));
+  if (!IsFrameworkDestroyed())
+    GetFramework().MakeFrameActive();
 }
 
 + (MWMDayTime)daytimeAtLocation:(CLLocation *)location

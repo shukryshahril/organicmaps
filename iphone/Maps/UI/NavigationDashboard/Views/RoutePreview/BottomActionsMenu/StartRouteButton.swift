@@ -135,7 +135,8 @@ final class StartRouteButton: UIView {
                             self.progressView.backgroundColor = InterfaceStyleSheet.accent.withAlphaComponent(0.15)
                             self.progressView.isHidden = false
                             self.setLoadingProgress(progress, animated: false)
-                            self.button.isEnabled = false
+                            // Tapping while the route builds queues the start.
+                            self.button.isEnabled = true
                           case .disabled:
                             self.button.setTitle(Constants.buttonTitle, for: .normal)
                             self.backgroundView.backgroundColor = InterfaceStyleSheet.background

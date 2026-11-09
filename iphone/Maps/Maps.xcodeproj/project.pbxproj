@@ -275,6 +275,7 @@
 		ED82C58D2F90180300FA103D /* NavigationDashboardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED82C3D12F90180300FA103D /* NavigationDashboardViewModel.swift */; };
 		ED82C58E2F90180300FA103D /* MWMNavigationDashboardManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = ED82C3D52F90180300FA103D /* MWMNavigationDashboardManager.mm */; };
 		ED82C58F2F90180300FA103D /* MWMNavigationDashboardManager+Entity.mm in Sources */ = {isa = PBXBuildFile; fileRef = ED82C3D72F90180300FA103D /* MWMNavigationDashboardManager+Entity.mm */; };
+		A81108000000000000000040 /* TurnGlyph.swift in Sources */ = {isa = PBXBuildFile; fileRef = A81108000000000000000041 /* TurnGlyph.swift */; };
 		ED82C5902F90180300FA103D /* MWMAuthorizationCommon.mm in Sources */ = {isa = PBXBuildFile; fileRef = ED82C3DC2F90180300FA103D /* MWMAuthorizationCommon.mm */; };
 		ED82C5912F90180300FA103D /* MWMAuthorizationLoginViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = ED82C3DE2F90180300FA103D /* MWMAuthorizationLoginViewController.mm */; };
 		ED82C5922F90180300FA103D /* MWMAuthorizationOSMLoginViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = ED82C3E02F90180300FA103D /* MWMAuthorizationOSMLoginViewController.mm */; };
@@ -1267,6 +1268,7 @@
 		ED82C3D52F90180300FA103D /* MWMNavigationDashboardManager.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = MWMNavigationDashboardManager.mm; sourceTree = "<group>"; };
 		ED82C3D62F90180300FA103D /* MWMNavigationDashboardManager+Entity.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MWMNavigationDashboardManager+Entity.h"; sourceTree = "<group>"; };
 		ED82C3D72F90180300FA103D /* MWMNavigationDashboardManager+Entity.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = "MWMNavigationDashboardManager+Entity.mm"; sourceTree = "<group>"; };
+		A81108000000000000000041 /* TurnGlyph.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TurnGlyph.swift; sourceTree = "<group>"; };
 		ED82C3D82F90180300FA103D /* MWMNavigationDashboardView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MWMNavigationDashboardView.h; sourceTree = "<group>"; };
 		ED82C3DA2F90180300FA103D /* Authorization.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Authorization.storyboard; sourceTree = "<group>"; };
 		ED82C3DB2F90180300FA103D /* MWMAuthorizationCommon.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MWMAuthorizationCommon.h; sourceTree = "<group>"; };
@@ -2949,6 +2951,7 @@
 				ED82C3D52F90180300FA103D /* MWMNavigationDashboardManager.mm */,
 				ED82C3D62F90180300FA103D /* MWMNavigationDashboardManager+Entity.h */,
 				ED82C3D72F90180300FA103D /* MWMNavigationDashboardManager+Entity.mm */,
+				A81108000000000000000041 /* TurnGlyph.swift */,
 				ED82C3D82F90180300FA103D /* MWMNavigationDashboardView.h */,
 			);
 			path = NavigationDashboard;
@@ -4918,6 +4921,7 @@
 				ED82C58D2F90180300FA103D /* NavigationDashboardViewModel.swift in Sources */,
 				ED82C58E2F90180300FA103D /* MWMNavigationDashboardManager.mm in Sources */,
 				ED82C58F2F90180300FA103D /* MWMNavigationDashboardManager+Entity.mm in Sources */,
+				A81108000000000000000040 /* TurnGlyph.swift in Sources */,
 				ED82C5902F90180300FA103D /* MWMAuthorizationCommon.mm in Sources */,
 				ED82C5912F90180300FA103D /* MWMAuthorizationLoginViewController.mm in Sources */,
 				ED82C5922F90180300FA103D /* MWMAuthorizationOSMLoginViewController.mm in Sources */,

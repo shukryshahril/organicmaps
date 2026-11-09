@@ -8,6 +8,7 @@ enum InterfaceIcon: String, CaseIterable {
   case outdoor, contours, hiking, cycling, transit, satellite, chooseOnMap, close
   case routeFrom, routeTo, startNavigation, destination, routeSettings, swap, saveRoute, coordinates, coordinateFormat, externalApp
   case help, reorder, bookmarkRemove, bookmarkRestore
+  case fuel, parking, eat, groceries, atm
 
   var symbolName: String {
     switch self {
@@ -21,7 +22,7 @@ enum InterfaceIcon: String, CaseIterable {
     case .locating: return "arrow.triangle.2.circlepath"
     case .location: return "location"
     case .follow: return "location.fill"
-    case .followHeading: return "location.north.line.fill"
+    case .followHeading: return "location.north.fill"
     case .addPlace: return "mappin.and.ellipse"
     case .updateMap: return "exclamationmark.arrow.triangle.2.circlepath"
     case .record: return "record.circle"
@@ -51,6 +52,11 @@ enum InterfaceIcon: String, CaseIterable {
     case .reorder: return "line.3.horizontal"
     case .bookmarkRemove: return "bookmark.slash"
     case .bookmarkRestore: return "arrow.uturn.backward.circle"
+    case .fuel: return "fuelpump.fill"
+    case .parking: return "parkingsign"
+    case .eat: return "fork.knife"
+    case .groceries: return "cart.fill"
+    case .atm: return "banknote.fill"
     }
   }
 
@@ -93,6 +99,11 @@ enum InterfaceIcon: String, CaseIterable {
     case .reorder: return "ic_move_list"
     case .bookmarkRemove: return "ic_bookmarks_on"
     case .bookmarkRestore: return "ic_bookmarks_off"
+    case .fuel: return "ic_routing_fuel_off"
+    case .parking: return "ic_routing_parking_off"
+    case .eat: return "ic_routing_eat_off"
+    case .groceries: return "ic_routing_food_off"
+    case .atm: return "ic_routing_atm_off"
     }
   }
 
@@ -139,6 +150,11 @@ final class InterfaceIcons: NSObject {
       "personal_about": .about, "personal_support": .support,
       "btn_zoom_in": .zoomIn, "btn_zoom_out": .zoomOut, "btn_pending": .locating,
       "btn_get_position": .location, "btn_follow": .follow, "btn_follow_and_rotate": .followHeading,
+      // Navigation side buttons; the category states show the active filter, tapping clears it.
+      "ic_routing_search": .search, "ic_routing_bookmark": .bookmarks, "ic_routing_search_off": .close,
+      "ic_routing_fuel_off": .fuel, "ic_routing_parking_off": .parking, "ic_routing_eat_off": .eat,
+      "ic_routing_food_off": .groceries, "ic_routing_atm_off": .atm,
+      "ic_menu_track_recording": .record,
     ]
     return icons[name]?.image
   }

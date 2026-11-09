@@ -31,6 +31,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (void)startRouting;
 + (void)cancelPendingStart;
+/// Starts now, or as soon as the route that is still being built is ready.
++ (void)startRoutingWhenReady;
 + (BOOL)buildAndStartToPoint:(MWMRoutePoint *)finish;
 + (void)stopRouting;
 

@@ -405,6 +405,15 @@ using namespace routing;
   [self router].startWhenRouteReady = NO;
 }
 
++ (void)startRoutingWhenReady
+{
+  // A Start tap while the route is still being built would otherwise be dropped.
+  if (GetFramework().GetRoutingManager().IsRouteBuilding())
+    [self router].startWhenRouteReady = YES;
+  else
+    [self startRouting];
+}
+
 + (BOOL)buildAndStartToPoint:(MWMRoutePoint *)finish
 {
   [self cancelPendingStart];
@@ -498,6 +507,8 @@ using namespace routing;
               [self buildFromPoint:[[MWMRoutePoint alloc] initWithLastLocationAndType:MWMRoutePointTypeStart
                                                                     intermediateIndex:0]
                         bestRouter:NO];
+              // The user already asked to start; do so once the route from here is ready.
+              [self router].startWhenRouteReady = YES;
             }
                                  needToRebuild:needToRebuild];
       }
@@ -582,8 +593,16 @@ using namespace routing;
   [self updateFollowingInfo];
   BOOL const shouldStart = self.startWhenRouteReady;
   self.startWhenRouteReady = NO;
-  if (shouldStart && !hasWarnings && startPoint.isMyPosition && [MWMRouter isRouteValid])
-    [MWMRouter startRouting];
+  // startRouting asks before starting from a point that is not the current position. Drape builds the
+  // new route asynchronously and offers no "drawn" signal; following it in the same instant leaves the
+  // route undrawn and the camera unfollowed, so give the render threads a moment first.
+  if (shouldStart && !hasWarnings)
+  {
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+      if ([MWMRouter isRouteValid])
+        [MWMRouter startRouting];
+    });
+  }
 }
 
 - (void)processRouteBuilderEvent:(routing::RouterResultCode)code

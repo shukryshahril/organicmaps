@@ -270,11 +270,11 @@ CGFloat ScaledTurnsWidth()
     }
 
     NSDictionary * turnNumberAttributes = @{
-      NSForegroundColorAttributeName: [UIColor whitePrimary],
+      NSForegroundColorAttributeName: UIColor.whiteColor,
       NSFontAttributeName: IPAD ? UIFont.bold36.dynamic : UIFont.bold28.dynamic
     };
     NSDictionary * turnLegendAttributes = @{
-      NSForegroundColorAttributeName: [UIColor whitePrimary],
+      NSForegroundColorAttributeName: UIColor.whiteColor,
       NSFontAttributeName: IPAD ? UIFont.bold24.dynamic : UIFont.bold16.dynamic
     };
 

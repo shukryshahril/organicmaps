@@ -11,6 +11,7 @@ CGFloat const kLocationButtonSpacingMax = 52;
 CGFloat const kLocationButtonSpacingMin = 8;
 CGFloat const kButtonsTopOffset = 6;
 CGFloat const kButtonsBottomOffset = 6;
+CGFloat const kNavigationButtonsSpacing = 8;
 }  // namespace
 
 @interface MWMSideButtonsView ()
@@ -20,6 +21,7 @@ CGFloat const kButtonsBottomOffset = 6;
 @property(weak, nonatomic) IBOutlet MWMButton * location;
 
 @property(nonatomic) CGRect availableArea;
+@property(nonatomic, readwrite) MWMButton * recordButton;
 
 @end
 
@@ -29,21 +31,54 @@ CGFloat const kButtonsBottomOffset = 6;
 {
   [super awakeFromNib];
   self.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+  self.recordButton = [self makeNavigationButtonWithStyle:@"ButtonMapNavigationRecord" identifier:@"navigationRecordButton"];
+}
+
+- (MWMButton *)makeNavigationButtonWithStyle:(NSString *)styleName identifier:(NSString *)identifier
+{
+  MWMButton * button = [[MWMButton alloc] initWithFrame:self.location.frame];
+  button.styleName = styleName;
+  button.accessibilityIdentifier = identifier;
+  button.hidden = YES;
+  [self addSubview:button];
+  return button;
+}
+
+- (NSArray<MWMButton *> *)visibleNavigationButtons
+{
+  return self.navigationButtonsVisible ? @[self.recordButton] : @[];
 }
 
 - (void)layoutSubviews
 {
-  CGFloat spacing = self.availableHeight - self.zoomOut.maxY - self.location.height;
+  NSArray<MWMButton *> * navigationButtons = [self visibleNavigationButtons];
+  CGFloat const navigationHeight = navigationButtons.count * (self.location.height + kNavigationButtonsSpacing);
+
+  CGFloat spacing = self.availableHeight - self.zoomOut.maxY - self.location.height - navigationHeight;
   spacing = math::Clamp(spacing, kLocationButtonSpacingMin, kLocationButtonSpacingMax);
 
   self.location.minY = self.zoomOut.maxY + spacing;
-  self.bounds = {{}, {self.zoomOut.width, self.location.maxY}};
+  self.bounds = {{}, {self.zoomOut.width, self.location.maxY + navigationHeight}};
   if (self.zoomHidden)
-    self.height = self.location.height;
-  self.location.maxY = self.height;
+    self.height = self.location.height + navigationHeight;
+  self.location.maxY = self.height - navigationHeight;
+
+  CGFloat nextY = self.location.maxY + kNavigationButtonsSpacing;
+  for (MWMButton * button in navigationButtons)
+  {
+    button.frame = {{self.location.minX, nextY}, self.location.frame.size};
+    nextY = button.maxY + kNavigationButtonsSpacing;
+  }
 
   [self animate];
   [super layoutSubviews];
+}
+
+- (void)setNavigationButtonsVisible:(BOOL)navigationButtonsVisible
+{
+  _navigationButtonsVisible = navigationButtonsVisible;
+  self.recordButton.hidden = !navigationButtonsVisible;
+  [self setNeedsLayout];
 }
 
 - (void)layoutXPosition:(BOOL)hidden
@@ -98,7 +133,7 @@ CGFloat const kButtonsBottomOffset = 6;
   [self layoutYPosition];
 
   BOOL const isZoomHidden = self.zoomIn.alpha == 0.0;
-  BOOL const willZoomHide = (self.location.maxY > self.availableHeight);
+  BOOL const willZoomHide = (self.height > self.availableHeight);
   if (willZoomHide != isZoomHidden)
     [self fadeZoomButtonsShow:!willZoomHide];
 
