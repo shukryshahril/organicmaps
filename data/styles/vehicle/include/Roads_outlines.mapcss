@@ -1,0 +1,312 @@
+/* Vehicle style only: road outlines moved from per-road auto casings, same widths as Roads.mapcss. */
+/* Outlines sit below every road fill (see priorities), so junctions stay clean. */
+
+line|z14[highway=trunk][!bridge][!tunnel],
+line|z14[highway=motorway][!bridge][!tunnel],
+line|z14[highway=motorway_link][!bridge][!tunnel],
+line|z14[highway=trunk_link][!bridge][!tunnel],
+line|z15[highway=trunk][!bridge][!tunnel],
+line|z15[highway=motorway][!bridge][!tunnel],
+line|z15[highway=motorway_link][!bridge][!tunnel],
+line|z15[highway=trunk_link][!bridge][!tunnel],
+line|z16[highway=trunk][!bridge][!tunnel],
+line|z16[highway=motorway][!bridge][!tunnel],
+line|z16[highway=motorway_link][!bridge][!tunnel],
+line|z16[highway=trunk_link][!bridge][!tunnel],
+line|z17[highway=trunk][!bridge][!tunnel],
+line|z17[highway=motorway][!bridge][!tunnel],
+line|z17[highway=motorway_link][!bridge][!tunnel],
+line|z17[highway=trunk_link][!bridge][!tunnel],
+line|z18[highway=trunk][!bridge][!tunnel],
+line|z18[highway=motorway][!bridge][!tunnel],
+line|z18[highway=motorway_link][!bridge][!tunnel],
+line|z18[highway=trunk_link][!bridge][!tunnel],
+line|z19-[highway=trunk][!bridge][!tunnel],
+line|z19-[highway=motorway][!bridge][!tunnel],
+line|z19-[highway=motorway_link][!bridge][!tunnel],
+line|z19-[highway=trunk_link][!bridge][!tunnel],
+line|z14[highway=primary][!bridge][!tunnel],
+line|z14[highway=primary_link][!bridge][!tunnel],
+line|z15-[highway=primary][!bridge][!tunnel],
+line|z15-[highway=primary_link][!bridge][!tunnel],
+line|z16[highway=primary][!bridge][!tunnel],
+line|z16[highway=primary_link][!bridge][!tunnel],
+line|z17[highway=primary][!bridge][!tunnel],
+line|z17[highway=primary_link][!bridge][!tunnel],
+line|z18[highway=primary][!bridge][!tunnel],
+line|z18[highway=primary_link][!bridge][!tunnel],
+line|z19-[highway=primary][!bridge][!tunnel],
+line|z19-[highway=primary_link][!bridge][!tunnel],
+line|z14[highway=secondary][!bridge][!tunnel],
+line|z14[highway=secondary_link][!bridge][!tunnel],
+line|z15-[highway=secondary][!bridge][!tunnel],
+line|z15-[highway=secondary_link][!bridge][!tunnel],
+line|z16[highway=secondary][!bridge][!tunnel],
+line|z16[highway=secondary_link][!bridge][!tunnel],
+line|z17[highway=secondary][!bridge][!tunnel],
+line|z17[highway=secondary_link][!bridge][!tunnel],
+line|z18[highway=secondary][!bridge][!tunnel],
+line|z18[highway=secondary_link][!bridge][!tunnel],
+line|z19-[highway=secondary][!bridge][!tunnel],
+line|z19-[highway=secondary_link][!bridge][!tunnel],
+line|z15-[highway=tertiary][!bridge][!tunnel],
+line|z15-[highway=tertiary_link][!bridge][!tunnel],
+line|z16[highway=tertiary][!bridge][!tunnel],
+line|z16[highway=tertiary_link][!bridge][!tunnel],
+line|z17[highway=tertiary][!bridge][!tunnel],
+line|z17[highway=tertiary_link][!bridge][!tunnel],
+line|z18[highway=tertiary][!bridge][!tunnel],
+line|z18[highway=tertiary_link][!bridge][!tunnel],
+line|z19-[highway=tertiary][!bridge][!tunnel],
+line|z19-[highway=tertiary_link][!bridge][!tunnel],
+line|z15-[highway=residential][!bridge][!tunnel],
+line|z16[highway=residential][!bridge][!tunnel],
+line|z17[highway=residential][!bridge][!tunnel],
+line|z18[highway=residential][!bridge][!tunnel],
+line|z19-[highway=residential][!bridge][!tunnel]
+{casing-width: 0;}
+
+line|z14[highway=motorway][!bridge][!tunnel]::casing,
+line|z14[highway=motorway_link][!bridge][!tunnel]::casing,
+line|z14[highway=trunk][!bridge][!tunnel]::casing,
+line|z14[highway=trunk_link][!bridge][!tunnel]::casing,
+line|z15[highway=motorway][!bridge][!tunnel]::casing,
+line|z15[highway=motorway_link][!bridge][!tunnel]::casing,
+line|z15[highway=trunk][!bridge][!tunnel]::casing,
+line|z15[highway=trunk_link][!bridge][!tunnel]::casing,
+line|z16[highway=motorway][!bridge][!tunnel]::casing,
+line|z16[highway=motorway_link][!bridge][!tunnel]::casing,
+line|z16[highway=trunk][!bridge][!tunnel]::casing,
+line|z16[highway=trunk_link][!bridge][!tunnel]::casing,
+line|z17[highway=motorway][!bridge][!tunnel]::casing,
+line|z17[highway=motorway_link][!bridge][!tunnel]::casing,
+line|z17[highway=trunk][!bridge][!tunnel]::casing,
+line|z17[highway=trunk_link][!bridge][!tunnel]::casing,
+line|z18[highway=motorway][!bridge][!tunnel]::casing,
+line|z18[highway=motorway_link][!bridge][!tunnel]::casing,
+line|z18[highway=trunk][!bridge][!tunnel]::casing,
+line|z18[highway=trunk_link][!bridge][!tunnel]::casing,
+line|z19-[highway=motorway][!bridge][!tunnel]::casing,
+line|z19-[highway=motorway_link][!bridge][!tunnel]::casing,
+line|z19-[highway=trunk][!bridge][!tunnel]::casing,
+line|z19-[highway=trunk_link][!bridge][!tunnel]::casing
+{casing-color: @casing_highway; casing-opacity: 1; casing-linecap: butt;}
+
+line|z14[highway=primary][!bridge][!tunnel]::casing,
+line|z14[highway=primary_link][!bridge][!tunnel]::casing,
+line|z15-[highway=primary][!bridge][!tunnel]::casing,
+line|z15-[highway=primary_link][!bridge][!tunnel]::casing,
+line|z16[highway=primary][!bridge][!tunnel]::casing,
+line|z16[highway=primary_link][!bridge][!tunnel]::casing,
+line|z17[highway=primary][!bridge][!tunnel]::casing,
+line|z17[highway=primary_link][!bridge][!tunnel]::casing,
+line|z18[highway=primary][!bridge][!tunnel]::casing,
+line|z18[highway=primary_link][!bridge][!tunnel]::casing,
+line|z19-[highway=primary][!bridge][!tunnel]::casing,
+line|z19-[highway=primary_link][!bridge][!tunnel]::casing
+{casing-color: @casing_major; casing-opacity: 1; casing-linecap: butt;}
+
+line|z14[highway=secondary][!bridge][!tunnel]::casing,
+line|z14[highway=secondary_link][!bridge][!tunnel]::casing,
+line|z15-[highway=living_street][!bridge][!tunnel]::casing,
+line|z15-[highway=residential][!bridge][!tunnel]::casing,
+line|z15-[highway=road][!bridge][!tunnel]::casing,
+line|z15-[highway=secondary][!bridge][!tunnel]::casing,
+line|z15-[highway=secondary_link][!bridge][!tunnel]::casing,
+line|z15-[highway=tertiary][!bridge][!tunnel]::casing,
+line|z15-[highway=tertiary_link][!bridge][!tunnel]::casing,
+line|z15-[highway=unclassified][!bridge][!tunnel]::casing,
+line|z16[highway=living_street][!bridge][!tunnel]::casing,
+line|z16[highway=residential][!bridge][!tunnel]::casing,
+line|z16[highway=road][!bridge][!tunnel]::casing,
+line|z16[highway=secondary][!bridge][!tunnel]::casing,
+line|z16[highway=secondary_link][!bridge][!tunnel]::casing,
+line|z16[highway=tertiary][!bridge][!tunnel]::casing,
+line|z16[highway=tertiary_link][!bridge][!tunnel]::casing,
+line|z16[highway=unclassified][!bridge][!tunnel]::casing,
+line|z17[highway=living_street][!bridge][!tunnel]::casing,
+line|z17[highway=residential][!bridge][!tunnel]::casing,
+line|z17[highway=road][!bridge][!tunnel]::casing,
+line|z17[highway=secondary][!bridge][!tunnel]::casing,
+line|z17[highway=secondary_link][!bridge][!tunnel]::casing,
+line|z17[highway=tertiary][!bridge][!tunnel]::casing,
+line|z17[highway=tertiary_link][!bridge][!tunnel]::casing,
+line|z17[highway=unclassified][!bridge][!tunnel]::casing,
+line|z18[highway=living_street][!bridge][!tunnel]::casing,
+line|z18[highway=residential][!bridge][!tunnel]::casing,
+line|z18[highway=road][!bridge][!tunnel]::casing,
+line|z18[highway=secondary][!bridge][!tunnel]::casing,
+line|z18[highway=secondary_link][!bridge][!tunnel]::casing,
+line|z18[highway=tertiary][!bridge][!tunnel]::casing,
+line|z18[highway=tertiary_link][!bridge][!tunnel]::casing,
+line|z18[highway=unclassified][!bridge][!tunnel]::casing,
+line|z19-[highway=living_street][!bridge][!tunnel]::casing,
+line|z19-[highway=residential][!bridge][!tunnel]::casing,
+line|z19-[highway=road][!bridge][!tunnel]::casing,
+line|z19-[highway=secondary][!bridge][!tunnel]::casing,
+line|z19-[highway=secondary_link][!bridge][!tunnel]::casing,
+line|z19-[highway=tertiary][!bridge][!tunnel]::casing,
+line|z19-[highway=tertiary_link][!bridge][!tunnel]::casing,
+line|z19-[highway=unclassified][!bridge][!tunnel]::casing
+{casing-color: @casing_minor; casing-opacity: 1; casing-linecap: butt;}
+
+line|z14[highway=trunk][!bridge][!tunnel]::casing
+{casing-width: 0.75;}
+line|z14[highway=motorway][!bridge][!tunnel]::casing
+{casing-width: 0.75;}
+line|z14[highway=motorway_link][!bridge][!tunnel]::casing
+{casing-width: 0.45;}
+line|z14[highway=trunk_link][!bridge][!tunnel]::casing
+{casing-width: 0.45;}
+line|z15[highway=trunk][!bridge][!tunnel]::casing
+{casing-width: 0.85;}
+line|z15[highway=motorway][!bridge][!tunnel]::casing
+{casing-width: 0.85;}
+line|z15[highway=motorway_link][!bridge][!tunnel]::casing
+{casing-width: 0.55;}
+line|z15[highway=trunk_link][!bridge][!tunnel]::casing
+{casing-width: 0.55;}
+line|z16[highway=trunk][!bridge][!tunnel]::casing
+{casing-width: 1.1;}
+line|z16[highway=motorway][!bridge][!tunnel]::casing
+{casing-width: 1.1;}
+line|z16[highway=motorway_link][!bridge][!tunnel]::casing
+{casing-width: 0.8;}
+line|z16[highway=trunk_link][!bridge][!tunnel]::casing
+{casing-width: 0.8;}
+line|z17[highway=trunk][!bridge][!tunnel]::casing
+{casing-width: 1.1;}
+line|z17[highway=motorway][!bridge][!tunnel]::casing
+{casing-width: 1.1;}
+line|z17[highway=motorway_link][!bridge][!tunnel]::casing
+{casing-width: 1.0;}
+line|z17[highway=trunk_link][!bridge][!tunnel]::casing
+{casing-width: 1.0;}
+line|z18[highway=trunk][!bridge][!tunnel]::casing
+{casing-width: 1.35;}
+line|z18[highway=motorway][!bridge][!tunnel]::casing
+{casing-width: 1.35;}
+line|z18[highway=motorway_link][!bridge][!tunnel]::casing
+{casing-width: 1.15;}
+line|z18[highway=trunk_link][!bridge][!tunnel]::casing
+{casing-width: 1.15;}
+line|z19-[highway=trunk][!bridge][!tunnel]::casing
+{casing-width: 1.5;}
+line|z19-[highway=motorway][!bridge][!tunnel]::casing
+{casing-width: 1.5;}
+line|z19-[highway=motorway_link][!bridge][!tunnel]::casing
+{casing-width: 1.25;}
+line|z19-[highway=trunk_link][!bridge][!tunnel]::casing
+{casing-width: 1.25;}
+line|z14[highway=primary][!bridge][!tunnel]::casing
+{casing-width: 0.35;}
+line|z14[highway=primary_link][!bridge][!tunnel]::casing
+{casing-width: 0.35;}
+line|z15-[highway=primary][!bridge][!tunnel]::casing
+{casing-width: 0.55;}
+line|z15-[highway=primary_link][!bridge][!tunnel]::casing
+{casing-width: 0.55;}
+line|z16[highway=primary][!bridge][!tunnel]::casing
+{casing-width: 0.8;}
+line|z16[highway=primary_link][!bridge][!tunnel]::casing
+{casing-width: 0.8;}
+line|z17[highway=primary][!bridge][!tunnel]::casing
+{casing-width: 0.9;}
+line|z17[highway=primary_link][!bridge][!tunnel]::casing
+{casing-width: 0.9;}
+line|z18[highway=primary][!bridge][!tunnel]::casing
+{casing-width: 1.1;}
+line|z18[highway=primary_link][!bridge][!tunnel]::casing
+{casing-width: 1.1;}
+line|z19-[highway=primary][!bridge][!tunnel]::casing
+{casing-width: 1.3;}
+line|z19-[highway=primary_link][!bridge][!tunnel]::casing
+{casing-width: 1.3;}
+line|z14[highway=secondary][!bridge][!tunnel]::casing
+{casing-width: 0.35;}
+line|z14[highway=secondary_link][!bridge][!tunnel]::casing
+{casing-width: 0.35;}
+line|z15-[highway=secondary][!bridge][!tunnel]::casing
+{casing-width: 0.55;}
+line|z15-[highway=secondary_link][!bridge][!tunnel]::casing
+{casing-width: 0.55;}
+line|z16[highway=secondary][!bridge][!tunnel]::casing
+{casing-width: 0.8;}
+line|z16[highway=secondary_link][!bridge][!tunnel]::casing
+{casing-width: 0.8;}
+line|z17[highway=secondary][!bridge][!tunnel]::casing
+{casing-width: 0.9;}
+line|z17[highway=secondary_link][!bridge][!tunnel]::casing
+{casing-width: 0.9;}
+line|z18[highway=secondary][!bridge][!tunnel]::casing
+{casing-width: 1.1;}
+line|z18[highway=secondary_link][!bridge][!tunnel]::casing
+{casing-width: 1.1;}
+line|z19-[highway=secondary][!bridge][!tunnel]::casing
+{casing-width: 1.3;}
+line|z19-[highway=secondary_link][!bridge][!tunnel]::casing
+{casing-width: 1.3;}
+line|z15-[highway=tertiary][!bridge][!tunnel]::casing
+{casing-width: 0.45;}
+line|z15-[highway=tertiary_link][!bridge][!tunnel]::casing
+{casing-width: 0.45;}
+line|z16[highway=tertiary][!bridge][!tunnel]::casing
+{casing-width: 0.55;}
+line|z16[highway=tertiary_link][!bridge][!tunnel]::casing
+{casing-width: 0.55;}
+line|z17[highway=tertiary][!bridge][!tunnel]::casing
+{casing-width: 0.75;}
+line|z17[highway=tertiary_link][!bridge][!tunnel]::casing
+{casing-width: 0.75;}
+line|z18[highway=tertiary][!bridge][!tunnel]::casing
+{casing-width: 0.9;}
+line|z18[highway=tertiary_link][!bridge][!tunnel]::casing
+{casing-width: 0.9;}
+line|z19-[highway=tertiary][!bridge][!tunnel]::casing
+{casing-width: 1.1;}
+line|z19-[highway=tertiary_link][!bridge][!tunnel]::casing
+{casing-width: 1.1;}
+line|z15-[highway=residential][!bridge][!tunnel]::casing
+{casing-width: 0.4;}
+line|z15-[highway=unclassified][!bridge][!tunnel]::casing
+{casing-width: 0.4;}
+line|z15-[highway=living_street][!bridge][!tunnel]::casing
+{casing-width: 0.4;}
+line|z15-[highway=road][!bridge][!tunnel]::casing
+{casing-width: 0.4;}
+line|z16[highway=residential][!bridge][!tunnel]::casing
+{casing-width: 0.5;}
+line|z16[highway=unclassified][!bridge][!tunnel]::casing
+{casing-width: 0.5;}
+line|z16[highway=living_street][!bridge][!tunnel]::casing
+{casing-width: 0.5;}
+line|z16[highway=road][!bridge][!tunnel]::casing
+{casing-width: 0.5;}
+line|z17[highway=residential][!bridge][!tunnel]::casing
+{casing-width: 0.7;}
+line|z17[highway=unclassified][!bridge][!tunnel]::casing
+{casing-width: 0.7;}
+line|z17[highway=living_street][!bridge][!tunnel]::casing
+{casing-width: 0.7;}
+line|z17[highway=road][!bridge][!tunnel]::casing
+{casing-width: 0.7;}
+line|z18[highway=residential][!bridge][!tunnel]::casing
+{casing-width: 0.8;}
+line|z18[highway=unclassified][!bridge][!tunnel]::casing
+{casing-width: 0.8;}
+line|z18[highway=living_street][!bridge][!tunnel]::casing
+{casing-width: 0.8;}
+line|z18[highway=road][!bridge][!tunnel]::casing
+{casing-width: 0.8;}
+line|z19-[highway=residential][!bridge][!tunnel]::casing
+{casing-width: 1;}
+line|z19-[highway=unclassified][!bridge][!tunnel]::casing
+{casing-width: 1;}
+line|z19-[highway=living_street][!bridge][!tunnel]::casing
+{casing-width: 1;}
+line|z19-[highway=road][!bridge][!tunnel]::casing
+{casing-width: 1;}
+line|z16[highway=service][!bridge][!tunnel]::casing
+{casing-width: 0.4;}
+line|z17-[highway=service][!bridge][!tunnel]::casing
+{casing-width: 0.5;}

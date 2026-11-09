@@ -66,6 +66,11 @@ final class BottomMenuViewController: MWMViewController {
     }
   }
 
+  override func applyTheme() {
+    super.applyTheme()
+    tableView?.layer.setCornerRadius(.modalSheet, maskedCorners: [.layerMinXMinYCorner, .layerMaxXMinYCorner])
+  }
+
   override func viewDidLayoutSubviews() {
     super.viewDidLayoutSubviews()
     updateTableHeight()

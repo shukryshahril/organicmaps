@@ -19,8 +19,8 @@
                     <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ic_menu_download" translatesAutoresizingMaskIntoConstraints="NO" id="8oJ-8z-qRL">
                         <rect key="frame" x="16" y="10" width="28" height="28"/>
                         <constraints>
-                            <constraint firstAttribute="width" constant="28" id="Hth-JK-nv2"/>
-                            <constraint firstAttribute="height" constant="28" id="zil-Ys-XYB"/>
+                            <constraint firstAttribute="width" constant="36" id="Hth-JK-nv2"/>
+                            <constraint firstAttribute="height" constant="36" id="zil-Ys-XYB"/>
                         </constraints>
                         <userDefinedRuntimeAttributes>
                             <userDefinedRuntimeAttribute type="string" keyPath="styleName" value="MWMBlack"/>
@@ -76,7 +76,7 @@
                     <constraint firstAttribute="bottom" secondItem="15Y-hb-tlK" secondAttribute="bottom" id="3s6-2V-RtD"/>
                     <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="8oJ-8z-qRL" secondAttribute="bottom" constant="10" id="KJP-IG-4FK"/>
                     <constraint firstItem="15Y-hb-tlK" firstAttribute="top" secondItem="rsu-1s-Lsp" secondAttribute="top" id="UYB-Nz-ihN"/>
-                    <constraint firstItem="15Y-hb-tlK" firstAttribute="leading" secondItem="rsu-1s-Lsp" secondAttribute="leading" constant="60" id="Y8s-jX-KG0"/>
+                    <constraint firstItem="15Y-hb-tlK" firstAttribute="leading" secondItem="rsu-1s-Lsp" secondAttribute="leading" constant="68" id="Y8s-jX-KG0"/>
                     <constraint firstItem="8oJ-8z-qRL" firstAttribute="top" relation="greaterThanOrEqual" secondItem="rsu-1s-Lsp" secondAttribute="top" constant="10" id="bab-2f-YZY"/>
                     <constraint firstAttribute="trailing" secondItem="15Y-hb-tlK" secondAttribute="trailing" constant="16" id="pRF-51-2oE"/>
                 </constraints>
@@ -84,7 +84,7 @@
             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
             <constraints>
                 <constraint firstAttribute="trailing" secondItem="4OJ-wN-dY4" secondAttribute="trailing" id="3Vq-qn-yhm"/>
-                <constraint firstItem="4OJ-wN-dY4" firstAttribute="leading" secondItem="gZi-cd-LgO" secondAttribute="leading" constant="60" id="7wy-Q8-lja"/>
+                <constraint firstItem="4OJ-wN-dY4" firstAttribute="leading" secondItem="gZi-cd-LgO" secondAttribute="leading" constant="68" id="7wy-Q8-lja"/>
                 <constraint firstItem="8oJ-8z-qRL" firstAttribute="leading" secondItem="gZi-cd-LgO" secondAttribute="leading" constant="16" id="I7K-bz-QOC"/>
                 <constraint firstAttribute="bottom" secondItem="4OJ-wN-dY4" secondAttribute="bottom" id="SVQ-VP-J4d"/>
                 <constraint firstItem="8oJ-8z-qRL" firstAttribute="centerY" secondItem="gZi-cd-LgO" secondAttribute="centerY" id="u2b-9I-SLh"/>

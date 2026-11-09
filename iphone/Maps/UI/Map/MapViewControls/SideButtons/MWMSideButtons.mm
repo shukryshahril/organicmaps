@@ -2,6 +2,7 @@
 #import "MWMButton.h"
 #import "MWMLocationManager.h"
 #import "MWMMapViewControlsManager.h"
+#import "MapViewController.h"
 #import "MWMRouter.h"
 #import "MWMSettings.h"
 #import "MWMSideButtonsView.h"
@@ -56,8 +57,50 @@ NSString * const kUDDidShowLongTapToShowSideButtonsToast = @"kUDDidShowLongTapTo
     [self.sideView setNeedsLayout];
     self.zoomSwipeEnabled = NO;
     self.zoomHidden = NO;
+    [self setUpRecordButton];
   }
   return self;
+}
+
+- (void)dealloc
+{
+  [TrackRecordingManager.shared removeObserver:self];
+}
+
+#pragma mark - Record button
+
+- (void)setUpRecordButton
+{
+  MWMButton * record = self.sideView.recordButton;
+  record.coloring = MWMButtonColoringBlue;
+  [record addTarget:self action:@selector(recordTouchUpInside) forControlEvents:UIControlEventTouchUpInside];
+  record.accessibilityLabel = L(@"start_track_recording");
+
+  __weak __typeof(self) weakSelf = self;
+  [TrackRecordingManager.shared addObserver:self
+          recordingIsActiveDidChangeHandler:^(TrackRecordingState state, TrackInfo * _Nonnull,
+                                              ElevationProfileData * _Nullable (^)()) {
+            BOOL const recording = state == TrackRecordingStateActive;
+            MWMButton * record = weakSelf.sideView.recordButton;
+            record.coloring = recording ? MWMButtonColoringRed : MWMButtonColoringBlue;
+            record.accessibilityLabel = L(recording ? @"stop_track_recording" : @"start_track_recording");
+          }];
+}
+
+- (void)setRecordButtonVisible:(BOOL)recordButtonVisible
+{
+  _recordButtonVisible = recordButtonVisible;
+  self.sideView.recordButtonVisible = recordButtonVisible;
+}
+
+- (void)recordTouchUpInside
+{
+  TrackRecordingManager * manager = TrackRecordingManager.shared;
+  switch (manager.recordingState)
+  {
+  case TrackRecordingStateInactive: [manager start]; break;
+  case TrackRecordingStateActive: [[MapViewController sharedController] showTrackRecordingPlacePage]; break;
+  }
 }
 
 + (void)updateAvailableArea:(CGRect)frame

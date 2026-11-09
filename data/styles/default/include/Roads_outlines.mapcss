@@ -1,0 +1,91 @@
+/* Default style only: outdoors and vehicle import Roads.mapcss without these outlines. */
+
+/* Thin outlines sit below every road fill (see priorities), so junctions stay clean. */
+
+line|z12-[highway=motorway][!tunnel],
+line|z12-[highway=trunk][!tunnel],
+line|z12-[highway=motorway_link][!tunnel],
+line|z12-[highway=trunk_link][!tunnel],
+line|z12-[highway=primary][!tunnel],
+line|z12-[highway=primary_link][!tunnel],
+line|z12-[highway=secondary][!tunnel],
+line|z12-[highway=secondary_link][!tunnel],
+{opacity: 1;}
+
+line|z12-[highway=motorway][!bridge][!tunnel]::casing,
+line|z12-[highway=trunk][!bridge][!tunnel]::casing,
+line|z14-[highway=motorway_link][!bridge][!tunnel]::casing,
+line|z14-[highway=trunk_link][!bridge][!tunnel]::casing,
+{casing-color: @casing_highway; casing-linecap: butt;}
+line|z13-[highway=primary][!bridge][!tunnel]::casing,
+line|z14-[highway=primary_link][!bridge][!tunnel]::casing,
+{casing-color: @casing_major; casing-linecap: butt;}
+line|z13-[highway=secondary][!bridge][!tunnel]::casing,
+line|z14-[highway=secondary_link][!bridge][!tunnel]::casing,
+line|z14-[highway=tertiary][!bridge][!tunnel]::casing,
+line|z14-[highway=unclassified][!bridge][!tunnel]::casing,
+line|z15-[highway=tertiary_link][!bridge][!tunnel]::casing,
+line|z14-[highway=residential][!bridge][!tunnel]::casing,
+line|z14-[highway=road][!bridge][!tunnel]::casing,
+line|z14-[highway=living_street][!bridge][!tunnel]::casing,
+line|z16-[highway=service][!bridge][!tunnel]::casing,
+line|z15-[highway=pedestrian][!bridge][!tunnel][!area]::casing,
+{casing-color: @casing_minor; casing-linecap: butt;}
+
+line|z12-14[highway=motorway][!bridge][!tunnel]::casing,
+line|z12-14[highway=trunk][!bridge][!tunnel]::casing,
+line|z14[highway=motorway_link][!bridge][!tunnel]::casing,
+line|z14[highway=trunk_link][!bridge][!tunnel]::casing,
+line|z13-14[highway=primary][!bridge][!tunnel]::casing,
+line|z14[highway=primary_link][!bridge][!tunnel]::casing,
+line|z13-14[highway=secondary][!bridge][!tunnel]::casing,
+{casing-width: 0.5;}
+line|z14[highway=secondary_link][!bridge][!tunnel]::casing,
+line|z14[highway=tertiary][!bridge][!tunnel]::casing,
+line|z14[highway=unclassified][!bridge][!tunnel]::casing,
+line|z14[highway=residential][!bridge][!tunnel]::casing,
+line|z14[highway=road][!bridge][!tunnel]::casing,
+line|z14[highway=living_street][!bridge][!tunnel]::casing,
+{casing-width: 0.35;}
+
+line|z15-16[highway=motorway][!bridge][!tunnel]::casing,
+line|z15-16[highway=trunk][!bridge][!tunnel]::casing,
+{casing-width: 0.7;}
+line|z15-16[highway=motorway_link][!bridge][!tunnel]::casing,
+line|z15-16[highway=trunk_link][!bridge][!tunnel]::casing,
+line|z15-16[highway=primary][!bridge][!tunnel]::casing,
+line|z15-16[highway=primary_link][!bridge][!tunnel]::casing,
+line|z15-16[highway=secondary][!bridge][!tunnel]::casing,
+line|z15-16[highway=secondary_link][!bridge][!tunnel]::casing,
+{casing-width: 0.6;}
+line|z15-16[highway=tertiary][!bridge][!tunnel]::casing,
+line|z15-16[highway=unclassified][!bridge][!tunnel]::casing,
+line|z15-16[highway=tertiary_link][!bridge][!tunnel]::casing,
+line|z15-16[highway=residential][!bridge][!tunnel]::casing,
+line|z15-16[highway=road][!bridge][!tunnel]::casing,
+line|z15-16[highway=living_street][!bridge][!tunnel]::casing,
+{casing-width: 0.5;}
+line|z15-16[highway=pedestrian][!bridge][!tunnel][!area]::casing,
+line|z16[highway=service][!bridge][!tunnel]::casing,
+{casing-width: 0.4;}
+
+line|z17-[highway=motorway][!bridge][!tunnel]::casing,
+line|z17-[highway=trunk][!bridge][!tunnel]::casing,
+{casing-width: 0.9;}
+line|z17-[highway=motorway_link][!bridge][!tunnel]::casing,
+line|z17-[highway=trunk_link][!bridge][!tunnel]::casing,
+line|z17-[highway=primary][!bridge][!tunnel]::casing,
+line|z17-[highway=primary_link][!bridge][!tunnel]::casing,
+line|z17-[highway=secondary][!bridge][!tunnel]::casing,
+line|z17-[highway=secondary_link][!bridge][!tunnel]::casing,
+{casing-width: 0.8;}
+line|z17-[highway=tertiary][!bridge][!tunnel]::casing,
+line|z17-[highway=unclassified][!bridge][!tunnel]::casing,
+line|z17-[highway=tertiary_link][!bridge][!tunnel]::casing,
+line|z17-[highway=residential][!bridge][!tunnel]::casing,
+line|z17-[highway=road][!bridge][!tunnel]::casing,
+line|z17-[highway=living_street][!bridge][!tunnel]::casing,
+{casing-width: 0.7;}
+line|z17-[highway=pedestrian][!bridge][!tunnel][!area]::casing,
+line|z17-[highway=service][!bridge][!tunnel]::casing,
+{casing-width: 0.5;}

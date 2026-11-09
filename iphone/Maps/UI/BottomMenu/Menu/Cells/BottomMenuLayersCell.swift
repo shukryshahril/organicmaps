@@ -44,17 +44,17 @@ class BottomMenuLayersCell: UITableViewCell {
   override func awakeFromNib() {
     super.awakeFromNib()
     MapOverlayManager.add(self)
-    closeButton.setImage(UIImage(named: "ic_close"))
+    closeButton.setImage(InterfaceIcon.close.image)
     setupButtons()
   }
 
   private func setupButtons() {
-    outdoorButton.setupWith(image: UIImage(resource: .btnMenuOutdoors), text: L("button_layer_outdoor"))
-    isoLinesButton.setupWith(image: UIImage(resource: .btnMenuIsomaps), text: L("button_layer_isolines"))
-    hikingButton.setupWith(image: UIImage(resource: .btnMenuHiking), text: L("button_layer_hiking"))
-    cyclingButton.setupWith(image: UIImage(resource: .btnMenuCycling), text: L("button_layer_cycling"))
-    subwayButton.setupWith(image: UIImage(resource: .btnMenuSubway), text: L("button_layer_subway"))
-    satelliteButton.setupWith(image: UIImage(resource: .btnMenuSatellite), text: L("button_layer_satellite"))
+    outdoorButton.setupWith(image: InterfaceIcon.outdoor.image(canvasSize: 48), text: L("button_layer_outdoor"))
+    isoLinesButton.setupWith(image: InterfaceIcon.contours.image(canvasSize: 48), text: L("button_layer_isolines"))
+    hikingButton.setupWith(image: InterfaceIcon.hiking.image(canvasSize: 48), text: L("button_layer_hiking"))
+    cyclingButton.setupWith(image: InterfaceIcon.cycling.image(canvasSize: 48), text: L("button_layer_cycling"))
+    subwayButton.setupWith(image: InterfaceIcon.transit.image(canvasSize: 48), text: L("button_layer_subway"))
+    satelliteButton.setupWith(image: InterfaceIcon.satellite.image(canvasSize: 48), text: L("button_layer_satellite"))
   }
 
   deinit {

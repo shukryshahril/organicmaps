@@ -9,11 +9,16 @@ enum MapStyleSheet: String, CaseIterable {
   case mapButtonFollow = "ButtonFollow"
   case mapButtonFollowAndRotate = "ButtonFollowAndRotate"
   case mapButtonMapBookmarks = "ButtonMapBookmarks"
+  case mapButtonMapSearch = "ButtonMapSearch"
+  case mapButtonNavigationRecord = "ButtonMapNavigationRecord"
   case mapPromoDiscoveryButton = "PromoDiscroveryButton"
   case mapButtonBookmarksBack = "ButtonBookmarksBack"
   case mapButtonBookmarksBackOpaque = "ButtonBookmarksBackOpaque"
   case mapFirstTurnView = "FirstTurnView"
   case mapSecondTurnView = "SecondTurnView"
+  case mapTurnGlyphOnAccent = "TurnGlyphOnAccent"
+  case mapTurnTextOnAccent = "TurnTextOnAccent"
+  case mapTurnGlyphAccent = "TurnGlyphAccent"
   case mapAutoupdateView = "MapAutoupdateView"
   case mapGuidesNavigationBar = "GuidesNavigationBar"
 }
@@ -23,7 +28,8 @@ extension MapStyleSheet: IStyleSheet {
     switch self {
     case .mapMenuButtonDisabled:
       return .add { s in
-        s.fontColor = .blackSecondaryText
+        s.fontColor = InterfaceStyleSheet.ink
+        s.tintColor = InterfaceStyleSheet.ink
         s.fontStyle = .dynamic(.regular10)
         s.backgroundColor = .clear
         s.borderColor = .clear
@@ -32,11 +38,12 @@ extension MapStyleSheet: IStyleSheet {
       }
     case .mapMenuButtonEnabled:
       return .add { s in
-        s.fontColor = .linkBlue
+        s.fontColor = InterfaceStyleSheet.accent
+        s.tintColor = InterfaceStyleSheet.accent
         s.fontStyle = .dynamic(.regular10)
-        s.backgroundColor = .linkBlue
-        s.borderColor = .linkBlue
-        s.borderWidth = 3
+        s.backgroundColor = InterfaceStyleSheet.accent.withAlphaComponent(0.14)
+        s.borderColor = InterfaceStyleSheet.accent
+        s.borderWidth = 2
         s.cornerRadius = .buttonDefault
       }
     case .mapStreetNameBackgroundView:
@@ -48,33 +55,31 @@ extension MapStyleSheet: IStyleSheet {
         s.shadowOffset = CGSize(width: 0, height: 1)
       }
     case .mapButtonZoomIn:
-      return .add { s in
-        s.mwmImage = "btn_zoom_in"
-      }
+      return .add { s in Self.floatingControl(s, image: "btn_zoom_in") }
     case .mapButtonZoomOut:
-      return .add { s in
-        s.mwmImage = "btn_zoom_out"
-      }
+      return .add { s in Self.floatingControl(s, image: "btn_zoom_out") }
     case .mapButtonPending:
-      return .add { s in
-        s.mwmImage = "btn_pending"
-      }
+      return .add { s in Self.floatingControl(s, image: "btn_pending") }
     case .mapButtonGetPosition:
-      return .add { s in
-        s.mwmImage = "btn_get_position"
-      }
+      return .add { s in Self.floatingControl(s, image: "btn_get_position") }
     case .mapButtonFollow:
+      // The follow state stays opaque so its white arrow remains legible.
       return .add { s in
-        s.mwmImage = "btn_follow"
+        Self.floatingControl(s, image: "btn_follow", coloring: .whiteText)
+        s.backgroundColor = InterfaceStyleSheet.filledAccent
+        s.allowsGlass = false
       }
     case .mapButtonFollowAndRotate:
-      return .add { s in
-        s.mwmImage = "btn_follow_and_rotate"
-      }
+      // Glass like the other map buttons; the accent icon marks the active heading mode.
+      return .add { s in Self.floatingControl(s, image: "btn_follow_and_rotate") }
     case .mapButtonMapBookmarks:
-      return .add { s in
-        s.mwmImage = "ic_routing_bookmark"
-      }
+      return .add { s in Self.floatingControl(s, image: "ic_routing_bookmark") }
+    case .mapButtonNavigationRecord:
+      // The recording state sets the coloring in code.
+      return .add { s in Self.floatingControl(s, image: "ic_menu_track_recording", coloring: nil) }
+    case .mapButtonMapSearch:
+      // The search state sets the icon in code.
+      return .add { s in Self.floatingControl(s, image: nil) }
     case .mapPromoDiscoveryButton:
       return .add { s in
         s.mwmImage = "promo_discovery_button"
@@ -89,7 +94,7 @@ extension MapStyleSheet: IStyleSheet {
       }
     case .mapFirstTurnView:
       return .add { s in
-        s.backgroundColor = .linkBlue
+        s.backgroundColor = InterfaceStyleSheet.filledAccent
         s.cornerRadius = .buttonSmall
         s.shadowRadius = 2
         s.shadowColor = .blackHintText
@@ -98,7 +103,19 @@ extension MapStyleSheet: IStyleSheet {
       }
     case .mapSecondTurnView:
       return .addFrom(Self.mapFirstTurnView) { s in
-        s.backgroundColor = .whitePrimary
+        s.backgroundColor = InterfaceStyleSheet.surface
+      }
+    case .mapTurnGlyphOnAccent:
+      return .add { s in
+        s.tintColor = .white
+      }
+    case .mapTurnTextOnAccent:
+      return .add { s in
+        s.fontColor = .white
+      }
+    case .mapTurnGlyphAccent:
+      return .add { s in
+        s.tintColor = InterfaceStyleSheet.accent
       }
     case .mapAutoupdateView:
       return .add { s in
@@ -117,6 +134,20 @@ extension MapStyleSheet: IStyleSheet {
         s.fontStyle = .dynamic(.regular18)
         s.fontColor = .blackPrimaryText
       }
+    }
+  }
+}
+
+private extension MapStyleSheet {
+  static func floatingControl(_ s: Style, image: String?, coloring: MWMButtonColoring? = .blue) {
+    InterfaceStyleSheet.floatingSurface(s)
+    s.cornerRadius = .floating(20)
+    s.usesFloatingSurface = true
+    if let coloring {
+      s.coloring = coloring
+    }
+    if let image {
+      s.mwmImage = image
     }
   }
 }

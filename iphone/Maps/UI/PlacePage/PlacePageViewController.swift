@@ -22,7 +22,7 @@ final class PlacePageScrollView: UIScrollView {
 
 @objc final class PlacePageViewController: UIViewController {
   private enum Constants {
-    static let actionBarHeight: CGFloat = 50
+    static let actionBarHeight: CGFloat = 72
     static let additionalPreviewOffset: CGFloat = 80
     static let additionalRevealOffset: CGFloat = 12
     static let fastSwipeDownVelocity: CGFloat = -3.0

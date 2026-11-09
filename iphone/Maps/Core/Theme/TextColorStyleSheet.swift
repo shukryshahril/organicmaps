@@ -18,8 +18,8 @@ extension TextColorStyleSheet: IStyleSheet {
       case .whitePrimary: .whitePrimaryText
       case .blackSecondary: .blackSecondaryText
       case .blackPrimary: .blackPrimaryText
-      case .linkBlue: .linkBlue
-      case .linkBlueHighlighted: .linkBlueHighlighted
+      case .linkBlue: InterfaceStyleSheet.accent
+      case .linkBlueHighlighted: InterfaceStyleSheet.highlightedAccent
       case .white: .whitePrimary
       case .blackHint: .blackHintText
       case .green: .ratingGreen

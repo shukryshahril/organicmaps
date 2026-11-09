@@ -76,9 +76,6 @@ extension NavigationDashboard {
         viewModel.entity = entity
         viewModel.estimates = estimates
 
-      case .updateTrackRecordingState(let state):
-        viewModel.trackRecordingState = state
-
       case .updateElevationInfo(let elevationInfo, let activePointDistance):
         viewModel.routeElevationPreviewData = elevationInfo
         viewModel.routeElevationActivePointDistance = activePointDistance

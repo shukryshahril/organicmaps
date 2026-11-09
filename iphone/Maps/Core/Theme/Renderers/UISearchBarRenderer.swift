@@ -27,10 +27,8 @@ extension UISearchBar {
 class UISearchBarRenderer: UIViewRenderer {
   class func render(_ control: UISearchBar, style: Style) {
     if #available(iOS 26.0, *) {
-      // The search bar customizations breaks the new `LiquidGlass` style that was introduced in iOS 26.0. The native iOS style will be used.
-      if let backgroundColor = style.backgroundColor {
-        control.searchTextField.backgroundColor = backgroundColor
-      }
+      // Keep the native search layout; style only the text field on iOS 26.
+      renderField(control.searchTextField, style: style)
       return
     }
     super.render(control, style: style)
@@ -40,7 +38,7 @@ class UISearchBarRenderer: UIViewRenderer {
     } else {
       control.setSearchFieldBackgroundImage(UIImage(), for: .normal)
     }
-    searchTextField.layer.setCornerRadius(.buttonDefault)
+    renderField(searchTextField, style: style)
     searchTextField.layer.masksToBounds = true
     // Placeholder color
     if let placeholder = searchTextField.placeholder {
@@ -76,4 +74,17 @@ class UISearchBarRenderer: UIViewRenderer {
       control.tintColor = fontColorDetailed
     }
   }
+
+  private class func renderField(_ field: UITextField, style: Style) {
+    UIViewRenderer.render(field, style: style)
+    field.clipsToBounds = true
+    if let font = style.fontStyle {
+      field.font = font.font
+      field.adjustsFontForContentSizeCategory = font.isDynamic
+    }
+    if let color = style.fontColor {
+      field.textColor = color
+    }
+  }
+
 }

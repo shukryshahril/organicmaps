@@ -34,7 +34,7 @@ final class StartRouteButton: UIView {
   }
 
   private func setupView() {
-    backgroundView.backgroundColor = .linkBlue
+    backgroundView.backgroundColor = Self.backgroundColor(for: state)
     backgroundView.layer.cornerRadius = CornerRadius.buttonDefaultBig.value
     backgroundView.layer.cornerCurve = .continuous
     backgroundView.clipsToBounds = true
@@ -43,8 +43,27 @@ final class StartRouteButton: UIView {
     progressView.isHidden = true
     progressView.translatesAutoresizingMaskIntoConstraints = false
 
+    var configuration = UIButton.Configuration.plain()
+    configuration.image = InterfaceIcon.startNavigation.boldImage
+    configuration.imagePadding = 6
+    configuration.contentInsets = NSDirectionalEdgeInsets(top: 6, leading: 10, bottom: 6, trailing: 10)
+    configuration.baseForegroundColor = .white
+    button.configuration = configuration
+    button.configurationUpdateHandler = { [weak self] button in
+      guard let self = self else { return }
+      let foreground: UIColor = self.state == .enabled ? .white : InterfaceStyleSheet.ink
+      var configuration = button.configuration
+      configuration?.baseForegroundColor = foreground
+      configuration?.imageColorTransformer = UIConfigurationColorTransformer { _ in foreground }
+      configuration?.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { attributes in
+        var attributes = attributes
+        attributes.foregroundColor = foreground
+        attributes.font = UIFont.semibold16.dynamic
+        return attributes
+      }
+      button.configuration = configuration
+    }
     button.setTitle(Constants.buttonTitle, for: .normal)
-    button.titleLabel?.font = UIFont.semibold16.dynamic
     button.titleLabel?.adjustsFontForContentSizeCategory = true
     button.setTitleColor(.whitePrimaryText, for: .normal)
     button.setTitleColor(.whitePrimaryText, for: .highlighted)
@@ -92,6 +111,7 @@ final class StartRouteButton: UIView {
   func setState(_ newState: State) {
     guard state != newState else { return }
     let oldState = state
+    state = newState
     switch (oldState, newState) {
     case (.loading, .loading(let progress)): // progress update
       setLoadingProgress(progress, animated: true)
@@ -101,30 +121,39 @@ final class StartRouteButton: UIView {
                         options: [.transitionCrossDissolve],
                         animations: { [weak self] in
                           guard let self = self else { return }
+                          self.backgroundView.backgroundColor = Self.backgroundColor(for: newState)
                           switch newState {
                           case .enabled:
-                            self.button.setTitle(Constants.buttonTitle, for: .normal)
-                            self.backgroundView.backgroundColor = .linkBlue
                             self.progressView.isHidden = true
                             self.setLoadingProgress(0, animated: false)
                             self.button.isEnabled = true
                           case .loading(let progress):
-                            self.button.setTitle(Constants.buttonTitle, for: .normal)
-                            self.backgroundView.backgroundColor = .pressBackground
-                            self.progressView.backgroundColor = .linkBlueHighlighted
+                            self.progressView.backgroundColor = Self.progressColor
                             self.progressView.isHidden = false
                             self.setLoadingProgress(progress, animated: false)
-                            self.button.isEnabled = false
+                            // Tapping while the route builds queues the start.
+                            self.button.isEnabled = true
                           case .disabled:
-                            self.button.setTitle(Constants.buttonTitle, for: .normal)
-                            self.backgroundView.backgroundColor = .linkBlueHighlighted
                             self.progressView.isHidden = true
                             self.setLoadingProgress(0, animated: false)
                             self.button.isEnabled = false
                           }
                         })
     }
-    state = newState
+    button.setNeedsUpdateConfiguration()
+  }
+
+  override func applyTheme() {
+    super.applyTheme()
+    backgroundView.backgroundColor = Self.backgroundColor(for: state)
+    progressView.backgroundColor = Self.progressColor
+    button.setNeedsUpdateConfiguration()
+  }
+
+  private static var progressColor: UIColor { InterfaceStyleSheet.accent.withAlphaComponent(0.15) }
+
+  private static func backgroundColor(for state: State) -> UIColor {
+    state == .enabled ? InterfaceStyleSheet.filledAccent : InterfaceStyleSheet.background
   }
 
   private func setLoadingProgress(_ progress: CGFloat, animated: Bool) {
@@ -143,11 +172,11 @@ final class StartRouteButton: UIView {
 
   @objc private func highlightButton() {
     guard state == .enabled else { return }
-    backgroundView.backgroundColor = .linkBlueHighlighted
+    backgroundView.backgroundColor = InterfaceStyleSheet.filledAccent.withAlphaComponent(0.85)
   }
 
   @objc private func unhighlightButton() {
     guard state == .enabled else { return }
-    backgroundView.backgroundColor = .linkBlue
+    backgroundView.backgroundColor = InterfaceStyleSheet.filledAccent
   }
 }

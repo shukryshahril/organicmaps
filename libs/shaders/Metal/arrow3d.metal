@@ -60,9 +60,13 @@ vertex Fragment_T vsArrow3d(const Vertex_T in [[stage_in]],
 fragment float4 fsArrow3d(const Fragment_T in [[stage_in]],
                           constant Uniforms_T & uniforms [[buffer(0)]])
 {
-  constexpr float3 kLightDir = float3(0.316, 0.0, 0.948);
+  // Lit slightly from the front so the rear slopes read darker.
+  constexpr float3 kLightDir = float3(0.299, -0.349, 0.888);
+  // Deeper edge shading and a soft sheen on the flat top keep bevels readable on dark colours.
   float phongDiffuse = max(0.0, -dot(kLightDir, in.normal));
-  return float4((phongDiffuse * 0.5 + 0.5) * uniforms.u_color.rgb, uniforms.u_color.a);
+  float3 color = (phongDiffuse * 0.6 + 0.4) * uniforms.u_color.rgb;
+  color = mix(color, float3(1.0), 0.12 * smoothstep(0.9, 1.0, -in.normal.z));
+  return float4(color, uniforms.u_color.a);
 }
 
 vertex FragmentShadow_T vsArrow3dShadow(const VertexShadow_T in [[stage_in]],
@@ -102,7 +106,8 @@ fragment float4 fsArrow3dTextured(const FragmentTextured_T in [[stage_in]],
                                   texture2d<float> u_colorTex [[texture(0)]],
                                   sampler u_colorTexSampler [[sampler(0)]])
 {
-  constexpr float3 kLightDir = float3(0.316, 0.0, 0.948);
+  // Lit slightly from the front so the rear slopes read darker.
+  constexpr float3 kLightDir = float3(0.299, -0.349, 0.888);
   float phongDiffuse = max(0.0, -dot(kLightDir, in.normal));
   float4 color = u_colorTex.sample(u_colorTexSampler, in.texCoords) * uniforms.u_color;
   return float4((phongDiffuse * 0.5 + 0.5) * color.rgb, color.a);

@@ -46574,3 +46574,118 @@ uk = Трамвай
 vi = Xe điện
 zh-Hans = 有轨电车
 zh-Hant = 路面電車
+
+[pref_pixel_interface_title]
+tags = apple-maps
+comment = Settings switch for the personal pixel UI style. Off uses Minimal.
+en = Pixel interface
+
+[pref_pixel_interface_summary]
+tags = apple-maps
+comment = Explains both positions of the personal UI style switch.
+en = On: Pixel · Off: Minimal. Applies immediately; light and dark appearance stay separate.
+
+[pref_color_theme_title]
+tags = apple-maps
+comment = Title of the personal colour palette picker.
+en = Colour theme
+
+[pref_color_theme_summary]
+tags = apple-maps
+comment = Footer explaining the palette picker.
+en = Choose a palette. Each includes light and dark colours and works with Minimal or Pixel. Your choice is saved automatically.
+
+[pref_color_theme_default]
+tags = apple-maps
+comment = Label for the default colour palette.
+en = Default
+
+[pref_palette_forest]
+tags = apple-maps
+comment = Name of a personal UI colour palette.
+en = Forest
+
+[pref_palette_graphite]
+tags = apple-maps
+comment = Name of a personal UI colour palette.
+en = Graphite
+
+[pref_palette_ocean]
+tags = apple-maps
+comment = Name of a personal UI colour palette.
+en = Ocean
+
+[pref_palette_teal]
+tags = apple-maps
+comment = Name of a personal UI colour palette.
+en = Teal
+
+[pref_palette_sage]
+tags = apple-maps
+comment = Name of a personal UI colour palette.
+en = Sage
+
+[pref_palette_sand]
+tags = apple-maps
+comment = Name of a personal UI colour palette.
+en = Sand
+
+[pref_palette_terracotta]
+tags = apple-maps
+comment = Name of a personal UI colour palette.
+en = Terracotta
+
+[pref_palette_rose]
+tags = apple-maps
+comment = Name of a personal UI colour palette.
+en = Rose
+
+[pref_palette_lavender]
+tags = apple-maps
+comment = Name of a personal UI colour palette.
+en = Lavender
+
+[pref_palette_plum]
+tags = apple-maps
+comment = Name of a personal UI colour palette.
+en = Plum
+
+[pref_palette_midnight]
+tags = apple-maps
+comment = Name of a personal UI colour palette.
+en = Midnight
+
+[pref_palette_citrus]
+tags = apple-maps
+comment = Name of a personal UI colour palette.
+en = Citrus
+
+[pref_color_theme_preview_hint]
+tags = apple-maps
+comment = VoiceOver hint for a palette row with both light and dark previews.
+en = Apply this colour theme in light and dark appearance.
+
+[pref_glass_interface_title]
+tags = apple-maps
+comment = Settings switch for glass material on floating map controls, independent of Pixel and colour theme.
+en = Glass effect
+
+[pref_glass_interface_summary]
+tags = apple-maps
+comment = Explains how to return to normal surfaces and accessibility fallback for glass controls.
+en = On: Glass · Off: Solid. Applies to the map dock and floating controls. Uses solid surfaces with Reduce Transparency or Increase Contrast.
+
+[pref_tts_kokoro_heart]
+tags = apple-maps
+comment = Bundled offline English Kokoro voice, Heart is the voice's proper name.
+en = Kokoro · Heart
+
+[pref_tts_kokoro_summary]
+tags = apple-maps
+comment = Description of the optional on-device English voice in the voice picker.
+en = American English · Offline. Audio is generated on your iPhone. Navigation uses an Apple voice if Kokoro is unavailable or takes too long.
+
+[pref_tts_kokoro_preview_failed]
+tags = apple-maps
+comment = Message shown when the local Kokoro voice preview cannot be generated or played.
+en = Kokoro could not play this preview. Please try again or select an Apple voice.

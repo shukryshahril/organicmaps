@@ -21,7 +21,7 @@ struct TTSVoiceSettingsState {
 
 extension TTSVoiceGroup {
   /// Standard voices are grouped by locale; the remaining sets follow them in this order.
-  static let secondaryDisplayOrder: [TTSVoiceGroup] = [.eloquence, .novelty]
+  static let secondaryDisplayOrder: [TTSVoiceGroup] = [.kokoro, .eloquence, .novelty]
 
   var header: String? {
     switch self {
@@ -30,6 +30,8 @@ extension TTSVoiceGroup {
     // Eloquence is a product name and is not translated.
     case .eloquence:
       "Eloquence"
+    case .kokoro:
+      "Kokoro"
     case .novelty:
       L("pref_tts_voice_group_novelty")
     @unknown default:

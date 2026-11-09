@@ -16,6 +16,10 @@ final class TTSVoiceSettingsPresenter {
     viewController?.displayTTSSettings()
   }
 
+  func presentPreviewFailure() {
+    viewController?.display(TTSVoicePreviewPlayer.makeFailureAlert())
+  }
+
   private func sections(from state: TTSVoiceSettingsState) -> [TTSVoiceSettingsSectionViewModel] {
     var sections: [TTSVoiceSettingsSectionViewModel] = []
     // Choosing the language rather than one of its voices keeps a better voice installed later from
@@ -36,12 +40,15 @@ final class TTSVoiceSettingsPresenter {
       guard !voices.isEmpty else { return nil }
       return SettingsSectionViewModel(section: .group(group),
                                       header: group.header,
+                                      footer: group == .kokoro ? L("pref_tts_kokoro_summary") : nil,
                                       items: voices.map { item(.voice($0), title: $0.title, state: state) })
     }
 
     // The hint about installing more voices belongs under the whole list.
     if !sections.isEmpty {
-      sections[sections.count - 1].footer = L("pref_tts_download_voices_description")
+      let last = sections.count - 1
+      sections[last].footer = [sections[last].footer, L("pref_tts_download_voices_description")]
+        .compactMap { $0 }.joined(separator: "\n\n")
     }
     return sections
   }

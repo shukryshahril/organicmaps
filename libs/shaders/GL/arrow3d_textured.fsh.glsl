@@ -13,7 +13,8 @@ layout (binding = 0) uniform UBO
 
 layout (binding = 1) uniform sampler2D u_colorTex;
 
-const vec3 lightDir = vec3(0.316, 0.0, 0.948);
+// Lit slightly from the front so the rear slopes read darker.
+const vec3 lightDir = vec3(0.299, -0.349, 0.888);
 
 void main()
 {

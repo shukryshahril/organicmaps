@@ -56,6 +56,8 @@ NS_SWIFT_NAME(FrameworkHelper)
 + (void)setVisibleViewport:(CGRect)rect scaleFactor:(CGFloat)scale;
 + (void)setMapFontScaleFactor:(double)scaleFactor;
 + (void)setTheme:(MWMTheme)theme;
+/// Overrides a named map style colour, e.g. "Arrow3D" or "Route", for the light and dark map styles.
++ (void)setMapColor:(NSString *)name lightColor:(UIColor *)lightColor darkColor:(UIColor *)darkColor;
 + (MWMDayTime)daytimeAtLocation:(nullable CLLocation *)location;
 + (void)createFramework;
 /// Returns YES after the C++ Framework was destroyed during app termination.

@@ -114,8 +114,9 @@
             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
             <constraints>
                 <constraint firstItem="vum-s3-PHx" firstAttribute="top" secondItem="zuH-WU-hiP" secondAttribute="top" id="PQS-ro-25e"/>
-                <constraint firstItem="vum-s3-PHx" firstAttribute="leading" secondItem="zuH-WU-hiP" secondAttribute="leading" id="kza-JN-Dul"/>
-                <constraint firstAttribute="trailing" secondItem="vum-s3-PHx" secondAttribute="trailing" id="sM6-P2-rN9"/>
+                <constraint firstItem="vum-s3-PHx" firstAttribute="centerX" secondItem="zuH-WU-hiP" secondAttribute="centerX" id="kza-JN-Dul"/>
+                <constraint firstItem="vum-s3-PHx" firstAttribute="width" constant="304" priority="999" id="sM6-P2-rN9"/>
+                <constraint firstItem="vum-s3-PHx" firstAttribute="width" relation="lessThanOrEqual" secondItem="zuH-WU-hiP" secondAttribute="width" constant="-24" id="modern-dock-width"/>
             </constraints>
             <nil key="simulatedStatusBarMetrics"/>
             <nil key="simulatedTopBarMetrics"/>

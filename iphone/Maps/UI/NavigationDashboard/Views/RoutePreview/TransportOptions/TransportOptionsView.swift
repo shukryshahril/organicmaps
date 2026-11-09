@@ -53,11 +53,23 @@ final class TransportOptionsView: UIView {
     ])
   }
 
+  override func applyTheme() {
+    super.applyTheme()
+    segmentedControl.backgroundColor = InterfaceStyleSheet.background
+    segmentedControl.selectedSegmentTintColor = InterfaceStyleSheet.surface
+    updateSelection()
+  }
+
+  override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+    super.traitCollectionDidChange(previousTraitCollection)
+    applyTheme()
+  }
+
   private func reload() {
     segmentedControl.removeAllSegments()
     for (index, type) in routerTypes.enumerated() {
       let isSelected = type == selectedRouterType
-      segmentedControl.insertSegment(with: type.image(for: isSelected), at: index, animated: false)
+      segmentedControl.insertSegment(with: type.image(for: isSelected, traits: traitCollection), at: index, animated: false)
       if isSelected {
         segmentedControl.selectedSegmentIndex = index
       }
@@ -67,7 +79,7 @@ final class TransportOptionsView: UIView {
   private func updateSelection() {
     for (index, type) in routerTypes.enumerated() {
       let isSelected = type == selectedRouterType
-      segmentedControl.setImage(type.image(for: isSelected), forSegmentAt: index)
+      segmentedControl.setImage(type.image(for: isSelected, traits: traitCollection), forSegmentAt: index)
       if isSelected {
         segmentedControl.selectedSegmentIndex = index
       }

@@ -45,6 +45,14 @@ static NSString * const kSelectedPattern = @"%@_selected";
 
 - (void)setDefaultImages
 {
+  UIImage * modernImage = [MWMInterfaceIcons imageForAssetName:self.imageName];
+  if (modernImage)
+  {
+    [self setImage:modernImage forState:UIControlStateNormal];
+    [self setImage:modernImage forState:UIControlStateHighlighted];
+    [self setImage:modernImage forState:UIControlStateSelected];
+    return;
+  }
   [self setImage:[UIImage imageNamed:self.imageName] forState:UIControlStateNormal];
   [self setImage:[UIImage imageNamed:[NSString stringWithFormat:kHighlightedPattern, self.imageName]]
         forState:UIControlStateHighlighted];
@@ -59,7 +67,7 @@ static NSString * const kSelectedPattern = @"%@_selected";
   {
     switch (self.coloring)
     {
-    case MWMButtonColoringBlue: self.tintColor = [UIColor linkBlueHighlighted]; break;
+    case MWMButtonColoringBlue: self.tintColor = [MWMInterfaceColors highlightedAccent]; break;
     case MWMButtonColoringBlack: self.tintColor = [UIColor blackHintText]; break;
     case MWMButtonColoringGray: self.tintColor = [UIColor blackDividers]; break;
     case MWMButtonColoringWhiteText: self.tintColor = [UIColor whitePrimaryTextHighlighted]; break;
@@ -84,7 +92,7 @@ static NSString * const kSelectedPattern = @"%@_selected";
   {
     switch (self.coloring)
     {
-    case MWMButtonColoringBlack: self.tintColor = [UIColor linkBlue]; break;
+    case MWMButtonColoringBlack: self.tintColor = [MWMInterfaceColors accent]; break;
     case MWMButtonColoringWhite:
     case MWMButtonColoringWhiteText:
     case MWMButtonColoringBlue:
@@ -115,7 +123,7 @@ static NSString * const kSelectedPattern = @"%@_selected";
   case MWMButtonColoringBlack: self.tintColor = [UIColor blackSecondaryText]; break;
   case MWMButtonColoringWhite: self.tintColor = [UIColor whitePrimary]; break;
   case MWMButtonColoringWhiteText: self.tintColor = [UIColor whitePrimaryText]; break;
-  case MWMButtonColoringBlue: self.tintColor = [UIColor linkBlue]; break;
+  case MWMButtonColoringBlue: self.tintColor = [MWMInterfaceColors accent]; break;
   case MWMButtonColoringGray: self.tintColor = [UIColor blackHintText]; break;
   case MWMButtonColoringRed: self.tintColor = [UIColor redPrimary]; break;
   case MWMButtonColoringOther: self.imageView.image = [self imageForState:UIControlStateNormal]; break;

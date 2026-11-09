@@ -66,12 +66,19 @@ void InterpolateByZoom(SubrouteConstPtr const & subroute, ScreenBase const & scr
   ExtractZoomFactors(screen, zoom, index, lerpCoef);
 
   std::array<float, 20> const * halfWidthInPixel = &kRouteHalfWidthInPixelOthers;
+  // Car routes are drawn slightly slimmer than upstream so the edged line stays light on the map.
+  float widthScale = 1.0f;
   if (subroute->m_routeType == RouteType::Car || subroute->m_routeType == RouteType::Taxi)
+  {
     halfWidthInPixel = &kRouteHalfWidthInPixelCar;
+    widthScale = 0.82f;
+  }
   else if (subroute->m_routeType == RouteType::Transit)
+  {
     halfWidthInPixel = &kRouteHalfWidthInPixelTransit;
+  }
 
-  halfWidth = InterpolateByZoomLevels(index, lerpCoef, *halfWidthInPixel);
+  halfWidth = InterpolateByZoomLevels(index, lerpCoef, *halfWidthInPixel) * widthScale;
   halfWidth *= static_cast<float>(df::VisualParams::Instance().GetVisualScale());
 }
 
@@ -563,6 +570,7 @@ void RouteRenderer::RenderSubrouteArrows(ref_ptr<dp::GraphicsContext> context, r
   // Adjust arrow color depending on route type and subroute distance
   params.m_maskColor =
       glsl::ToVec4(GetArrowMaskColor(subrouteInfo.m_subroute->m_routeType, subrouteInfo.m_subroute->m_baseDistance));
+  params.m_outlineColor = glsl::ToVec4(df::GetColorConstant(kRouteOutlineColor));
 
   ref_ptr<dp::GpuProgram> prg = mng->GetProgram(gpu::Program::RouteArrow);
   prg->Bind();

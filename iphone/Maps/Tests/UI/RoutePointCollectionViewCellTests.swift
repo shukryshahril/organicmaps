@@ -21,7 +21,6 @@ final class RoutePointCollectionViewCellTests: XCTestCase {
     let finishModel = RoutePointCollectionViewCell.PointViewModel(
       title: "Finish",
       image: UIImage.routePointFinish,
-      usesCurrentPositionIcon: false,
       showCloseButton: false,
       maskedCorners: [],
       isPlaceholder: false,

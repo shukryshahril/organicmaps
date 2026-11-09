@@ -7,11 +7,19 @@ final class TTSVoicePreviewPlayer {
   private(set) var playingVoice: TTSVoice?
   /// Called on the main queue when playback ends on its own. Not called by an explicit `stop()`.
   var onFinished: (() -> Void)?
+  var onFailure: (() -> Void)?
 
   private var playbackID: UUID?
   private var resignActiveObserver: NSObjectProtocol?
+  private var failureObserver: NSObjectProtocol?
 
   init() {
+    failureObserver = NotificationCenter.default.addObserver(
+      forName: .MWMKokoroVoicePreviewDidFail, object: nil, queue: .main
+    ) { [weak self] _ in
+      guard self?.playingVoice?.identifier == KokoroVoicePlayer.voiceIdentifier else { return }
+      self?.onFailure?()
+    }
     // Nothing calls viewWillDisappear when the app is backgrounded, so a preview would otherwise
     // keep speaking over the lock screen.
     resignActiveObserver = NotificationCenter.default.addObserver(
@@ -24,15 +32,24 @@ final class TTSVoicePreviewPlayer {
   }
 
   deinit {
+    failureObserver.map(NotificationCenter.default.removeObserver(_:))
     if let resignActiveObserver {
       NotificationCenter.default.removeObserver(resignActiveObserver)
     }
     stop()
   }
 
+  static func makeFailureAlert() -> UIAlertController {
+    let alert = UIAlertController(title: L("pref_tts_kokoro_heart"),
+                                  message: L("pref_tts_kokoro_preview_failed"), preferredStyle: .alert)
+    alert.addAction(UIAlertAction(title: L("ok"), style: .default))
+    return alert
+  }
+
   /// Plays `voice` reading a phrase in `language`, the language the voice reads.
   func play(_ voice: TTSVoice, language: TTSLanguage) {
-    guard AVSpeechSynthesisVoice(identifier: voice.identifier) != nil else { return }
+    guard AVSpeechSynthesisVoice(identifier: voice.identifier) != nil
+      || (voice.identifier == KokoroVoicePlayer.voiceIdentifier && KokoroVoicePlayer.isAvailable) else { return }
     let phrase = Self.nextAppTip(languageCode: language.code)
 
     let playbackID = UUID()

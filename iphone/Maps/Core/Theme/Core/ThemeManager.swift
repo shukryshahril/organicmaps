@@ -44,6 +44,7 @@ final class ThemeManager: NSObject {
     let newNightMode = actualTheme == .night || actualTheme == .vehicleNight
 
     FrameworkHelper.setTheme(actualTheme)
+    InterfaceStyleSheet.applyMapAccent()
 
     if !StyleManager.shared.hasTheme() {
       isNightMode = newNightMode

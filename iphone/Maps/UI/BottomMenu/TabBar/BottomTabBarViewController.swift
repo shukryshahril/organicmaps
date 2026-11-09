@@ -24,6 +24,13 @@ class BottomTabBarViewController: UIViewController {
 
   override func viewDidLoad() {
     super.viewDidLoad()
+    searchButton.accessibilityLabel = L("search")
+    bookmarksButton.accessibilityLabel = L("bookmarks")
+    moreButton.accessibilityLabel = L("menu")
+    searchButton.imageName = "ic_menu_search"
+    bookmarksButton.imageName = "ic_menu_bookmark_list"
+    moreButton.imageName = "ic_menu"
+    helpButton.imageName = "personal_about"
     view.alpha = 0 // Hide the view until it receives a first available area update.
   }
 
@@ -33,8 +40,8 @@ class BottomTabBarViewController: UIViewController {
   }
 
   func updateAboutButtonIcon(isCrowdfunding: Bool) {
-    let icon: ImageResource = isCrowdfunding ? .icCrowdfunding : (Settings.isNY() ? .icChristmasTree : .logo)
-    helpButton.setImage(UIImage(resource: icon), for: .normal)
+    helpButton.accessibilityLabel = L("about_menu_title")
+    helpButton.imageName = isCrowdfunding ? "personal_support" : "personal_about"
     updateBadge()
   }
 

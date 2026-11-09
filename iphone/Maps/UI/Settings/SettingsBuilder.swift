@@ -5,6 +5,7 @@ enum SettingsScreen {
   case powerManagement
   case bookmarksTextPlacement
   case appearance
+  case colorTheme
   case voiceInstructions
   case mapTiles
 }
@@ -51,6 +52,8 @@ final class SettingsBuilder: NSObject {
       return buildBookmarksTextPlacement()
     case .appearance:
       return buildAppearance()
+    case .colorTheme:
+      return ColorThemeSettingsViewController()
     case .voiceInstructions:
       return buildTTSSettings()
     case .mapTiles:

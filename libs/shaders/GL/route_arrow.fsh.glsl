@@ -31,6 +31,9 @@ void main()
   finalColor.a *= u_opacity;
   if (finalColor.a < 0.01)
     discard;
+  // The artwork is white with a coloured outline; the outline follows the route outline colour.
+  float whiteness = smoothstep(0.2, 0.9, min(finalColor.r, min(finalColor.g, finalColor.b)));
+  finalColor.rgb = mix(u_outlineColor.rgb, vec3(1.0), whiteness);
   finalColor = vec4(mix(finalColor.rgb, u_maskColor.rgb, u_maskColor.a), finalColor.a);
   v_FragColor = finalColor;
 }

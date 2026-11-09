@@ -16,7 +16,8 @@ final class BottomMenuItemCell: UITableViewCell {
                  imageStyle: GlobalStyleSheet = .black,
                  enabled: Bool = true) {
     isEnabled = enabled
-    icon.setStyleAndApply(enabled ? imageStyle : .gray)
+    let iconStyle: InterfaceStyleSheet = enabled ? (imageStyle == .red ? .recordingMenuIcon : .menuIcon) : .mutedMenuIcon
+    icon.setStyleAndApply(iconStyle)
     icon.image = image
     label.text = title
     label.setFontStyleAndApply(.regular16, color: enabled ? .blackPrimary : .blackHint)

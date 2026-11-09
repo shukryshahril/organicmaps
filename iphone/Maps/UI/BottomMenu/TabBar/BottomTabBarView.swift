@@ -1,7 +1,9 @@
 let kExtendedTabBarTappableMargin: CGFloat = -15
 
 final class BottomTabBarView: SolidTouchView {
-  @IBOutlet var mainButtonsView: ExtendedBottomTabBarContainerView!
+  @IBOutlet var mainButtonsView: ExtendedBottomTabBarContainerView! {
+    didSet { mainButtonsView.setStyle(InterfaceStyleSheet.mapDock) }
+  }
 
   override var placePageAreaAffectDirections: MWMAvailableAreaAffectDirections {
     alternative(iPhone: [], iPad: [.bottom])
@@ -30,6 +32,13 @@ final class BottomTabBarView: SolidTouchView {
 }
 
 final class ExtendedBottomTabBarContainerView: UIView {
+  override func applyTheme() {
+    super.applyTheme()
+    InterfaceGlassRenderer.render(self, solidColor: InterfaceStyleSheet.surface,
+                                  tintColor: InterfaceStyleSheet.accent,
+                                  cornerRadius: CornerRadius.floating(24).value)
+  }
+
   override func point(inside point: CGPoint, with _: UIEvent?) -> Bool {
     bounds.insetBy(dx: kExtendedTabBarTappableMargin, dy: kExtendedTabBarTappableMargin).contains(point)
   }

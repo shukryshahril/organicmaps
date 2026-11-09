@@ -19,6 +19,9 @@ final class ActionBarViewController: UIViewController {
 
   override func viewDidLoad() {
     super.viewDidLoad()
+    stackView.isLayoutMarginsRelativeArrangement = true
+    stackView.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 8, leading: 12, bottom: 8, trailing: 12)
+    stackView.spacing = 4
     configureButtons()
   }
 
@@ -78,6 +81,7 @@ final class ActionBarViewController: UIViewController {
       buttons.append(.bookmark)
       if canRouteToAndFrom {
         buttons.append(.routeTo)
+        buttons.append(.startNavigation)
       }
       if placePageData.objectType == .track {
         buttons.append(.track)
@@ -91,12 +95,16 @@ final class ActionBarViewController: UIViewController {
 
     guard !buttons.isEmpty else { return }
     let maxVisibleButtons = 5
-    if buttons.count > maxVisibleButtons {
-      visibleButtons.append(contentsOf: buttons.prefix(maxVisibleButtons - 1))
-      visibleButtons.append(.more)
-      additionalButtons.append(contentsOf: buttons.suffix(from: maxVisibleButtons - 1))
+    let allButtons = visibleButtons + buttons
+    // Keep the navigation actions together, with Route to at the trailing edge.
+    let navigationButtons: [ActionBarButtonType] = [.startNavigation, .routeTo].filter { allButtons.contains($0) }
+    let otherButtons = allButtons.filter { !navigationButtons.contains($0) }
+    if allButtons.count > maxVisibleButtons {
+      let otherVisibleCount = maxVisibleButtons - navigationButtons.count - 1
+      visibleButtons = Array(otherButtons.prefix(otherVisibleCount)) + [.more] + navigationButtons
+      additionalButtons.append(contentsOf: otherButtons.dropFirst(otherVisibleCount))
     } else {
-      visibleButtons.append(contentsOf: buttons)
+      visibleButtons = otherButtons + navigationButtons
     }
   }
 

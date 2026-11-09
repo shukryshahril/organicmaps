@@ -50,8 +50,8 @@ final class PlacePageHeaderViewController: UIViewController {
     iPadSpecific { [weak self] in
       self?.grabberView.isHidden = true
     }
-    closeButton.setImage(UIImage(resource: .icClose))
-    shareButton.setImage(UIImage(resource: .icShare))
+    closeButton.setImage(InterfaceIcon.close.boldCircleImage)
+    shareButton.setImage(InterfaceIcon.share.boldCircleImage)
     shareButton.isHidden = !(presenter?.canShare ?? true)
 
     trackCandidatesButton.tintColor = .linkBlue
@@ -78,7 +78,7 @@ final class PlacePageHeaderViewController: UIViewController {
     let longTapGesture = UILongPressGestureRecognizer(target: self, action: #selector(didLongPressTitleTextView(_:)))
     titleTextView.addGestureRecognizer(longTapGesture)
 
-    clearTitleTextButton.setImage(UIImage.icClear.withRenderingMode(.alwaysTemplate), style: GlobalStyleSheet.gray)
+    clearTitleTextButton.setImage(InterfaceIcon.close.boldImage, style: GlobalStyleSheet.gray)
     clearTitleTextButton.isHidden = true
     clearTitleTextButton.addTarget(self, action: #selector(didTapClearTitleButton), for: .touchUpInside)
 

@@ -11,6 +11,7 @@ CGFloat const kLocationButtonSpacingMax = 52;
 CGFloat const kLocationButtonSpacingMin = 8;
 CGFloat const kButtonsTopOffset = 6;
 CGFloat const kButtonsBottomOffset = 6;
+CGFloat const kRecordButtonSpacing = 8;
 }  // namespace
 
 @interface MWMSideButtonsView ()
@@ -20,6 +21,7 @@ CGFloat const kButtonsBottomOffset = 6;
 @property(weak, nonatomic) IBOutlet MWMButton * location;
 
 @property(nonatomic) CGRect availableArea;
+@property(nonatomic, readwrite) MWMButton * recordButton;
 
 @end
 
@@ -29,21 +31,39 @@ CGFloat const kButtonsBottomOffset = 6;
 {
   [super awakeFromNib];
   self.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+
+  MWMButton * record = [[MWMButton alloc] initWithFrame:self.location.frame];
+  record.styleName = @"ButtonMapNavigationRecord";
+  record.accessibilityIdentifier = @"navigationRecordButton";
+  record.hidden = YES;
+  [self addSubview:record];
+  self.recordButton = record;
 }
 
 - (void)layoutSubviews
 {
-  CGFloat spacing = self.availableHeight - self.zoomOut.maxY - self.location.height;
+  CGFloat const recordHeight = self.recordButtonVisible ? self.location.height + kRecordButtonSpacing : 0;
+
+  CGFloat spacing = self.availableHeight - self.zoomOut.maxY - self.location.height - recordHeight;
   spacing = math::Clamp(spacing, kLocationButtonSpacingMin, kLocationButtonSpacingMax);
 
   self.location.minY = self.zoomOut.maxY + spacing;
-  self.bounds = {{}, {self.zoomOut.width, self.location.maxY}};
+  self.bounds = {{}, {self.zoomOut.width, self.location.maxY + recordHeight}};
   if (self.zoomHidden)
-    self.height = self.location.height;
-  self.location.maxY = self.height;
+    self.height = self.location.height + recordHeight;
+  self.location.maxY = self.height - recordHeight;
+  if (self.recordButtonVisible)
+    self.recordButton.frame = {{self.location.minX, self.location.maxY + kRecordButtonSpacing}, self.location.frame.size};
 
   [self animate];
   [super layoutSubviews];
+}
+
+- (void)setRecordButtonVisible:(BOOL)recordButtonVisible
+{
+  _recordButtonVisible = recordButtonVisible;
+  self.recordButton.hidden = !recordButtonVisible;
+  [self setNeedsLayout];
 }
 
 - (void)layoutXPosition:(BOOL)hidden
@@ -98,7 +118,7 @@ CGFloat const kButtonsBottomOffset = 6;
   [self layoutYPosition];
 
   BOOL const isZoomHidden = self.zoomIn.alpha == 0.0;
-  BOOL const willZoomHide = (self.location.maxY > self.availableHeight);
+  BOOL const willZoomHide = (self.height > self.availableHeight);
   if (willZoomHide != isZoomHidden)
     [self fadeZoomButtonsShow:!willZoomHide];
 

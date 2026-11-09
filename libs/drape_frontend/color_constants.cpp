@@ -12,7 +12,10 @@
 
 #include <glaze/json.hpp>
 
+#include <atomic>
 #include <map>
+#include <mutex>
+#include <optional>
 
 namespace df
 {
@@ -129,6 +132,40 @@ TransitColorsHolder & TransitColors()
   static TransitColorsHolder h;
   return h;
 }
+
+// Overrides are read a few times per frame and written on palette changes; the flag skips the lock when unused.
+class ColorOverrides
+{
+public:
+  std::optional<dp::Color> Get(ColorConstant const & constant) const
+  {
+    if (!m_hasAny.load(std::memory_order_acquire))
+      return {};
+    std::lock_guard lock(m_mutex);
+    auto const it = m_colors.find(constant);
+    if (it == m_colors.cend())
+      return {};
+    return MapStyleIsDark(GetStyleReader().GetCurrentStyle()) ? it->second.second : it->second.first;
+  }
+
+  void Set(ColorConstant const & constant, dp::Color const & light, dp::Color const & dark)
+  {
+    std::lock_guard lock(m_mutex);
+    m_colors.insert_or_assign(std::string(constant), std::pair{light, dark});
+    m_hasAny.store(true, std::memory_order_release);
+  }
+
+private:
+  mutable std::mutex m_mutex;
+  std::map<std::string, std::pair<dp::Color, dp::Color>, std::less<>> m_colors;
+  std::atomic<bool> m_hasAny = false;
+};
+
+ColorOverrides & Overrides()
+{
+  static ColorOverrides o;
+  return o;
+}
 }  // namespace
 
 std::string GetTransitColorName(ColorConstant const & localName)
@@ -148,6 +185,8 @@ bool IsTransitColor(ColorConstant const & constant)
 
 dp::Color GetColorConstant(ColorConstant const & constant)
 {
+  if (auto const color = Overrides().Get(constant))
+    return *color;
   if (IsTransitColor(constant))
     return TransitColors().GetColor(constant);
   uint32_t const color = drule::GetCurrentRules().GetColor(constant);
@@ -162,5 +201,10 @@ ColorsMapT const & GetTransitClearColors()
 void LoadTransitColors()
 {
   TransitColors().Load();
+}
+
+void SetColorConstantOverride(ColorConstant const & constant, dp::Color const & light, dp::Color const & dark)
+{
+  Overrides().Set(constant, light, dark);
 }
 }  // namespace df

@@ -40,6 +40,7 @@
 + (void)editTrack:(PlacePageData *)data;
 + (void)routeFrom:(PlacePageData *)data;
 + (void)routeTo:(PlacePageData *)data;
++ (void)startNavigationTo:(PlacePageData *)data;
 + (void)routeAddStop:(PlacePageData *)data;
 + (void)routeRemoveStop:(PlacePageData *)data;
 + (void)avoidDirty;

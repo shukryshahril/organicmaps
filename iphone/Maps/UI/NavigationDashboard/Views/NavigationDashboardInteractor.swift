@@ -39,11 +39,13 @@ extension NavigationDashboard {
         return .none
 
       case .selectRoutePoint(let selection):
+        router.cancelPendingStart()
         delegate?.routePreviewDidSelect(selection)
         searchManager.startSearching(isRouting: true)
         return .setHidden(true)
 
       case .addRoutePointButtonDidTap:
+        router.cancelPendingStart()
         guard !router.isRoutePointsLimitReached() else {
           Toast.show(withText: L("routing_max_stops_reached"))
           return .none
@@ -75,14 +77,17 @@ extension NavigationDashboard {
         return .none
 
       case .settingsButtonDidTap:
+        router.cancelPendingStart()
         delegate?.routePreviewDidPressDrivingOptions()
         return .none
 
       case .searchButtonDidTap:
+        router.cancelPendingStart()
         searchManager.startSearching(isRouting: false)
         return .setHidden(true)
 
       case .bookmarksButtonDidTap:
+        router.cancelPendingStart()
         mapViewController.bookmarksCoordinator.open()
         return .none
 
@@ -95,9 +100,6 @@ extension NavigationDashboard {
 
       case .updateNavigationInfo(let entity):
         return .updateNavigationInfo(entity)
-
-      case .updateTrackRecordingState(let state):
-        return .updateTrackRecordingState(state)
 
       case .updateElevationInfo(let elevationInfo, let activePointDistance):
         return .updateElevationInfo(elevationInfo, activePointDistance: activePointDistance)
@@ -175,10 +177,6 @@ extension NavigationDashboard.Interactor: NavigationDashboardView {
 
   func onNavigationInfoUpdated(_ entity: MWMNavigationDashboardEntity) {
     process(.updateNavigationInfo(entity))
-  }
-
-  func setTrackRecordingState(_ state: TrackRecordingState) {
-    process(.updateTrackRecordingState(state))
   }
 
   func setDrivingOptionState(_ state: MWMDrivingOptionsState) {

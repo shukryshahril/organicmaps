@@ -263,6 +263,8 @@ extension PlacePageInteractor: ActionBarViewControllerDelegate {
       MWMPlacePageManagerHelper.route(from: placePageData)
     case .routeRemoveStop:
       MWMPlacePageManagerHelper.routeRemoveStop(placePageData)
+    case .startNavigation:
+      MWMPlacePageManagerHelper.startNavigation(to: placePageData)
     case .routeTo:
       MWMPlacePageManagerHelper.route(to: placePageData)
     case .avoidToll:

@@ -20,6 +20,10 @@ final class TTSLanguageSettingsPresenter {
     viewController?.displayPreviousScreen()
   }
 
+  func presentPreviewFailure() {
+    viewController?.display(TTSVoicePreviewPlayer.makeFailureAlert())
+  }
+
   private func sections(from state: TTSLanguageSettingsState) -> [TTSLanguageSettingsSectionViewModel] {
     [
       SettingsSectionViewModel(section: .languages,

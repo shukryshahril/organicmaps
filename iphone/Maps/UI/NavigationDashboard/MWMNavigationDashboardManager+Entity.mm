@@ -50,7 +50,7 @@ UIImage * image(routing::turns::CarDirection t, bool isNextTurn)
   }
   if (!imageName)
     return nil;
-  return [UIImage imageNamed:isNextTurn ? [imageName stringByAppendingString:@"_then"] : imageName];
+  return [MWMTurnGlyph imageNamed:isNextTurn ? [imageName stringByAppendingString:@"_then"] : imageName];
 }
 
 UIImage * image(routing::turns::PedestrianDirection t)
@@ -71,7 +71,7 @@ UIImage * image(routing::turns::PedestrianDirection t)
   }
   if (!imageName)
     return nil;
-  return [UIImage imageNamed:imageName];
+  return [MWMTurnGlyph imageNamed:imageName];
 }
 
 NSArray<MWMRouterTransitStepInfo *> * buildRouteTransitSteps(NSArray<MWMRoutePoint *> * points)

@@ -63,6 +63,15 @@ using namespace storage;
   [self closePlacePage];
 }
 
+- (void)startNavigationTo:(PlacePageData *)data
+{
+  MWMRoutePoint * point = [self routePoint:data withType:MWMRoutePointTypeFinish intermediateIndex:0];
+  if (![MWMRouter buildAndStartToPoint:point])
+    return;
+  [self.searchManager close];
+  [self closePlacePage];
+}
+
 - (void)routeAddStop:(PlacePageData *)data
 {
   MWMNavigationDashboardManager * navigationManager = [MWMNavigationDashboardManager sharedManager];

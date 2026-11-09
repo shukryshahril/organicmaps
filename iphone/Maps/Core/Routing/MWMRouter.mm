@@ -28,14 +28,22 @@
 
 using namespace routing;
 
+namespace
+{
+// Drape builds a new route asynchronously with no "drawn" signal, so following it at once leaves it undrawn.
+NSTimeInterval const kAutoStartRenderDelay = 0.5;
+}  // namespace
+
 @interface MWMRouter () <MWMLocationObserver, MWMFrameworkRouteBuilderObserver>
 
 @property(nonatomic) uint32_t routeManagerTransactionId;
 @property(nonatomic) BOOL canAutoAddLastLocation;
+@property(nonatomic) BOOL startWhenRouteReady;
 @property(nonatomic) BOOL isRestoreProcessCompleted;
 @property(strong, nonatomic) MWMRoutingOptions * routingOptions;
 
 + (MWMRouter *)router;
++ (void)rebuildWithBestRouter:(BOOL)bestRouter startImmediately:(BOOL)startImmediately;
 
 @end
 
@@ -116,6 +124,7 @@ using namespace routing;
 
 + (void)startRouting
 {
+  [self cancelPendingStart];
   [self start];
 }
 
@@ -397,6 +406,41 @@ using namespace routing;
     [self rebuildWithBestRouter:bestRouter];
 }
 
++ (void)cancelPendingStart
+{
+  [self router].startWhenRouteReady = NO;
+}
+
++ (void)startRoutingWhenReady
+{
+  // A Start tap while the route is still being built would otherwise be dropped.
+  if (GetFramework().GetRoutingManager().IsRouteBuilding())
+    [self router].startWhenRouteReady = YES;
+  else
+    [self startRouting];
+}
+
++ (BOOL)buildAndStartToPoint:(MWMRoutePoint *)finish
+{
+  [self cancelPendingStart];
+  MWMRoutePoint * start = [[MWMRoutePoint alloc] initWithLastLocationAndType:MWMRoutePointTypeStart intermediateIndex:0];
+  if (!start || ![MWMLocationManager isStarted])
+  {
+    [[MWMAlertViewController activeAlertController] presentAlert:routing::RouterResultCode::NoCurrentPosition];
+    return NO;
+  }
+  if (!finish)
+    return NO;
+  [self stopRouting];
+  // Quick Start always creates a fresh itinerary from the current position.
+  [self addPoint:start];
+  [self addPoint:finish];
+  if ([self type] == MWMRouterTypeRuler)
+    [self setType:MWMRouterTypeVehicle];
+  [self rebuildWithBestRouter:NO startImmediately:YES];
+  return YES;
+}
+
 + (void)buildApiRouteWithType:(MWMRouterType)type
                    startPoint:(MWMRoutePoint *)startPoint
                   finishPoint:(MWMRoutePoint *)finishPoint
@@ -418,6 +462,12 @@ using namespace routing;
 
 + (void)rebuildWithBestRouter:(BOOL)bestRouter
 {
+  [self rebuildWithBestRouter:bestRouter startImmediately:NO];
+}
+
++ (void)rebuildWithBestRouter:(BOOL)bestRouter startImmediately:(BOOL)startImmediately
+{
+  [self router].startWhenRouteReady = startImmediately;
   auto & rm = GetFramework().GetRoutingManager();
   auto const & points = rm.GetRoutePoints();
   auto const pointsCount = points.size();
@@ -463,6 +513,8 @@ using namespace routing;
               [self buildFromPoint:[[MWMRoutePoint alloc] initWithLastLocationAndType:MWMRoutePointTypeStart
                                                                     intermediateIndex:0]
                         bestRouter:NO];
+              // The user already asked to start; do so once the route from here is ready.
+              [self router].startWhenRouteReady = YES;
             }
                                  needToRebuild:needToRebuild];
       }
@@ -494,6 +546,7 @@ using namespace routing;
 
 + (void)doStop:(BOOL)removeRoutePoints
 {
+  [self cancelPendingStart];
   [[MWMRoutingManager routingManager] stopRoutingAndRemoveRoutePoints:removeRoutePoints];
   if (removeRoutePoints)
     [[MWMRoutingManager routingManager] deleteSavedRoutePoints];
@@ -544,12 +597,25 @@ using namespace routing;
 
   [[MWMMapViewControlsManager manager] onRouteReady:hasWarnings];
   [self updateFollowingInfo];
+  BOOL const shouldStart = self.startWhenRouteReady;
+  self.startWhenRouteReady = NO;
+  // startRouting asks before starting from a point that is not the current position.
+  if (shouldStart && !hasWarnings)
+  {
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(kAutoStartRenderDelay * NSEC_PER_SEC)),
+                   dispatch_get_main_queue(), ^{
+      if ([MWMRouter isRouteValid])
+        [MWMRouter startRouting];
+    });
+  }
 }
 
 - (void)processRouteBuilderEvent:(routing::RouterResultCode)code
                        countries:(storage::CountriesSet const &)absentCountries
 {
   MWMMapViewControlsManager * mapViewControlsManager = [MWMMapViewControlsManager manager];
+  if (code != routing::RouterResultCode::NoError && code != routing::RouterResultCode::HasWarnings)
+    self.startWhenRouteReady = NO;
   switch (code)
   {
   case routing::RouterResultCode::NoError: [self onRouteReady:NO]; break;

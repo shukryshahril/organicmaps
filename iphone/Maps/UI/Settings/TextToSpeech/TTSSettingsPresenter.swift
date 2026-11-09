@@ -16,6 +16,10 @@ final class TTSSettingsPresenter {
     viewController?.displayTTSLanguageSettings()
   }
 
+  func presentPreviewFailure() {
+    viewController?.display(TTSVoicePreviewPlayer.makeFailureAlert())
+  }
+
   private func sections(from state: TTSSettingsState) -> [TTSSettingsSectionViewModel] {
     let voiceSection = SettingsSectionViewModel(section: TTSSettingsSection.voiceInstructions,
                                                 footer: TTSSettingsSection.voiceInstructions.footer,
