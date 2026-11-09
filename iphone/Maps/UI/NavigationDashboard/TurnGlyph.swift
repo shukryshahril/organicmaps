@@ -28,7 +28,9 @@ final class TurnGlyph: NSObject {
     "finish_point": Spec(shape: .finish, mirrored: false),
   ]
 
+  // Holds the glyphs of one palette only; a palette switch starts it afresh.
   private static var cache: [String: UIImage] = [:]
+  private static var cachePalette: InterfacePalette?
   private static let cacheLock = NSLock()
 
   /// `name` is a stock turn asset name; a `_then` suffix gives the small next-turn icon.
@@ -36,22 +38,38 @@ final class TurnGlyph: NSObject {
     let isNext = name.hasSuffix("_then")
     let base = isNext ? String(name.dropLast("_then".count)) : name
     guard let spec = specs[base] else { return UIImage(named: name) }
-    let key = "\(base)|\(isNext)|\(InterfacePalette.current.rawValue)"
-    cacheLock.lock()
-    defer { cacheLock.unlock() }
-    if let cached = cache[key] { return cached }
+    let palette = InterfacePalette.current
+    let key = "\(base)|\(isNext)"
+    let cached: UIImage? = cacheLock.withLock {
+      if cachePalette != palette {
+        cache.removeAll()
+        cachePalette = palette
+      }
+      return cache[key]
+    }
+    if let cached { return cached }
 
+    let image = render(spec, isNext: isNext)
+    return cacheLock.withLock {
+      guard cachePalette == palette else { return image }
+      if let raced = cache[key] { return raced }
+      cache[key] = image
+      return image
+    }
+  }
+
+  private static func render(_ spec: Spec, isNext: Bool) -> UIImage {
     let size: CGFloat = isNext ? 28 : 64
     let asset = UIImageAsset()
     for isDark in [false, true] {
       let colors = Colors(isNext: isNext, isDark: isDark)
-      let traits = UITraitCollection(traitsFrom: [UITraitCollection(userInterfaceStyle: isDark ? .dark : .light),
-                                                  UITraitCollection(displayScale: UIScreen.main.scale)])
+      let traits = UITraitCollection {
+        $0.userInterfaceStyle = isDark ? .dark : .light
+        $0.displayScale = UIScreen.main.scale
+      }
       asset.register(render(spec, size: size, colors: colors), with: traits)
     }
-    let image = asset.image(with: UITraitCollection.current)
-    cache[key] = image
-    return image
+    return asset.image(with: UITraitCollection.current)
   }
 
   // MARK: Colours
@@ -73,7 +91,7 @@ final class TurnGlyph: NSObject {
         detail = InterfaceStyleSheet.uiColor(palette.colors(isDark: isDark).surface)
       } else {
         // On the filled accent banner the glyph is a raised white tile.
-        let accent = InterfaceStyleSheet.uiColor(palette.colors(isDark: false).accent)
+        let accent = InterfaceStyleSheet.filledAccent
         faceTop = .white
         faceBottom = UIColor(white: 0.9, alpha: 1)
         side = accent.mixed(with: .black, amount: 0.45)
@@ -190,7 +208,7 @@ final class TurnGlyph: NSObject {
     let bounds = CGRect(x: 0, y: 0, width: size, height: size)
     return UIGraphicsImageRenderer(bounds: bounds, format: format).image { context in
       let cg = context.cgContext
-      let mask = maskImage(shape, size: size, scale: format.scale)
+      guard let mask = maskImage(shape, size: size, scale: format.scale) else { return }
 
       // Behind the main road on exits: a quieter lane in the side colour.
       if spec.shape == .exit, let detailPath {
@@ -212,10 +230,11 @@ final class TurnGlyph: NSObject {
       // Face with a top-lit gradient.
       cg.saveGState()
       cg.clip(to: bounds, mask: mask)
-      let gradient = CGGradient(colorsSpace: CGColorSpaceCreateDeviceRGB(),
-                                colors: [colors.faceTop.cgColor, colors.faceBottom.cgColor] as CFArray,
-                                locations: [0, 1])!
-      cg.drawLinearGradient(gradient, start: .zero, end: CGPoint(x: 0, y: size), options: [])
+      if let gradient = CGGradient(colorsSpace: CGColorSpaceCreateDeviceRGB(),
+                                   colors: [colors.faceTop.cgColor, colors.faceBottom.cgColor] as CFArray,
+                                   locations: [0, 1]) {
+        cg.drawLinearGradient(gradient, start: .zero, end: CGPoint(x: 0, y: size), options: [])
+      }
 
       // Bright rim along the upper edges.
       cg.beginTransparencyLayer(auxiliaryInfo: nil)
@@ -235,15 +254,16 @@ final class TurnGlyph: NSObject {
   }
 
   /// A mask is the robust way to union stroked outlines whose sub-paths wind in different directions.
-  private static func maskImage(_ path: CGPath, size: CGFloat, scale: CGFloat) -> CGImage {
+  private static func maskImage(_ path: CGPath, size: CGFloat, scale: CGFloat) -> CGImage? {
     let pixels = Int((size * scale).rounded(.up))
-    let context = CGContext(data: nil, width: pixels, height: pixels, bitsPerComponent: 8, bytesPerRow: 0,
-                            space: CGColorSpaceCreateDeviceGray(), bitmapInfo: CGImageAlphaInfo.none.rawValue)!
+    guard let context = CGContext(data: nil, width: pixels, height: pixels, bitsPerComponent: 8, bytesPerRow: 0,
+                                  space: CGColorSpaceCreateDeviceGray(), bitmapInfo: CGImageAlphaInfo.none.rawValue)
+    else { return nil }
     context.scaleBy(x: scale, y: scale)
     context.addPath(path)
     context.setFillColor(gray: 1, alpha: 1)
     context.fillPath(using: .winding)
-    return context.makeImage()!
+    return context.makeImage()
   }
 }
 

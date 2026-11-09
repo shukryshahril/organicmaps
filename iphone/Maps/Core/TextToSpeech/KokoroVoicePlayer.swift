@@ -6,7 +6,7 @@ import KokoroCoreML
 final class KokoroVoicePlayer: NSObject, AVAudioPlayerDelegate {
   @objc static let voiceIdentifier = "organicmaps.kokoro.af_heart"
   @objc static var isAvailable: Bool {
-    guard #available(iOS 18.0, *), let directory = modelDirectory else { return false }
+    guard let directory = modelDirectory else { return false }
     return KokoroEngine.isDownloaded(at: directory)
       && FileManager.default.fileExists(atPath: directory.appendingPathComponent("voices/af_heart.bin").path)
   }
@@ -19,8 +19,8 @@ final class KokoroVoicePlayer: NSObject, AVAudioPlayerDelegate {
   private let inferenceThread = InferenceThread()
   private let requestLock = NSLock()
   private var requestID = UUID()
-  // Only accessed on inferenceThread. AnyObject keeps the optional engine compatible with older iOS versions.
-  private var storedEngine: AnyObject?
+  // Only accessed on inferenceThread.
+  private var engine: KokoroEngine?
   private var player: AVAudioPlayer?
   private var completion: ((Bool) -> Void)?
   private var timeout: DispatchWorkItem?
@@ -44,21 +44,19 @@ final class KokoroVoicePlayer: NSObject, AVAudioPlayerDelegate {
     inferenceThread.cancel()
   }
 
-  @available(iOS 18.0, *)
-  private func engine() throws -> KokoroEngine {
-    if let engine = storedEngine as? KokoroEngine { return engine }
+  private func loadedEngine() throws -> KokoroEngine {
+    if let engine { return engine }
     guard let directory = Self.modelDirectory else { throw CocoaError(.fileNoSuchFile) }
     // CPU inference remains usable while navigating with the screen locked; Metal cannot run there.
     let engine = try KokoroEngine(modelDirectory: directory, forceCPU: true)
-    storedEngine = engine
+    self.engine = engine
     return engine
   }
 
   @objc func prepare() {
     guard Self.isAvailable else { return }
     inferenceThread.async { [weak self] in
-      guard let self, #available(iOS 18.0, *) else { return }
-      _ = try? self.engine()
+      _ = try? self?.loadedEngine()
     }
   }
 
@@ -78,9 +76,9 @@ final class KokoroVoicePlayer: NSObject, AVAudioPlayerDelegate {
     timeout = deadline
     DispatchQueue.main.asyncAfter(deadline: .now() + (navigation ? 2.5 : 20), execute: deadline)
     inferenceThread.async { [weak self] in
-      guard let self, self.isCurrent(identifier), #available(iOS 18.0, *) else { return }
+      guard let self, self.isCurrent(identifier) else { return }
       let result: Result<Data, Error> = Result {
-        let audio = try self.engine().synthesize(text: text, voice: "af_heart")
+        let audio = try self.loadedEngine().synthesize(text: text, voice: "af_heart")
         return try Self.waveData(samples: audio.samples)
       }
       DispatchQueue.main.async { [weak self] in

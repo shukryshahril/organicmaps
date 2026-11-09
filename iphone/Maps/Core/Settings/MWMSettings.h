@@ -63,7 +63,6 @@ NS_SWIFT_NAME(Settings)
 + (void)setTrackWarningAlertShown:(BOOL)shown;
 
 + (NSString *)donateUrl;
-+ (BOOL)isNY;
 
 + (BOOL)isShowDownloadedRegions;
 + (void)setShowDownloadedRegions:(BOOL)isEnabled;

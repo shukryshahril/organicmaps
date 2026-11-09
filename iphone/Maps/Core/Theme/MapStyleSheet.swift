@@ -55,69 +55,31 @@ extension MapStyleSheet: IStyleSheet {
         s.shadowOffset = CGSize(width: 0, height: 1)
       }
     case .mapButtonZoomIn:
-      return .add { s in
-        InterfaceStyleSheet.floatingSurface(s)
-        s.cornerRadius = .custom(InterfaceStyleSheet.isPixel ? 2 : 20)
-        s.coloring = .blue
-        s.mwmImage = "btn_zoom_in"
-      }
+      return .add { s in Self.floatingControl(s, image: "btn_zoom_in") }
     case .mapButtonZoomOut:
-      return .add { s in
-        InterfaceStyleSheet.floatingSurface(s)
-        s.cornerRadius = .custom(InterfaceStyleSheet.isPixel ? 2 : 20)
-        s.coloring = .blue
-        s.mwmImage = "btn_zoom_out"
-      }
+      return .add { s in Self.floatingControl(s, image: "btn_zoom_out") }
     case .mapButtonPending:
-      return .add { s in
-        InterfaceStyleSheet.floatingSurface(s)
-        s.cornerRadius = .custom(InterfaceStyleSheet.isPixel ? 2 : 20)
-        s.coloring = .blue
-        s.mwmImage = "btn_pending"
-      }
+      return .add { s in Self.floatingControl(s, image: "btn_pending") }
     case .mapButtonGetPosition:
-      return .add { s in
-        InterfaceStyleSheet.floatingSurface(s)
-        s.cornerRadius = .custom(InterfaceStyleSheet.isPixel ? 2 : 20)
-        s.coloring = .blue
-        s.mwmImage = "btn_get_position"
-      }
+      return .add { s in Self.floatingControl(s, image: "btn_get_position") }
     case .mapButtonFollow:
+      // The follow state stays opaque so its white arrow remains legible.
       return .add { s in
-        InterfaceStyleSheet.floatingSurface(s)
-        s.cornerRadius = .custom(InterfaceStyleSheet.isPixel ? 2 : 20)
-        s.coloring = .whiteText
+        Self.floatingControl(s, image: "btn_follow", coloring: .whiteText)
         s.backgroundColor = InterfaceStyleSheet.filledAccent
-        s.mwmImage = "btn_follow"
+        s.allowsGlass = false
       }
     case .mapButtonFollowAndRotate:
-      return .add { s in
-        InterfaceStyleSheet.floatingSurface(s)
-        s.cornerRadius = .custom(InterfaceStyleSheet.isPixel ? 2 : 20)
-        // Glass like the other map buttons; the accent icon marks the active heading mode.
-        s.coloring = .blue
-        s.mwmImage = "btn_follow_and_rotate"
-      }
+      // Glass like the other map buttons; the accent icon marks the active heading mode.
+      return .add { s in Self.floatingControl(s, image: "btn_follow_and_rotate") }
     case .mapButtonMapBookmarks:
-      return .add { s in
-        InterfaceStyleSheet.floatingSurface(s)
-        s.cornerRadius = .custom(InterfaceStyleSheet.isPixel ? 2 : 20)
-        s.coloring = .blue
-        s.mwmImage = "ic_routing_bookmark"
-      }
+      return .add { s in Self.floatingControl(s, image: "ic_routing_bookmark") }
     case .mapButtonNavigationRecord:
-      return .add { s in
-        InterfaceStyleSheet.floatingSurface(s)
-        s.cornerRadius = .custom(InterfaceStyleSheet.isPixel ? 2 : 20)
-        s.mwmImage = "ic_menu_track_recording"
-      }
+      // The recording state sets the coloring in code.
+      return .add { s in Self.floatingControl(s, image: "ic_menu_track_recording", coloring: nil) }
     case .mapButtonMapSearch:
-      // The search state sets the icon in code; this only gives the button the shared floating surface.
-      return .add { s in
-        InterfaceStyleSheet.floatingSurface(s)
-        s.cornerRadius = .custom(InterfaceStyleSheet.isPixel ? 2 : 20)
-        s.coloring = .blue
-      }
+      // The search state sets the icon in code.
+      return .add { s in Self.floatingControl(s, image: nil) }
     case .mapPromoDiscoveryButton:
       return .add { s in
         s.mwmImage = "promo_discovery_button"
@@ -172,6 +134,20 @@ extension MapStyleSheet: IStyleSheet {
         s.fontStyle = .dynamic(.regular18)
         s.fontColor = .blackPrimaryText
       }
+    }
+  }
+}
+
+private extension MapStyleSheet {
+  static func floatingControl(_ s: Style, image: String?, coloring: MWMButtonColoring? = .blue) {
+    InterfaceStyleSheet.floatingSurface(s)
+    s.cornerRadius = .floating(20)
+    s.usesFloatingSurface = true
+    if let coloring {
+      s.coloring = coloring
+    }
+    if let image {
+      s.mwmImage = image
     }
   }
 }

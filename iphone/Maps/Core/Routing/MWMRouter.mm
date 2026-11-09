@@ -28,6 +28,12 @@
 
 using namespace routing;
 
+namespace
+{
+// Drape builds a new route asynchronously with no "drawn" signal, so following it at once leaves it undrawn.
+NSTimeInterval const kAutoStartRenderDelay = 0.5;
+}  // namespace
+
 @interface MWMRouter () <MWMLocationObserver, MWMFrameworkRouteBuilderObserver>
 
 @property(nonatomic) uint32_t routeManagerTransactionId;
@@ -118,7 +124,7 @@ using namespace routing;
 
 + (void)startRouting
 {
-  [self router].startWhenRouteReady = NO;
+  [self cancelPendingStart];
   [self start];
 }
 
@@ -540,7 +546,7 @@ using namespace routing;
 
 + (void)doStop:(BOOL)removeRoutePoints
 {
-  [self router].startWhenRouteReady = NO;
+  [self cancelPendingStart];
   [[MWMRoutingManager routingManager] stopRoutingAndRemoveRoutePoints:removeRoutePoints];
   if (removeRoutePoints)
     [[MWMRoutingManager routingManager] deleteSavedRoutePoints];
@@ -593,12 +599,11 @@ using namespace routing;
   [self updateFollowingInfo];
   BOOL const shouldStart = self.startWhenRouteReady;
   self.startWhenRouteReady = NO;
-  // startRouting asks before starting from a point that is not the current position. Drape builds the
-  // new route asynchronously and offers no "drawn" signal; following it in the same instant leaves the
-  // route undrawn and the camera unfollowed, so give the render threads a moment first.
+  // startRouting asks before starting from a point that is not the current position.
   if (shouldStart && !hasWarnings)
   {
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(kAutoStartRenderDelay * NSEC_PER_SEC)),
+                   dispatch_get_main_queue(), ^{
       if ([MWMRouter isRouteValid])
         [MWMRouter startRouting];
     });

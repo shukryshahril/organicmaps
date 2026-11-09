@@ -8,6 +8,9 @@ NS_ASSUME_NONNULL_BEGIN
 // voices should reload on it.
 extern NSNotificationName const MWMTextToSpeechVoicesDidChangeNotification;
 
+// Posted when the offline Kokoro voice fails to read a settings preview.
+extern NSNotificationName const MWMKokoroVoicePreviewDidFailNotification;
+
 // A language the turn notifications can be generated in, e.g. "Deutsch" or "中文（普通话）". Identified by
 // the internal code the notification texts are keyed by, so two regional variants of one language
 // (en-GB and en-US) are the same MWMTTSLanguage, while zh-Hans and zh-Hant are not.

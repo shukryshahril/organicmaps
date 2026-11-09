@@ -41,10 +41,13 @@ final class EstimatesView: UIView {
   override func applyTheme() {
     super.applyTheme()
     guard case .estimates = state, let estimates = estimatesLabel.attributedText else { return }
-    let themed = NSMutableAttributedString(attributedString: estimates)
-    themed.addAttribute(.foregroundColor, value: InterfaceStyleSheet.ink,
-                        range: NSRange(location: 0, length: themed.length))
-    estimatesLabel.attributedText = themed
+    estimatesLabel.attributedText = Self.inked(estimates)
+  }
+
+  private static func inked(_ text: NSAttributedString) -> NSAttributedString {
+    let inked = NSMutableAttributedString(attributedString: text)
+    inked.addAttribute(.foregroundColor, value: InterfaceStyleSheet.ink, range: NSRange(location: 0, length: inked.length))
+    return inked
   }
 
   func setState(_ state: State) {
@@ -69,10 +72,7 @@ final class EstimatesView: UIView {
                         case .estimates(let estimates):
                           self.estimatesLabel.alpha = 1.0
                           self.estimatesLabel.text = nil
-                          let themed = NSMutableAttributedString(attributedString: estimates)
-                          themed.addAttribute(.foregroundColor, value: InterfaceStyleSheet.ink,
-                                              range: NSRange(location: 0, length: themed.length))
-                          self.estimatesLabel.attributedText = themed
+                          self.estimatesLabel.attributedText = Self.inked(estimates)
                         case .loading:
                           self.estimatesLabel.alpha = 0.0
                           self.estimatesLabel.text = nil

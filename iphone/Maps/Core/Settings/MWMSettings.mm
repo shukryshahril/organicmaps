@@ -255,12 +255,6 @@ NSString * const kUDDidShowICloudSynchronizationEnablingAlert = @"kUDDidShowIClo
   return url.empty() ? nil : @(url.c_str());
 }
 
-+ (BOOL)isNY
-{
-  bool isNY;
-  return settings::Get(settings::kNY, isNY) ? isNY : false;
-}
-
 + (BOOL)isShowDownloadedRegions
 {
   return GetFramework().IsShowDownloadedRegions();

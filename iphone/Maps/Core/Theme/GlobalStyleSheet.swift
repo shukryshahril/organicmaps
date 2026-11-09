@@ -130,7 +130,7 @@ extension GlobalStyleSheet: IStyleSheet {
       }
     case .switch:
       return .add { s in
-        s.onTintColor = InterfaceStyleSheet.switchAccent
+        s.onTintColor = InterfaceStyleSheet.filledAccent
       }
     case .pageControl:
       return .add { s in
@@ -179,22 +179,21 @@ extension GlobalStyleSheet: IStyleSheet {
         s.backgroundColor = .menuBackground
       }
     case .bottomTabBarButton:
+      // Dock buttons sit on the dock's shared surface, so they draw no surface of their own.
       return .add { s in
-        s.backgroundColor = .tabBarButtonBackground
-        s.tintColor = .blackSecondaryText
-        s.coloring = MWMButtonColoring.black
-        s.cornerRadius = .buttonDefault
-        s.imageContainerInsets = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
-        s.shadowColor = .shadow
-        s.shadowOpacity = 1
-        s.shadowOffset = CGSize(width: 0, height: 1)
-        s.onTintColor = .redPrimary
-        InterfaceStyleSheet.floatingSurface(s)
+        s.backgroundColor = .clear
+        s.borderWidth = 0
+        s.shadowOpacity = 0
+        s.coloring = MWMButtonColoring.blue
       }
     case .trackRecordingWidgetButton:
-      return .addFrom(Self.bottomTabBarButton) { s in
+      return .add { s in
+        s.tintColor = .blackSecondaryText
+        s.imageContainerInsets = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
+        s.onTintColor = .redPrimary
         s.cornerRadius = .custom(23)
         s.coloring = .red
+        InterfaceStyleSheet.floatingSurface(s)
       }
     case .blackOpaqueBackground:
       return .add { s in
@@ -312,7 +311,7 @@ extension GlobalStyleSheet: IStyleSheet {
         s.fontColor = InterfaceStyleSheet.accent
         s.tintColor = InterfaceStyleSheet.accent
         s.backgroundColor = .clear
-        s.fontColorHighlighted = InterfaceStyleSheet.accent.withAlphaComponent(0.7)
+        s.fontColorHighlighted = InterfaceStyleSheet.highlightedAccent
         s.fontColorDisabled = .blackHintText
         s.backgroundColorHighlighted = .clear
       }
@@ -328,7 +327,7 @@ extension GlobalStyleSheet: IStyleSheet {
         s.fontColor = InterfaceStyleSheet.accent
         s.tintColor = InterfaceStyleSheet.accent
         s.backgroundColor = InterfaceStyleSheet.background
-        s.fontColorHighlighted = InterfaceStyleSheet.accent.withAlphaComponent(0.7)
+        s.fontColorHighlighted = InterfaceStyleSheet.highlightedAccent
         s.fontColorDisabled = .blackSecondaryText
         s.tintColorDisabled = .blackSecondaryText
         s.backgroundColorHighlighted = .blackDividers
@@ -338,14 +337,14 @@ extension GlobalStyleSheet: IStyleSheet {
         s.fontStyle = .dynamic(.medium14)
         s.fontColor = .blackSecondaryText
         s.backgroundColor = .clear
-        s.fontColorHighlighted = InterfaceStyleSheet.accent.withAlphaComponent(0.7)
+        s.fontColorHighlighted = InterfaceStyleSheet.highlightedAccent
       }
     case .flatPrimaryTransButton:
       return .add { s in
         s.fontStyle = .dynamic(.medium14)
         s.fontColor = .blackPrimaryText
         s.backgroundColor = .clear
-        s.fontColorHighlighted = InterfaceStyleSheet.accent.withAlphaComponent(0.7)
+        s.fontColorHighlighted = InterfaceStyleSheet.highlightedAccent
       }
     case .flatRedTransButton:
       return .add { s in
@@ -372,7 +371,7 @@ extension GlobalStyleSheet: IStyleSheet {
     case .moreButton:
       return .add { s in
         s.fontColor = InterfaceStyleSheet.accent
-        s.fontColorHighlighted = InterfaceStyleSheet.accent.withAlphaComponent(0.7)
+        s.fontColorHighlighted = InterfaceStyleSheet.highlightedAccent
         s.backgroundColor = .clear
         s.fontStyle = .dynamic(.regular16)
       }
@@ -381,7 +380,7 @@ extension GlobalStyleSheet: IStyleSheet {
         s.fontStyle = .dynamic(.regular16)
         s.fontColor = InterfaceStyleSheet.accent
         s.cornerRadius = .none
-        s.fontColorHighlighted = InterfaceStyleSheet.accent.withAlphaComponent(0.7)
+        s.fontColorHighlighted = InterfaceStyleSheet.highlightedAccent
         s.backgroundColor = .clear
       }
     case .rateAppButton:

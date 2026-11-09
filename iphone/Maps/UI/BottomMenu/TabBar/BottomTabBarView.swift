@@ -36,7 +36,7 @@ final class ExtendedBottomTabBarContainerView: UIView {
     super.applyTheme()
     InterfaceGlassRenderer.render(self, solidColor: InterfaceStyleSheet.surface,
                                   tintColor: InterfaceStyleSheet.accent,
-                                  cornerRadius: InterfaceStyleSheet.isPixel ? 2 : 24)
+                                  cornerRadius: CornerRadius.floating(24).value)
   }
 
   override func point(inside point: CGPoint, with _: UIEvent?) -> Bool {

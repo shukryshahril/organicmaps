@@ -16,6 +16,7 @@
 using namespace locale_translator;
 
 NSNotificationName const MWMTextToSpeechVoicesDidChangeNotification = @"MWMTextToSpeechVoicesDidChange";
+NSNotificationName const MWMKokoroVoicePreviewDidFailNotification = @"KokoroVoicePreviewFailed";
 
 namespace
 {
@@ -848,7 +849,7 @@ using Observers = NSHashTable<Observer>;
       return;
     [self endUtterance:preview];
     if (!success)
-      [NSNotificationCenter.defaultCenter postNotificationName:@"KokoroVoicePreviewFailed" object:nil];
+      [NSNotificationCenter.defaultCenter postNotificationName:MWMKokoroVoicePreviewDidFailNotification object:nil];
   }];
 }
 

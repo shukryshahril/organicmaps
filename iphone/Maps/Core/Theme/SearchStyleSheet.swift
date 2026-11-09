@@ -32,7 +32,7 @@ extension SearchStyleSheet: IStyleSheet {
     case .searchCancelButton:
       return .add { s in
         s.fontColor = InterfaceStyleSheet.accent
-        s.fontColorHighlighted = InterfaceStyleSheet.accent.withAlphaComponent(0.7)
+        s.fontColorHighlighted = InterfaceStyleSheet.highlightedAccent
         s.fontStyle = .dynamic(.regular17)
         s.backgroundColor = .clear
       }

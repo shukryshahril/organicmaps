@@ -32,7 +32,7 @@ enum InterfaceStyleSheet: String, CaseIterable {
 
   // Use the deeper accent behind white button text and switch thumbs in both appearances.
   static var filledAccent: UIColor { uiColor(InterfacePalette.current.colors(isDark: false).accent) }
-  static var switchAccent: UIColor { filledAccent }
+  static var highlightedAccent: UIColor { accent.withAlphaComponent(0.7) }
 
   /// The map's position arrow and route line follow the palette accent of the current light or dark map style.
   static func applyMapAccent() {
@@ -45,6 +45,12 @@ enum InterfaceStyleSheet: String, CaseIterable {
                                 darkColor: dark.routeTone(brightness: 0.8, saturation: 1.2))
     FrameworkHelper.setMapColor("RouteOutline", lightColor: light.routeTone(brightness: 0.36, saturation: 1.1),
                                 darkColor: dark.routeTone(brightness: 0.48, saturation: 1.3))
+  }
+
+  /// Restyles the app and map after the interface style, palette, or material preference changes.
+  static func applyInterfacePreferences() {
+    applyMapAccent()
+    StyleManager.shared.setTheme(MainTheme())
   }
 
   static var headingFont: FontStyle {
@@ -76,7 +82,7 @@ extension InterfaceStyleSheet: IStyleSheet {
         let tint = recording ? UIColor.redPrimary : (muted ? Self.ink.withAlphaComponent(0.35) : Self.accent)
         s.tintColor = tint
         s.backgroundColor = tint.withAlphaComponent(muted ? 0.04 : 0.1)
-        s.cornerRadius = .custom(Self.isPixel ? 2 : 12)
+        s.cornerRadius = .floating(12)
       }
     case .routePanelTitle, .routePanelPlaceholder, .routePanelLink:
       return .add { s in
@@ -90,7 +96,7 @@ extension InterfaceStyleSheet: IStyleSheet {
     case .mapDock:
       return .add { s in
         Self.floatingSurface(s)
-        s.cornerRadius = .custom(Self.isPixel ? 2 : 24)
+        s.cornerRadius = .floating(24)
         s.borderWidth = Self.isPixel ? 2 : 0.5
       }
     case .navigationTitle:
@@ -114,7 +120,7 @@ extension InterfaceStyleSheet: IStyleSheet {
 @objc(MWMInterfaceColors)
 final class InterfaceColors: NSObject {
   @objc static var accent: UIColor { InterfaceStyleSheet.accent }
-  @objc static var highlightedAccent: UIColor { InterfaceStyleSheet.accent.withAlphaComponent(0.7) }
+  @objc static var highlightedAccent: UIColor { InterfaceStyleSheet.highlightedAccent }
 }
 
 private extension UIColor {

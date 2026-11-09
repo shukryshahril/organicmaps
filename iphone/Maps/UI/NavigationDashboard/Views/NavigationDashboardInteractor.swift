@@ -101,9 +101,6 @@ extension NavigationDashboard {
       case .updateNavigationInfo(let entity):
         return .updateNavigationInfo(entity)
 
-      case .updateTrackRecordingState(let state):
-        return .updateTrackRecordingState(state)
-
       case .updateElevationInfo(let elevationInfo, let activePointDistance):
         return .updateElevationInfo(elevationInfo, activePointDistance: activePointDistance)
 
@@ -180,10 +177,6 @@ extension NavigationDashboard.Interactor: NavigationDashboardView {
 
   func onNavigationInfoUpdated(_ entity: MWMNavigationDashboardEntity) {
     process(.updateNavigationInfo(entity))
-  }
-
-  func setTrackRecordingState(_ state: TrackRecordingState) {
-    process(.updateTrackRecordingState(state))
   }
 
   func setDrivingOptionState(_ state: MWMDrivingOptionsState) {

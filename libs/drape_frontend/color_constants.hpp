@@ -17,7 +17,6 @@ dp::Color GetColorConstant(ColorConstant const & constant);
 
 /// Replaces a style colour at runtime, per light/dark map style. Safe to call from any thread.
 void SetColorConstantOverride(ColorConstant const & constant, dp::Color const & light, dp::Color const & dark);
-void ClearColorConstantOverride(ColorConstant const & constant);
 
 using ColorsMapT = std::map<std::string, dp::Color, std::less<>>;
 ColorsMapT const & GetTransitClearColors();

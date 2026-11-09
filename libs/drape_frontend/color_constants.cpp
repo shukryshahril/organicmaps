@@ -133,6 +133,7 @@ TransitColorsHolder & TransitColors()
   return h;
 }
 
+// Overrides are read a few times per frame and written on palette changes; the flag skips the lock when unused.
 class ColorOverrides
 {
 public:
@@ -152,14 +153,6 @@ public:
     std::lock_guard lock(m_mutex);
     m_colors.insert_or_assign(std::string(constant), std::pair{light, dark});
     m_hasAny.store(true, std::memory_order_release);
-  }
-
-  void Clear(ColorConstant const & constant)
-  {
-    std::lock_guard lock(m_mutex);
-    if (auto const it = m_colors.find(constant); it != m_colors.end())
-      m_colors.erase(it);
-    m_hasAny.store(!m_colors.empty(), std::memory_order_release);
   }
 
 private:
@@ -213,10 +206,5 @@ void LoadTransitColors()
 void SetColorConstantOverride(ColorConstant const & constant, dp::Color const & light, dp::Color const & dark)
 {
   Overrides().Set(constant, light, dark);
-}
-
-void ClearColorConstantOverride(ColorConstant const & constant)
-{
-  Overrides().Clear(constant);
 }
 }  // namespace df

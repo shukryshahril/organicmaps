@@ -19,7 +19,7 @@ extension TextColorStyleSheet: IStyleSheet {
       case .blackSecondary: .blackSecondaryText
       case .blackPrimary: .blackPrimaryText
       case .linkBlue: InterfaceStyleSheet.accent
-      case .linkBlueHighlighted: InterfaceStyleSheet.accent.withAlphaComponent(0.7)
+      case .linkBlueHighlighted: InterfaceStyleSheet.highlightedAccent
       case .white: .whitePrimary
       case .blackHint: .blackHintText
       case .green: .ratingGreen

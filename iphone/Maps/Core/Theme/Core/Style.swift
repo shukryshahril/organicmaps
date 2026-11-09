@@ -51,6 +51,9 @@ class Style: ExpressibleByDictionaryLiteral {
     case previewSelectorColor
     case previewTintColor
     case infoBackground
+
+    case usesFloatingSurface
+    case allowsGlass
   }
 
   typealias Key = Parameter
@@ -326,5 +329,16 @@ extension Style {
   var infoBackground: UIColor? {
     get { self[.infoBackground] as? UIColor }
     set { params[.infoBackground] = newValue }
+  }
+
+  /// Map controls drawn on the shared floating surface, as glass where the system supports it.
+  var usesFloatingSurface: Bool? {
+    get { self[.usesFloatingSurface] as? Bool }
+    set { params[.usesFloatingSurface] = newValue }
+  }
+
+  var allowsGlass: Bool? {
+    get { self[.allowsGlass] as? Bool }
+    set { params[.allowsGlass] = newValue }
   }
 }

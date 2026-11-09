@@ -172,9 +172,6 @@ final class ActionBarViewController: UIViewController {
     visibleButtons.removeAll()
     additionalButtons.removeAll()
     downloadButton = nil
-    stackView.isLayoutMarginsRelativeArrangement = true
-    stackView.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 8, leading: 12, bottom: 8, trailing: 12)
-    stackView.spacing = 4
     configureButtons()
   }
 

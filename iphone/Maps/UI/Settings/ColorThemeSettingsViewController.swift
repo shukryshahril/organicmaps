@@ -39,8 +39,7 @@ final class ColorThemeSettingsViewController: MWMTableViewController {
     let palette = palettes[indexPath.row]
     guard palette != InterfacePalette.current else { return }
     InterfacePalette.current = palette
-    InterfaceStyleSheet.applyMapAccent()
-    StyleManager.shared.setTheme(MainTheme())
+    InterfaceStyleSheet.applyInterfacePreferences()
     tableView.reloadData()
   }
 }

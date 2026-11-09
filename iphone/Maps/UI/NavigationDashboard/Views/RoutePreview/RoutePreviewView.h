@@ -31,7 +31,6 @@ typedef NS_ENUM(NSInteger, MWMDrivingOptionsState) {
 - (void)ttsButtonDidTap;
 - (void)settingsButtonDidTap;
 - (void)stopRoutingButtonDidTap;
-- (void)trackRecordingButtonDidTap;
 
 @end
 

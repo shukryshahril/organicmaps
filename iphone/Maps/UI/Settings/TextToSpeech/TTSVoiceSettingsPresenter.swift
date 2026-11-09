@@ -17,10 +17,7 @@ final class TTSVoiceSettingsPresenter {
   }
 
   func presentPreviewFailure() {
-    let alert = UIAlertController(title: L("pref_tts_kokoro_heart"),
-                                  message: L("pref_tts_kokoro_preview_failed"), preferredStyle: .alert)
-    alert.addAction(UIAlertAction(title: L("ok"), style: .default))
-    viewController?.display(alert)
+    viewController?.display(TTSVoicePreviewPlayer.makeFailureAlert())
   }
 
   private func sections(from state: TTSVoiceSettingsState) -> [TTSVoiceSettingsSectionViewModel] {

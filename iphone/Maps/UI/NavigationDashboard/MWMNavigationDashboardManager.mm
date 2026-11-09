@@ -39,26 +39,8 @@
 {
   self = [super init];
   if (self)
-  {
-    __weak __typeof(self) weakSelf = self;
     _parentViewController = viewController;
-    [TrackRecordingManager.shared addObserver:self
-            recordingIsActiveDidChangeHandler:^(TrackRecordingState state, TrackInfo * _Nonnull,
-                                                ElevationProfileData * _Nullable (^)()) {
-              __strong __typeof(weakSelf) self = weakSelf;
-              if (!self)
-                return;
-              id<NavigationDashboardView> view = self->_navigationDashboardView;
-              if (view)
-                [view setTrackRecordingState:state];
-            }];
-  }
   return self;
-}
-
-- (void)dealloc
-{
-  [TrackRecordingManager.shared removeObserver:self];
 }
 
 - (id<NavigationDashboardView>)navigationDashboardView
@@ -159,7 +141,7 @@
   else
     [self.searchManager addObserver:self];
   _state = state;
-  [MWMSideButtons buttons].navigationButtonsVisible = state == MWMNavigationDashboardStateNavigation;
+  [MWMSideButtons buttons].recordButtonVisible = state == MWMNavigationDashboardStateNavigation;
   switch (state)
   {
   case MWMNavigationDashboardStateClosed: [self stateClosed]; break;
@@ -364,16 +346,6 @@
   [MWMSearch clear];
   [MWMRouter stopRouting];
   [self.searchManager close];
-}
-
-- (void)trackRecordingButtonDidTap
-{
-  TrackRecordingManager * manager = TrackRecordingManager.shared;
-  switch (manager.recordingState)
-  {
-  case TrackRecordingStateInactive: [manager start]; break;
-  case TrackRecordingStateActive: [[MapViewController sharedController] showTrackRecordingPlacePage]; break;
-  }
 }
 
 #pragma mark - SearchOnMapManagerObserver

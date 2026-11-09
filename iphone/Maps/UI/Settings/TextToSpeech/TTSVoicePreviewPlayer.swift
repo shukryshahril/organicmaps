@@ -15,7 +15,7 @@ final class TTSVoicePreviewPlayer {
 
   init() {
     failureObserver = NotificationCenter.default.addObserver(
-      forName: Notification.Name("KokoroVoicePreviewFailed"), object: nil, queue: .main
+      forName: .MWMKokoroVoicePreviewDidFail, object: nil, queue: .main
     ) { [weak self] _ in
       guard self?.playingVoice?.identifier == KokoroVoicePlayer.voiceIdentifier else { return }
       self?.onFailure?()
@@ -37,6 +37,13 @@ final class TTSVoicePreviewPlayer {
       NotificationCenter.default.removeObserver(resignActiveObserver)
     }
     stop()
+  }
+
+  static func makeFailureAlert() -> UIAlertController {
+    let alert = UIAlertController(title: L("pref_tts_kokoro_heart"),
+                                  message: L("pref_tts_kokoro_preview_failed"), preferredStyle: .alert)
+    alert.addAction(UIAlertAction(title: L("ok"), style: .default))
+    return alert
   }
 
   /// Plays `voice` reading a phrase in `language`, the language the voice reads.

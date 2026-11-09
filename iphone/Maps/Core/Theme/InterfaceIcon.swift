@@ -134,28 +134,30 @@ enum InterfaceIcon: String, CaseIterable {
 /// Resolve only explicitly migrated controls, preserving other legacy button assets and animations.
 @objc(MWMInterfaceIcons)
 final class InterfaceIcons: NSObject {
+  private static let boldIcons: [String: InterfaceIcon] = [
+    "ic_route_from": .routeFrom, "ic_route_to": .routeTo, "personal_start": .startNavigation,
+    "ic_bookmarks_off": .bookmarks, "ic_bookmarks_on": .bookmarkRemove,
+    "personal_bookmark_restore": .bookmarkRestore,
+  ]
+
+  private static let icons: [String: InterfaceIcon] = [
+    "ic_menu_search": .search, "ic_menu_bookmark_list": .bookmarks, "ic_menu": .menu,
+    "personal_about": .about, "personal_support": .support,
+    "btn_zoom_in": .zoomIn, "btn_zoom_out": .zoomOut, "btn_pending": .locating,
+    "btn_get_position": .location, "btn_follow": .follow, "btn_follow_and_rotate": .followHeading,
+    // Navigation side buttons; the category states show the active filter, tapping clears it.
+    "ic_routing_search": .search, "ic_routing_bookmark": .bookmarks, "ic_routing_search_off": .close,
+    "ic_routing_fuel_off": .fuel, "ic_routing_parking_off": .parking, "ic_routing_eat_off": .eat,
+    "ic_routing_food_off": .groceries, "ic_routing_atm_off": .atm,
+    "ic_menu_track_recording": .record,
+  ]
+
   @objc static func boldImage(forAssetName name: String) -> UIImage? {
-    let icons: [String: InterfaceIcon] = [
-      "ic_route_from": .routeFrom, "ic_route_to": .routeTo, "personal_start": .startNavigation,
-      "ic_bookmarks_off": .bookmarks, "ic_bookmarks_on": .bookmarkRemove,
-      "personal_bookmark_restore": .bookmarkRestore,
-    ]
-    return icons[name]?.boldImage
+    boldIcons[name]?.boldImage
   }
 
   @objc static func image(forAssetName name: String?) -> UIImage? {
     guard let name else { return nil }
-    let icons: [String: InterfaceIcon] = [
-      "ic_menu_search": .search, "ic_menu_bookmark_list": .bookmarks, "ic_menu": .menu,
-      "personal_about": .about, "personal_support": .support,
-      "btn_zoom_in": .zoomIn, "btn_zoom_out": .zoomOut, "btn_pending": .locating,
-      "btn_get_position": .location, "btn_follow": .follow, "btn_follow_and_rotate": .followHeading,
-      // Navigation side buttons; the category states show the active filter, tapping clears it.
-      "ic_routing_search": .search, "ic_routing_bookmark": .bookmarks, "ic_routing_search_off": .close,
-      "ic_routing_fuel_off": .fuel, "ic_routing_parking_off": .parking, "ic_routing_eat_off": .eat,
-      "ic_routing_food_off": .groceries, "ic_routing_atm_off": .atm,
-      "ic_menu_track_recording": .record,
-    ]
     return icons[name]?.image
   }
 }

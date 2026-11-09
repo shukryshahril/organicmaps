@@ -2,8 +2,7 @@
 #import "MWMButton.h"
 #import "MWMLocationManager.h"
 #import "MWMMapViewControlsManager.h"
-#import "MWMNavigationDashboardManager.h"
-#import "RoutePreviewView.h"
+#import "MapViewController.h"
 #import "MWMRouter.h"
 #import "MWMSettings.h"
 #import "MWMSideButtonsView.h"
@@ -58,7 +57,7 @@ NSString * const kUDDidShowLongTapToShowSideButtonsToast = @"kUDDidShowLongTapTo
     [self.sideView setNeedsLayout];
     self.zoomSwipeEnabled = NO;
     self.zoomHidden = NO;
-    [self setUpNavigationButtons];
+    [self setUpRecordButton];
   }
   return self;
 }
@@ -68,14 +67,14 @@ NSString * const kUDDidShowLongTapToShowSideButtonsToast = @"kUDDidShowLongTapTo
   [TrackRecordingManager.shared removeObserver:self];
 }
 
-#pragma mark - Navigation buttons
+#pragma mark - Record button
 
-- (void)setUpNavigationButtons
+- (void)setUpRecordButton
 {
-  MWMSideButtonsView * view = self.sideView;
-  view.recordButton.coloring = MWMButtonColoringBlue;
-  [view.recordButton addTarget:self action:@selector(recordTouchUpInside) forControlEvents:UIControlEventTouchUpInside];
-  view.recordButton.accessibilityLabel = L(@"start_track_recording");
+  MWMButton * record = self.sideView.recordButton;
+  record.coloring = MWMButtonColoringBlue;
+  [record addTarget:self action:@selector(recordTouchUpInside) forControlEvents:UIControlEventTouchUpInside];
+  record.accessibilityLabel = L(@"start_track_recording");
 
   __weak __typeof(self) weakSelf = self;
   [TrackRecordingManager.shared addObserver:self
@@ -88,23 +87,21 @@ NSString * const kUDDidShowLongTapToShowSideButtonsToast = @"kUDDidShowLongTapTo
           }];
 }
 
-- (void)setNavigationButtonsVisible:(BOOL)navigationButtonsVisible
+- (void)setRecordButtonVisible:(BOOL)recordButtonVisible
 {
-  _navigationButtonsVisible = navigationButtonsVisible;
-  self.sideView.navigationButtonsVisible = navigationButtonsVisible;
-}
-
-- (id<RouteNavigationControlsDelegate>)navigationControls
-{
-  return (id<RouteNavigationControlsDelegate>)[MWMNavigationDashboardManager sharedManager];
+  _recordButtonVisible = recordButtonVisible;
+  self.sideView.recordButtonVisible = recordButtonVisible;
 }
 
 - (void)recordTouchUpInside
 {
-  [self.navigationControls trackRecordingButtonDidTap];
+  TrackRecordingManager * manager = TrackRecordingManager.shared;
+  switch (manager.recordingState)
+  {
+  case TrackRecordingStateInactive: [manager start]; break;
+  case TrackRecordingStateActive: [[MapViewController sharedController] showTrackRecordingPlacePage]; break;
+  }
 }
-
-
 
 + (void)updateAvailableArea:(CGRect)frame
 {

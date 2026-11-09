@@ -594,7 +594,6 @@ extension NavigationDashboardViewController {
       }
       navigationControlView.isVisible = true
       navigationControlView.onNavigationInfoUpdated(viewModel.entity)
-      navigationControlView.setTrackRecordingState(viewModel.trackRecordingState)
 
     case .error:
       estimatesView.setState(viewModel.estimatesState)

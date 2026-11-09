@@ -362,7 +362,6 @@
 		ED82C5E82F90180300FA103D /* Toast.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED82C4912F90180300FA103D /* Toast.swift */; };
 		ED82C5E92F90180300FA103D /* BadgeWithNumber.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED82C4932F90180300FA103D /* BadgeWithNumber.swift */; };
 		ED82C5EA2F90180300FA103D /* Checkmark.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED82C4942F90180300FA103D /* Checkmark.swift */; };
-		ED82C5EB2F90180300FA103D /* DimBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED82C4952F90180300FA103D /* DimBackground.swift */; };
 		ED82C5EC2F90180300FA103D /* InsetsLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED82C4962F90180300FA103D /* InsetsLabel.swift */; };
 		ED82C5ED2F90180300FA103D /* MWMButton.m in Sources */ = {isa = PBXBuildFile; fileRef = ED82C4982F90180300FA103D /* MWMButton.m */; };
 		ED82C5EE2F90180300FA103D /* MWMMailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = ED82C49B2F90180300FA103D /* MWMMailViewController.m */; };
@@ -1407,7 +1406,6 @@
 		ED82C4912F90180300FA103D /* Toast.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Toast.swift; sourceTree = "<group>"; };
 		ED82C4932F90180300FA103D /* BadgeWithNumber.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BadgeWithNumber.swift; sourceTree = "<group>"; };
 		ED82C4942F90180300FA103D /* Checkmark.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Checkmark.swift; sourceTree = "<group>"; };
-		ED82C4952F90180300FA103D /* DimBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DimBackground.swift; sourceTree = "<group>"; };
 		ED82C4962F90180300FA103D /* InsetsLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InsetsLabel.swift; sourceTree = "<group>"; };
 		ED82C4972F90180300FA103D /* MWMButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MWMButton.h; sourceTree = "<group>"; };
 		ED82C4982F90180300FA103D /* MWMButton.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MWMButton.m; sourceTree = "<group>"; };
@@ -3401,7 +3399,6 @@
 				ED82C4922F90180300FA103D /* Toast */,
 				ED82C4932F90180300FA103D /* BadgeWithNumber.swift */,
 				ED82C4942F90180300FA103D /* Checkmark.swift */,
-				ED82C4952F90180300FA103D /* DimBackground.swift */,
 				ED82C4962F90180300FA103D /* InsetsLabel.swift */,
 				ED82C4972F90180300FA103D /* MWMButton.h */,
 				ED82C4982F90180300FA103D /* MWMButton.m */,
@@ -4288,6 +4285,7 @@
 			buildConfigurationList = 6741AA541BF340DE002C974C /* Build configuration list for PBXNativeTarget "OMaps" */;
 			buildPhases = (
 				FA456C4E26BDCCC300B83C20 /* CopyFiles */,
+				A81108000000000000000042 /* Fetch Kokoro Voice */,
 				6741A9411BF340DE002C974C /* Resources */,
 				6741A9A01BF340DE002C974C /* Sources */,
 				6741AA311BF340DE002C974C /* Frameworks */,
@@ -4624,6 +4622,28 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		A81108000000000000000042 /* Fetch Kokoro Voice */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Fetch Kokoro Voice";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"$SRCROOT/../../tools/unix/ensure_kokoro_ios.sh\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		6741A9A01BF340DE002C974C /* Sources */ = {
@@ -5011,7 +5031,6 @@
 				ED82C5E82F90180300FA103D /* Toast.swift in Sources */,
 				ED82C5E92F90180300FA103D /* BadgeWithNumber.swift in Sources */,
 				ED82C5EA2F90180300FA103D /* Checkmark.swift in Sources */,
-				ED82C5EB2F90180300FA103D /* DimBackground.swift in Sources */,
 				ED82C5EC2F90180300FA103D /* InsetsLabel.swift in Sources */,
 				ED82C5ED2F90180300FA103D /* MWMButton.m in Sources */,
 				ED82C5EE2F90180300FA103D /* MWMMailViewController.m in Sources */,
@@ -5477,6 +5496,7 @@
 		6741AA571BF340DE002C974C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIconDebug;
 				CODE_SIGN_ENTITLEMENTS = "OMaps-Debug.entitlements";
@@ -5498,6 +5518,7 @@
 		6741AA5A1BF340DE002C974C /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = "OMaps-Release.entitlements";

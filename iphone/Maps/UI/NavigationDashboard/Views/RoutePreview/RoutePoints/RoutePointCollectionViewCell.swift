@@ -13,7 +13,6 @@ final class RoutePointCollectionViewCell: UICollectionViewCell {
   struct PointViewModel {
     let title: String
     let image: UIImage
-    let usesCurrentPositionIcon: Bool
     let showCloseButton: Bool
     let maskedCorners: CACornerMask
     let isPlaceholder: Bool

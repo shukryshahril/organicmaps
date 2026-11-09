@@ -147,10 +147,10 @@ final class RootSettingsInteractor {
     switch setting {
     case .glassInterface:
       InterfaceMaterial.current = enabled ? .glass : .solid
-      StyleManager.shared.setTheme(MainTheme())
+      InterfaceStyleSheet.applyInterfacePreferences()
     case .pixelInterface:
       InterfaceStyle.current = enabled ? .pixel : .minimal
-      StyleManager.shared.setTheme(MainTheme())
+      InterfaceStyleSheet.applyInterfacePreferences()
     case .zoomButtons:
       settings.setZoomButtonsEnabled(enabled)
     case .buildings3D:

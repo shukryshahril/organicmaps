@@ -219,7 +219,6 @@ private extension NavigationDashboard.RoutePoints {
     let viewModel = RoutePointCollectionViewCell.PointViewModel(
       title: title(for: index),
       image: usesCurrentPositionIcon ? InterfaceIcon.location.boldImage : defaultImage(for: index),
-      usesCurrentPositionIcon: usesCurrentPositionIcon,
       showCloseButton: point != nil,
       maskedCorners: maskedCorners,
       isPlaceholder: point == nil,

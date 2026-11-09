@@ -1,7 +1,7 @@
 import Foundation
 
 /// Colour is saved separately from interface shape and light/dark appearance.
-enum InterfacePalette: String, CaseIterable {
+enum InterfacePalette: String, CaseIterable, InterfacePreference {
   case forest
   case graphite
   case ocean
@@ -23,20 +23,8 @@ enum InterfacePalette: String, CaseIterable {
     let border: UInt32
   }
 
-  private static let preferenceKey = "PersonalInterfacePalette"
-
-  static var current: InterfacePalette {
-    get { load() }
-    set { newValue.save() }
-  }
-
-  static func load(from defaults: UserDefaults = .standard) -> InterfacePalette {
-    defaults.string(forKey: preferenceKey).flatMap(InterfacePalette.init(rawValue:)) ?? .forest
-  }
-
-  func save(to defaults: UserDefaults = .standard) {
-    defaults.set(rawValue, forKey: Self.preferenceKey)
-  }
+  static let preferenceKey = "PersonalInterfacePalette"
+  static let defaultValue = Self.forest
 
   var titleKey: String { "pref_palette_\(rawValue)" }
 
