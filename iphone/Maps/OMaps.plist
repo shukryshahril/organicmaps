@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
-	<string>Tujuan</string>
+	<string>Arah</string>
 	<key>CFBundleDocumentTypes</key>
 	<array>
 		<dict>
