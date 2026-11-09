@@ -20,6 +20,9 @@ enum RootSettings: String, Hashable {
   case largeFont
   case transliteration
   case appearance
+  case pixelInterface
+  case glassInterface
+  case colorTheme
   case iCloud
   case mapTiles
   case logging
@@ -65,6 +68,9 @@ extension RootSettings {
     case .largeFont: return L("big_font")
     case .transliteration: return L("transliteration_title")
     case .appearance: return L("pref_appearance_title")
+    case .glassInterface: return L("pref_glass_interface_title")
+    case .pixelInterface: return L("pref_pixel_interface_title")
+    case .colorTheme: return L("pref_color_theme_title")
     case .iCloud: return "iCloud Synchronization (Beta)"
     case .mapTiles: return L("pref_bg_tiles_title")
     case .logging: return L("enable_logging")
@@ -86,9 +92,12 @@ extension RootSettings {
     case .powerManagement: return .powerManagement
     case .bookmarksTextPlacement: return .bookmarksTextPlacement
     case .appearance: return .appearance
+    case .colorTheme: return .colorTheme
     case .voiceInstructions: return .voiceInstructions
     case .mapTiles: return .mapTiles
-    case .routingOptions,
+    case .glassInterface,
+         .pixelInterface,
+         .routingOptions,
          .zoomButtons,
          .buildings3D,
          .autoDownload,
@@ -181,6 +190,9 @@ struct RootSettingsState {
   let largeFontSize: Bool
   let transliteration: Bool
   let theme: MWMTheme
+  let interfaceStyle: InterfaceStyle
+  let interfaceMaterial: InterfaceMaterial
+  let interfacePalette: InterfacePalette
   let iCloudSynchronizationEnabled: Bool
   let iCloudSynchronizationState: SynchronizationManagerState?
   let map3DEnabled: Bool

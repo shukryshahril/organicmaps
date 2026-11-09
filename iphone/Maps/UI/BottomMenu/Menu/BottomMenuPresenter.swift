@@ -98,29 +98,29 @@ extension BottomMenuPresenter {
       let cell = tableView.dequeueReusableCell(cell: BottomMenuItemCell.self)!
       switch menuCells[indexPath.row] {
       case .addPlace:
-        cell.configure(image: shouldUpdateMapToContribute ? UIImage(resource: .icMenuAddPlaceExclamation) : UIImage(resource: .icMenuAddPlace),
+        cell.configure(image: shouldUpdateMapToContribute ? InterfaceIcon.updateMap.image(canvasSize: 36) : InterfaceIcon.addPlace.image(canvasSize: 36),
                        title: L("placepage_add_place_button"),
                        enabled: countryId != nil)
       case .recordTrack:
         switch trackRecorder.recordingState {
         case .inactive:
-          cell.configure(image: UIImage(resource: .icMenuTrackRecording), title: L("start_track_recording"))
+          cell.configure(image: InterfaceIcon.record.image(canvasSize: 36), title: L("start_track_recording"))
         case .active:
-          cell.configure(image: UIImage(resource: .icMenuTrackRecording), title: L("stop_track_recording"), imageStyle: .red)
+          cell.configure(image: InterfaceIcon.stopRecording.image(canvasSize: 36), title: L("stop_track_recording"), imageStyle: .red)
         }
         return cell
       case .downloadMaps:
-        cell.configure(image: UIImage(resource: .icMenuDownload),
+        cell.configure(image: InterfaceIcon.download.image(canvasSize: 36),
                        title: L("download_maps"),
                        badgeCount: MapsAppDelegate.theApp().badgeNumber())
       case .donate:
-        cell.configure(image: Settings.isNY() ? UIImage(resource: .icChristmasTree) : UIImage(resource: .icMenuDonate),
+        cell.configure(image: InterfaceIcon.support.image(canvasSize: 36),
                        title: L("donate"))
       case .settings:
-        cell.configure(image: UIImage(resource: .icMenuSettings),
+        cell.configure(image: InterfaceIcon.settings.image(canvasSize: 36),
                        title: L("settings"))
       case .share:
-        cell.configure(image: UIImage(resource: .icMenuShare),
+        cell.configure(image: InterfaceIcon.share.image(canvasSize: 36),
                        title: L("share_my_location"))
       }
       return cell

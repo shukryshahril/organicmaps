@@ -72,24 +72,24 @@ extension GlobalStyleSheet: IStyleSheet {
     switch self {
     case .tableView:
       return .add { s in
-        s.backgroundColor = .whitePrimary
-        s.separatorColor = .blackDividers
+        s.backgroundColor = InterfaceStyleSheet.background
+        s.separatorColor = InterfaceStyleSheet.border
         s.exclusions = [String(describing: UIDatePicker.self)]
       }
     case .tableViewCell:
       return .add { s in
-        s.backgroundColor = .whitePrimary
+        s.backgroundColor = InterfaceStyleSheet.surface
         s.fontStyle = .dynamic(.regular16)
         s.fontColor = .blackPrimaryText
-        s.tintColor = .linkBlue
+        s.tintColor = InterfaceStyleSheet.accent
         s.fontDetailedStyle = .dynamic(.regular14)
         s.fontColorDetailed = .blackSecondaryText
-        s.backgroundColorSelected = .pressBackground
+        s.backgroundColorSelected = InterfaceStyleSheet.background
         s.exclusions = [String(describing: UIDatePicker.self), "_UIActivityUserDefaultsActivityCell"]
       }
     case .defaultTableViewCell:
       return .add { s in
-        s.backgroundColor = .whitePrimary
+        s.backgroundColor = InterfaceStyleSheet.surface
       }
     case .noStyleTableViewCell:
       return .add { _ in
@@ -99,44 +99,44 @@ extension GlobalStyleSheet: IStyleSheet {
       return .add { s in
         if #available(iOS 26.0, *) {
         } else {
-          s.backgroundColor = .whitePrimary
-          s.barTintColor = .greenPrimary
+          s.backgroundColor = InterfaceStyleSheet.surface
+          s.barTintColor = InterfaceStyleSheet.background
           s.fontColor = .blackPrimaryText
-          s.fontColorDetailed = UIColor.white
+          s.fontColorDetailed = InterfaceStyleSheet.accent
           s.tintColor = .blackSecondaryText
         }
       }
     case .navigationBar:
       return .add { s in
-        s.barTintColor = .greenPrimary
-        s.tintColor = .whitePrimaryText
+        s.barTintColor = InterfaceStyleSheet.background
+        s.tintColor = InterfaceStyleSheet.ink
         s.backgroundImage = UIImage()
         s.shadowImage = UIImage()
-        s.fontStyle = .fixed(.header)
-        s.fontColor = .whitePrimaryText
+        s.fontStyle = InterfaceStyleSheet.headingFont
+        s.fontColor = InterfaceStyleSheet.ink
       }
     case .navigationBarItem:
       return .add { s in
         s.fontStyle = .dynamic(.regular18, maxSize: 24)
-        s.fontColor = .whitePrimaryText
+        s.fontColor = InterfaceStyleSheet.ink
         s.fontColorDisabled = UIColor.lightGray
-        s.fontColorHighlighted = .whitePrimaryTextHighlighted
-        s.tintColor = .whitePrimaryText
+        s.fontColorHighlighted = InterfaceStyleSheet.accent.withAlphaComponent(0.6)
+        s.tintColor = InterfaceStyleSheet.ink
       }
     case .checkmark:
       return .add { s in
-        s.onTintColor = .linkBlue
+        s.onTintColor = InterfaceStyleSheet.accent
         s.offTintColor = .blackHintText
       }
     case .switch:
       return .add { s in
-        s.onTintColor = .linkBlue
+        s.onTintColor = InterfaceStyleSheet.switchAccent
       }
     case .pageControl:
       return .add { s in
         s.pageIndicatorTintColor = .blackHintText
         s.currentPageIndicatorTintColor = .blackSecondaryText
-        s.backgroundColor = .whitePrimary
+        s.backgroundColor = InterfaceStyleSheet.surface
       }
     case .starRatingView:
       return .add { s in
@@ -159,12 +159,12 @@ extension GlobalStyleSheet: IStyleSheet {
       }
     case .background:
       return .add { s in
-        s.backgroundColor = .whitePrimary
-        s.backgroundColorSelected = .pressBackground
+        s.backgroundColor = InterfaceStyleSheet.surface
+        s.backgroundColorSelected = InterfaceStyleSheet.background
       }
     case .pressBackground:
       return .add { s in
-        s.backgroundColor = .pressBackground
+        s.backgroundColor = InterfaceStyleSheet.background
       }
     case .primaryBackground:
       return .add { s in
@@ -189,6 +189,7 @@ extension GlobalStyleSheet: IStyleSheet {
         s.shadowOpacity = 1
         s.shadowOffset = CGSize(width: 0, height: 1)
         s.onTintColor = .redPrimary
+        InterfaceStyleSheet.floatingSurface(s)
       }
     case .trackRecordingWidgetButton:
       return .addFrom(Self.bottomTabBarButton) { s in
@@ -201,7 +202,7 @@ extension GlobalStyleSheet: IStyleSheet {
       }
     case .blueBackground:
       return .add { s in
-        s.backgroundColor = .linkBlue
+        s.backgroundColor = InterfaceStyleSheet.filledAccent
       }
     case .fadeBackground:
       return .add { s in
@@ -229,9 +230,9 @@ extension GlobalStyleSheet: IStyleSheet {
       }
     case .tabView:
       return .add { s in
-        s.backgroundColor = .whitePrimary
+        s.backgroundColor = InterfaceStyleSheet.surface
         s.barTintColor = .whitePrimary
-        s.tintColor = .linkBlue
+        s.tintColor = InterfaceStyleSheet.accent
         s.fontColor = .blackSecondaryText
         s.fontColorHighlighted = .linkBlue
         s.fontStyle = .dynamic(.medium14)
@@ -243,7 +244,7 @@ extension GlobalStyleSheet: IStyleSheet {
         s.shadowColor = .shadow
         s.shadowOpacity = 1
         s.shadowOffset = CGSize(width: 0, height: 1)
-        s.backgroundColor = .whitePrimary
+        s.backgroundColor = InterfaceStyleSheet.surface
         s.clip = true
       }
     case .alertView:
@@ -260,7 +261,7 @@ extension GlobalStyleSheet: IStyleSheet {
       return .add { s in
         s.borderColor = .blackDividers
         s.borderWidth = 0.5
-        s.backgroundColor = .whitePrimary
+        s.backgroundColor = InterfaceStyleSheet.surface
       }
     case .alertViewTextField:
       return .add { s in
@@ -284,17 +285,17 @@ extension GlobalStyleSheet: IStyleSheet {
         s.fontColor = .whitePrimaryText
         s.coloring = .whiteText
         s.tintColor = .whitePrimaryText
-        s.backgroundColor = .linkBlue
+        s.backgroundColor = InterfaceStyleSheet.filledAccent
         s.fontColorHighlighted = .whitePrimaryTextHighlighted
         s.fontColorDisabled = .whitePrimaryTextHighlighted
-        s.backgroundColorHighlighted = .linkBlueHighlighted
+        s.backgroundColorHighlighted = InterfaceStyleSheet.filledAccent.withAlphaComponent(0.8)
       }
     case .flatNormalButtonBig:
       return .addFrom(Self.flatNormalButton) { s in
         s.fontStyle = .dynamic(.semibold16)
         s.cornerRadius = .buttonDefaultBig
-        s.backgroundColor = .linkBlue
-        s.backgroundColorDisabled = .linkBlueHighlighted
+        s.backgroundColor = InterfaceStyleSheet.filledAccent
+        s.backgroundColorDisabled = InterfaceStyleSheet.filledAccent.withAlphaComponent(0.8)
       }
     case .crowdfundingButton:
       return .addFrom(Self.flatNormalButtonBig) { s in
@@ -308,10 +309,10 @@ extension GlobalStyleSheet: IStyleSheet {
         s.fontStyle = .dynamic(.medium14)
         s.cornerRadius = .buttonDefault
         s.clip = true
-        s.fontColor = .linkBlue
-        s.tintColor = .linkBlue
+        s.fontColor = InterfaceStyleSheet.accent
+        s.tintColor = InterfaceStyleSheet.accent
         s.backgroundColor = .clear
-        s.fontColorHighlighted = .linkBlueHighlighted
+        s.fontColorHighlighted = InterfaceStyleSheet.accent.withAlphaComponent(0.7)
         s.fontColorDisabled = .blackHintText
         s.backgroundColorHighlighted = .clear
       }
@@ -324,10 +325,10 @@ extension GlobalStyleSheet: IStyleSheet {
         s.fontStyle = .dynamic(.medium15)
         s.cornerRadius = .buttonDefaultBig
         s.clip = true
-        s.fontColor = .linkBlue
-        s.tintColor = .linkBlue
-        s.backgroundColor = .pressBackground
-        s.fontColorHighlighted = .linkBlueHighlighted
+        s.fontColor = InterfaceStyleSheet.accent
+        s.tintColor = InterfaceStyleSheet.accent
+        s.backgroundColor = InterfaceStyleSheet.background
+        s.fontColorHighlighted = InterfaceStyleSheet.accent.withAlphaComponent(0.7)
         s.fontColorDisabled = .blackSecondaryText
         s.tintColorDisabled = .blackSecondaryText
         s.backgroundColorHighlighted = .blackDividers
@@ -337,14 +338,14 @@ extension GlobalStyleSheet: IStyleSheet {
         s.fontStyle = .dynamic(.medium14)
         s.fontColor = .blackSecondaryText
         s.backgroundColor = .clear
-        s.fontColorHighlighted = .linkBlueHighlighted
+        s.fontColorHighlighted = InterfaceStyleSheet.accent.withAlphaComponent(0.7)
       }
     case .flatPrimaryTransButton:
       return .add { s in
         s.fontStyle = .dynamic(.medium14)
         s.fontColor = .blackPrimaryText
         s.backgroundColor = .clear
-        s.fontColorHighlighted = .linkBlueHighlighted
+        s.fontColorHighlighted = InterfaceStyleSheet.accent.withAlphaComponent(0.7)
       }
     case .flatRedTransButton:
       return .add { s in
@@ -370,29 +371,29 @@ extension GlobalStyleSheet: IStyleSheet {
       }
     case .moreButton:
       return .add { s in
-        s.fontColor = .linkBlue
-        s.fontColorHighlighted = .linkBlueHighlighted
+        s.fontColor = InterfaceStyleSheet.accent
+        s.fontColorHighlighted = InterfaceStyleSheet.accent.withAlphaComponent(0.7)
         s.backgroundColor = .clear
         s.fontStyle = .dynamic(.regular16)
       }
     case .editButton:
       return .add { s in
         s.fontStyle = .dynamic(.regular16)
-        s.fontColor = .linkBlue
+        s.fontColor = InterfaceStyleSheet.accent
         s.cornerRadius = .none
-        s.fontColorHighlighted = .linkBlueHighlighted
+        s.fontColorHighlighted = InterfaceStyleSheet.accent.withAlphaComponent(0.7)
         s.backgroundColor = .clear
       }
     case .rateAppButton:
       return .add { s in
         s.fontStyle = .dynamic(.medium17)
-        s.fontColor = .linkBlue
+        s.fontColor = InterfaceStyleSheet.accent
         s.fontColorHighlighted = .whitePrimary
-        s.borderColor = .linkBlue
+        s.borderColor = InterfaceStyleSheet.accent
         s.cornerRadius = .buttonDefault
         s.borderWidth = 1
         s.backgroundColor = .clear
-        s.backgroundColorHighlighted = .linkBlue
+        s.backgroundColorHighlighted = InterfaceStyleSheet.filledAccent
       }
     case .termsOfUseLinkText:
       return .add { s in
@@ -417,7 +418,7 @@ extension GlobalStyleSheet: IStyleSheet {
       }
     case .blue:
       return .add { s in
-        s.tintColor = .linkBlue
+        s.tintColor = InterfaceStyleSheet.accent
         s.coloring = MWMButtonColoring.blue
       }
     case .black:
@@ -456,7 +457,7 @@ extension GlobalStyleSheet: IStyleSheet {
       }
     case .modalSheetBackground:
       return .add { s in
-        s.backgroundColor = .whitePrimary
+        s.backgroundColor = InterfaceStyleSheet.surface
         s.shadowColor = UIColor.black
         s.shadowOffset = CGSize(width: 0, height: 1)
         s.shadowOpacity = 0.3
@@ -464,6 +465,7 @@ extension GlobalStyleSheet: IStyleSheet {
         s.cornerRadius = .modalSheet
         s.clip = false
         s.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
+        InterfaceStyleSheet.floatingSurface(s)
       }
     case .modalSheetContent:
       return .addFrom(Self.modalSheetBackground) { s in

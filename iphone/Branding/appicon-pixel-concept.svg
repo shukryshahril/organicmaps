@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 32 32" shape-rendering="crispEdges">
+  <title>Pixel compass leaf concept</title>
+  <rect width="32" height="32" fill="#202C28"/>
+  <path d="M8 23V15H9V12H11V10H14V8H23V9H21V11H19V13H17V15H15V17H13V19H11V21H9V23Z" fill="#E9F6C3"/>
+  <path d="M10 24V23H12V21H14V19H16V17H18V15H20V13H22V11H24V17H23V20H21V22H18V24Z" fill="#91CC76"/>
+</svg>

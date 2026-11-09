@@ -7,6 +7,17 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A81108000000000000000031 /* KokoroVoicePlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A81108000000000000000030 /* KokoroVoicePlayer.swift */; };
+		A81108000000000000000033 /* Kokoro in Resources */ = {isa = PBXBuildFile; fileRef = A81108000000000000000032 /* Kokoro */; };
+		A81108000000000000000036 /* KokoroCoreML in Frameworks */ = {isa = PBXBuildFile; productRef = A81108000000000000000035 /* KokoroCoreML */; };
+		A81108000000000000000025 /* InterfaceGlassRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A81108000000000000000024 /* InterfaceGlassRenderer.swift */; };
+		A81108000000000000000023 /* InterfaceMaterial.swift in Sources */ = {isa = PBXBuildFile; fileRef = A81108000000000000000022 /* InterfaceMaterial.swift */; };
+		A81108000000000000000020 /* InterfaceIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = A81108000000000000000021 /* InterfaceIcon.swift */; };
+		A8110800000000000000000A /* ColorThemeSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A81108000000000000000009 /* ColorThemeSettingsViewController.swift */; };
+		A81108000000000000000008 /* InterfacePalette.swift in Sources */ = {isa = PBXBuildFile; fileRef = A81108000000000000000007 /* InterfacePalette.swift */; };
+		A81108000000000000000006 /* InterfaceStyleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A81108000000000000000005 /* InterfaceStyleTests.swift */; };
+		A81108000000000000000004 /* InterfaceStyleSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = A81108000000000000000002 /* InterfaceStyleSheet.swift */; };
+		A81108000000000000000003 /* InterfaceStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = A81108000000000000000001 /* InterfaceStyle.swift */; };
 		C01F84D927D2414E9A530001 /* BookmarksListSortingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C01F84D927D2414E9A530002 /* BookmarksListSortingTests.swift */; };
 		0F13484A0000000000000002 /* UITableViewCell+SeparatorInset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F13484A0000000000000001 /* UITableViewCell+SeparatorInset.swift */; };
 		C50A71010000000000000001 /* MWMSearchSpotlightTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = C50A71010000000000000002 /* MWMSearchSpotlightTests.mm */; };
@@ -778,6 +789,16 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		A81108000000000000000030 /* KokoroVoicePlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KokoroVoicePlayer.swift; sourceTree = "<group>"; };
+		A81108000000000000000032 /* Kokoro */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Resources/Kokoro; sourceTree = SOURCE_ROOT; };
+		A81108000000000000000024 /* InterfaceGlassRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterfaceGlassRenderer.swift; sourceTree = "<group>"; };
+		A81108000000000000000022 /* InterfaceMaterial.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterfaceMaterial.swift; sourceTree = "<group>"; };
+		A81108000000000000000021 /* InterfaceIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterfaceIcon.swift; sourceTree = "<group>"; };
+		A81108000000000000000009 /* ColorThemeSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorThemeSettingsViewController.swift; sourceTree = "<group>"; };
+		A81108000000000000000007 /* InterfacePalette.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterfacePalette.swift; sourceTree = "<group>"; };
+		A81108000000000000000005 /* InterfaceStyleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterfaceStyleTests.swift; sourceTree = "<group>"; };
+		A81108000000000000000002 /* InterfaceStyleSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterfaceStyleSheet.swift; sourceTree = "<group>"; };
+		A81108000000000000000001 /* InterfaceStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterfaceStyle.swift; sourceTree = "<group>"; };
 		C01F84D927D2414E9A530002 /* BookmarksListSortingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarksListSortingTests.swift; sourceTree = "<group>"; };
 		0F13484A0000000000000001 /* UITableViewCell+SeparatorInset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITableViewCell+SeparatorInset.swift"; sourceTree = "<group>"; };
 		C50A71010000000000000002 /* MWMSearchSpotlightTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = MWMSearchSpotlightTests.mm; sourceTree = "<group>"; };
@@ -1880,6 +1901,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A81108000000000000000036 /* KokoroCoreML in Frameworks */,
 				16CDB3FB2F15B0C30040FC4F /* libtimezone.a in Frameworks */,
 				FAF9DDA32A86DC54000D7037 /* libharfbuzz.a in Frameworks */,
 				FA456C3C26BDC6AD00B83C20 /* Chart.framework in Frameworks */,
@@ -2031,6 +2053,7 @@
 		4B4153B62BF9709100EE4B02 /* Core */ = {
 			isa = PBXGroup;
 			children = (
+				A81108000000000000000005 /* InterfaceStyleTests.swift */,
 				C50A71010000000000000002 /* MWMSearchSpotlightTests.mm */,
 				ED91433C3001A0000081DF0B /* DeepLink */,
 				EDBAB6F12E980415007962B5 /* GeoNavigationToOMURLConverterTests */,
@@ -3506,6 +3529,7 @@
 			isa = PBXGroup;
 			children = (
 				ED82C4D62F90180300FA103D /* Cells */,
+				A81108000000000000000009 /* ColorThemeSettingsViewController.swift */,
 				A10000000000000000000006 /* SettingsBuilder.swift */,
 				ED8F0F842FE962BF00780C0F /* SettingsModels.swift */,
 				A1000000000000000000000A /* SettingsViewController.swift */,
@@ -3852,6 +3876,8 @@
 				ED82C6F02F90186300FA103D /* LocaleTranslator.mm */,
 				ED82C6F12F90186300FA103D /* MWMTextToSpeech.h */,
 				ED82C6F22F90186300FA103D /* MWMTextToSpeech.mm */,
+				A81108000000000000000030 /* KokoroVoicePlayer.swift */,
+				A81108000000000000000032 /* Kokoro */,
 				ED82C6F42F90186300FA103D /* MWMTextToSpeechObserver.h */,
 			);
 			path = TextToSpeech;
@@ -3878,6 +3904,7 @@
 				ED82C7042F90186300FA103D /* DifficultyViewRenderer.swift */,
 				ED82C7052F90186300FA103D /* InsetsLabelRenderer.swift */,
 				ED82C7062F90186300FA103D /* MWMButtonRenderer.swift */,
+				A81108000000000000000024 /* InterfaceGlassRenderer.swift */,
 				ED82C7072F90186300FA103D /* MWMTableViewCellRenderer.swift */,
 				ED82C7082F90186300FA103D /* TabViewRenderer.swift */,
 				ED82C7092F90186300FA103D /* UIActivityIndicatorRenderer.swift */,
@@ -3921,6 +3948,11 @@
 				ED82C7222F90186300FA103D /* CornerRadius.swift */,
 				ED82C7242F90186300FA103D /* FontStyleSheet.swift */,
 				ED82C7252F90186300FA103D /* GlobalStyleSheet.swift */,
+				A81108000000000000000007 /* InterfacePalette.swift */,
+				A81108000000000000000001 /* InterfaceStyle.swift */,
+				A81108000000000000000002 /* InterfaceStyleSheet.swift */,
+				A81108000000000000000021 /* InterfaceIcon.swift */,
+				A81108000000000000000022 /* InterfaceMaterial.swift */,
 				ED82C7262F90186300FA103D /* MainTheme.swift */,
 				ED82C7272F90186300FA103D /* MapStyleSheet.swift */,
 				ED82C7282F90186300FA103D /* PlacePageStyleSheet.swift */,
@@ -4266,6 +4298,7 @@
 				ED46DDE02D098A0C007CACD6 /* PBXTargetDependency */,
 			);
 			name = OMaps;
+			packageProductDependencies = (A81108000000000000000035 /* KokoroCoreML */,);
 			productName = Maps;
 			productReference = 6741AA5D1BF340DE002C974C /* Organic Maps (Debug).app */;
 			productType = "com.apple.product-type.application";
@@ -4398,6 +4431,7 @@
 				hr,
 				is,
 			);
+			packageReferences = (A81108000000000000000034 /* kokoro-coreml */,);
 			mainGroup = 29B97314FDCFA39411CA2CEA /* Maps */;
 			productRefGroup = 19C28FACFE9D520D11CA2CBB /* Products */;
 			projectDirPath = "";
@@ -4415,6 +4449,22 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		A81108000000000000000034 /* kokoro-coreml */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Jud/kokoro-coreml.git";
+			requirement = {kind = exactVersion; version = 0.11.2; };
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		A81108000000000000000035 /* KokoroCoreML */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A81108000000000000000034 /* kokoro-coreml */;
+			productName = KokoroCoreML;
+		};
+/* End XCSwiftPackageProductDependency section */
 
 /* Begin PBXReferenceProxy section */
 		FA456C4726BDCC8E00B83C20 /* libshaders.a */ = {
@@ -4445,6 +4495,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A81108000000000000000033 /* Kokoro in Resources */,
 				ED2506E22F83F86D00945FC4 /* Colors.xcassets in Resources */,
 				165953742CB1D85500CFED7C /* fonts in Resources */,
 				165953942CB44B5600CFED7C /* symbols in Resources */,
@@ -4839,6 +4890,13 @@
 				ED82C7A12F90186300FA103D /* CornerRadius.swift in Sources */,
 				ED82C7A32F90186300FA103D /* FontStyleSheet.swift in Sources */,
 				ED82C7A42F90186300FA103D /* GlobalStyleSheet.swift in Sources */,
+				A81108000000000000000008 /* InterfacePalette.swift in Sources */,
+				A81108000000000000000003 /* InterfaceStyle.swift in Sources */,
+				A81108000000000000000004 /* InterfaceStyleSheet.swift in Sources */,
+				A81108000000000000000020 /* InterfaceIcon.swift in Sources */,
+				A81108000000000000000025 /* InterfaceGlassRenderer.swift in Sources */,
+				A81108000000000000000031 /* KokoroVoicePlayer.swift in Sources */,
+				A81108000000000000000023 /* InterfaceMaterial.swift in Sources */,
 				ED82C7A52F90186300FA103D /* MainTheme.swift in Sources */,
 				ED82C7A62F90186300FA103D /* MapStyleSheet.swift in Sources */,
 				ED82C7A72F90186300FA103D /* PlacePageStyleSheet.swift in Sources */,
@@ -5032,6 +5090,7 @@
 				ED82C60F2F90180300FA103D /* SettingsTableViewLinkCell.swift in Sources */,
 				ED82C6102F90180300FA103D /* SettingsTableViewSelectableCell.swift in Sources */,
 				ED82C6112F90180300FA103D /* SettingsTableViewSwitchCell.swift in Sources */,
+				A8110800000000000000000A /* ColorThemeSettingsViewController.swift in Sources */,
 				A10000000000000000000001 /* SettingsBuilder.swift in Sources */,
 				A10000000000000000000002 /* RootSettingsInteractor.swift in Sources */,
 				A10000000000000000000003 /* RootSettingsModels.swift in Sources */,
@@ -5078,6 +5137,7 @@
 			files = (
 				A13811000000000000000002 /* TransportTransitWrappingTests.swift in Sources */,
 				A13812000000000000000002 /* TransportTransitRTLTests.swift in Sources */,
+				A81108000000000000000006 /* InterfaceStyleTests.swift in Sources */,
 				A13813000000000000000002 /* TransportRulerAppearanceTests.swift in Sources */,
 				5A07CF7460A24F6BBCA9F174 /* RoutePointCollectionViewCellTests.swift in Sources */,
 				A13418010000000000000004 /* CarPlayManeuverMapperTests.swift in Sources */,
@@ -5413,6 +5473,7 @@
 		6741AA571BF340DE002C974C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIconDebug;
 				CODE_SIGN_ENTITLEMENTS = "OMaps-Debug.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
@@ -5433,6 +5494,7 @@
 		6741AA5A1BF340DE002C974C /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = "OMaps-Release.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
@@ -5446,7 +5508,7 @@
 				);
 				MARKETING_VERSION = 2022.11.17;
 				OTHER_SWIFT_FLAGS = "$(inherited)";
-				PRODUCT_BUNDLE_IDENTIFIER = app.organicmaps;
+				PRODUCT_BUNDLE_IDENTIFIER = com.shukry.organicmaps;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 			};
 			name = Release;
@@ -5529,7 +5591,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 2022.11.17;
-				PRODUCT_BUNDLE_IDENTIFIER = app.organicmaps.widgetextension;
+				PRODUCT_BUNDLE_IDENTIFIER = com.shukry.organicmaps.widgetextension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;

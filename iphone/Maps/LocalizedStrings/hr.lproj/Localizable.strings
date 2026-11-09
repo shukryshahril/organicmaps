@@ -1232,3 +1232,72 @@
 
 /* Accessibility label for the button that reverses the complete planned route, including intermediate stops. */
 "reverse_route" = "Obrni rutu";
+
+/* Settings switch for the personal pixel UI style. Off uses Minimal. */
+"pref_pixel_interface_title" = "Pixel interface";
+
+/* Explains both positions of the personal UI style switch. */
+"pref_pixel_interface_summary" = "On: Pixel · Off: Minimal. Applies immediately; light and dark appearance stay separate.";
+
+/* Title of the personal colour palette picker. */
+"pref_color_theme_title" = "Colour theme";
+
+/* Footer explaining the palette picker. */
+"pref_color_theme_summary" = "Choose a palette. Each includes light and dark colours and works with Minimal or Pixel. Your choice is saved automatically.";
+
+/* Label for the default colour palette. */
+"pref_color_theme_default" = "Default";
+
+/* Name of a personal UI colour palette. */
+"pref_palette_forest" = "Forest";
+
+/* Name of a personal UI colour palette. */
+"pref_palette_graphite" = "Graphite";
+
+/* Name of a personal UI colour palette. */
+"pref_palette_ocean" = "Ocean";
+
+/* Name of a personal UI colour palette. */
+"pref_palette_teal" = "Teal";
+
+/* Name of a personal UI colour palette. */
+"pref_palette_sage" = "Sage";
+
+/* Name of a personal UI colour palette. */
+"pref_palette_sand" = "Sand";
+
+/* Name of a personal UI colour palette. */
+"pref_palette_terracotta" = "Terracotta";
+
+/* Name of a personal UI colour palette. */
+"pref_palette_rose" = "Rose";
+
+/* Name of a personal UI colour palette. */
+"pref_palette_lavender" = "Lavender";
+
+/* Name of a personal UI colour palette. */
+"pref_palette_plum" = "Plum";
+
+/* Name of a personal UI colour palette. */
+"pref_palette_midnight" = "Midnight";
+
+/* Name of a personal UI colour palette. */
+"pref_palette_citrus" = "Citrus";
+
+/* VoiceOver hint for a palette row with both light and dark previews. */
+"pref_color_theme_preview_hint" = "Apply this colour theme in light and dark appearance.";
+
+/* Settings switch for glass material on floating map controls, independent of Pixel and colour theme. */
+"pref_glass_interface_title" = "Glass effect";
+
+/* Explains how to return to normal surfaces and accessibility fallback for glass controls. */
+"pref_glass_interface_summary" = "On: Glass · Off: Solid. Applies to the map dock and floating controls. Uses solid surfaces with Reduce Transparency or Increase Contrast.";
+
+/* Bundled offline English Kokoro voice, Heart is the voice's proper name. */
+"pref_tts_kokoro_heart" = "Kokoro · Heart";
+
+/* Description of the optional on-device English voice in the voice picker. */
+"pref_tts_kokoro_summary" = "American English · Offline. Audio is generated on your iPhone. Navigation uses an Apple voice if Kokoro is unavailable or takes too long.";
+
+/* Message shown when the local Kokoro voice preview cannot be generated or played. */
+"pref_tts_kokoro_preview_failed" = "Kokoro could not play this preview. Please try again or select an Apple voice.";

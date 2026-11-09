@@ -5,6 +5,7 @@ final class TTSVoiceSettingsInteractor {
   private let language: TTSLanguage
   private lazy var previewPlayer: TTSVoicePreviewPlayer = {
     let player = TTSVoicePreviewPlayer()
+    player.onFailure = { [weak self] in self?.presenter?.presentPreviewFailure() }
     player.onFinished = { [weak self] in self?.present(animatingDifferences: false) }
     return player
   }()

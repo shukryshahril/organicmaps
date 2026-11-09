@@ -1,6 +1,7 @@
 class MainTheme: Theme {
   override func register() {
     registerStyleSheet(GlobalStyleSheet.self)
+    registerStyleSheet(InterfaceStyleSheet.self)
     registerStyleSheet(PlacePageStyleSheet.self)
     registerStyleSheet(MapStyleSheet.self)
     registerStyleSheet(BookmarksStyleSheet.self)

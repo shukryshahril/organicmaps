@@ -10,6 +10,13 @@ enum CornerRadius {
 
 extension CornerRadius {
   var value: CGFloat {
+    if InterfaceStyleSheet.isPixel {
+      switch self {
+      case .modalSheet: return 2
+      case .buttonDefault, .buttonDefaultSmall, .buttonDefaultBig, .buttonSmall: return 0
+      case .grabber, .custom: break
+      }
+    }
     switch self {
     case .modalSheet:
       if #available(iOS 26.0, *) {

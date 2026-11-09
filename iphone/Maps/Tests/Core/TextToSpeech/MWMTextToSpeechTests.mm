@@ -43,6 +43,33 @@
   [super tearDown];
 }
 
+- (void)testKokoroIsOnlyOfferedUnderEnglishAndCanReturnToAutomatic
+{
+  MWMTTSVoice * kokoro = nil;
+  MWMTTSLanguage * english = nil;
+  for (MWMTTSLanguage * language in [MWMTextToSpeech availableLanguages])
+    for (MWMTTSVoice * voice in [MWMTextToSpeech voicesForLanguage:language])
+      if (voice.group == MWMTTSVoiceGroupKokoro)
+      {
+        XCTAssertEqualObjects(language.code, @"en");
+        XCTAssertNil(kokoro, @"The same Kokoro voice must not appear twice");
+        kokoro = voice;
+        english = language;
+      }
+  XCTAssertNotNil(kokoro, @"The personal iOS build must bundle its Kokoro voice assets");
+  if (!kokoro)
+    return;
+  [MWMTextToSpeech setVoice:kokoro];
+  XCTAssertTrue([MWMTextToSpeech isVoicePinned]);
+  XCTAssertEqualObjects([MWMTextToSpeech currentLanguage].code, @"en");
+  XCTAssertEqualObjects([MWMTextToSpeech currentVoice], kokoro);
+  [MWMTextToSpeech applicationDidBecomeActive];
+  XCTAssertEqualObjects([MWMTextToSpeech currentVoice], kokoro, @"Catalog refresh must preserve the pin");
+  [MWMTextToSpeech setLanguage:english];
+  XCTAssertFalse([MWMTextToSpeech isVoicePinned]);
+  XCTAssertNotEqual([MWMTextToSpeech currentVoice].group, MWMTTSVoiceGroupKokoro);
+}
+
 - (void)testAvailableLanguagesAreSpeakable
 {
   NSArray<MWMTTSLanguage *> * languages = [MWMTextToSpeech availableLanguages];

@@ -30,6 +30,8 @@ NS_ASSUME_NONNULL_BEGIN
 + (BOOL)isRoutePointsLimitReached;
 
 + (void)startRouting;
++ (void)cancelPendingStart;
++ (BOOL)buildAndStartToPoint:(MWMRoutePoint *)finish;
 + (void)stopRouting;
 
 + (NSArray<MWMRoutePoint *> *)points;

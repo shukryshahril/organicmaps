@@ -49,9 +49,9 @@ final class PlacePageOSMContributionViewController: UIViewController {
   private func setupView() {
     view.setStyle(.background)
 
-    osmHeaderView.setIcon(image: UIImage(resource: .osmLogo))
+    osmHeaderView.setIcon(image: InterfaceIcon.contours.boldImage)
     osmHeaderView.setTitle(L("contribute_to_osm"))
-    osmHeaderView.setAccessory(image: UIImage(resource: .icQuestionmark),
+    osmHeaderView.setAccessory(image: InterfaceIcon.help.boldImage,
                                tapHandler: { [weak self] in
                                  self?.onOSMInfo()
                                })

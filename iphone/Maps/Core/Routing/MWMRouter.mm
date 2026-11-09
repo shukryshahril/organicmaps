@@ -32,10 +32,12 @@ using namespace routing;
 
 @property(nonatomic) uint32_t routeManagerTransactionId;
 @property(nonatomic) BOOL canAutoAddLastLocation;
+@property(nonatomic) BOOL startWhenRouteReady;
 @property(nonatomic) BOOL isRestoreProcessCompleted;
 @property(strong, nonatomic) MWMRoutingOptions * routingOptions;
 
 + (MWMRouter *)router;
++ (void)rebuildWithBestRouter:(BOOL)bestRouter startImmediately:(BOOL)startImmediately;
 
 @end
 
@@ -116,6 +118,7 @@ using namespace routing;
 
 + (void)startRouting
 {
+  [self router].startWhenRouteReady = NO;
   [self start];
 }
 
@@ -397,6 +400,32 @@ using namespace routing;
     [self rebuildWithBestRouter:bestRouter];
 }
 
++ (void)cancelPendingStart
+{
+  [self router].startWhenRouteReady = NO;
+}
+
++ (BOOL)buildAndStartToPoint:(MWMRoutePoint *)finish
+{
+  [self cancelPendingStart];
+  MWMRoutePoint * start = [[MWMRoutePoint alloc] initWithLastLocationAndType:MWMRoutePointTypeStart intermediateIndex:0];
+  if (!start || ![MWMLocationManager isStarted])
+  {
+    [[MWMAlertViewController activeAlertController] presentAlert:routing::RouterResultCode::NoCurrentPosition];
+    return NO;
+  }
+  if (!finish)
+    return NO;
+  [self stopRouting];
+  // Quick Start always creates a fresh itinerary from the current position.
+  [self addPoint:start];
+  [self addPoint:finish];
+  if ([self type] == MWMRouterTypeRuler)
+    [self setType:MWMRouterTypeVehicle];
+  [self rebuildWithBestRouter:NO startImmediately:YES];
+  return YES;
+}
+
 + (void)buildApiRouteWithType:(MWMRouterType)type
                    startPoint:(MWMRoutePoint *)startPoint
                   finishPoint:(MWMRoutePoint *)finishPoint
@@ -418,6 +447,12 @@ using namespace routing;
 
 + (void)rebuildWithBestRouter:(BOOL)bestRouter
 {
+  [self rebuildWithBestRouter:bestRouter startImmediately:NO];
+}
+
++ (void)rebuildWithBestRouter:(BOOL)bestRouter startImmediately:(BOOL)startImmediately
+{
+  [self router].startWhenRouteReady = startImmediately;
   auto & rm = GetFramework().GetRoutingManager();
   auto const & points = rm.GetRoutePoints();
   auto const pointsCount = points.size();
@@ -494,6 +529,7 @@ using namespace routing;
 
 + (void)doStop:(BOOL)removeRoutePoints
 {
+  [self router].startWhenRouteReady = NO;
   [[MWMRoutingManager routingManager] stopRoutingAndRemoveRoutePoints:removeRoutePoints];
   if (removeRoutePoints)
     [[MWMRoutingManager routingManager] deleteSavedRoutePoints];
@@ -544,12 +580,18 @@ using namespace routing;
 
   [[MWMMapViewControlsManager manager] onRouteReady:hasWarnings];
   [self updateFollowingInfo];
+  BOOL const shouldStart = self.startWhenRouteReady;
+  self.startWhenRouteReady = NO;
+  if (shouldStart && !hasWarnings && startPoint.isMyPosition && [MWMRouter isRouteValid])
+    [MWMRouter startRouting];
 }
 
 - (void)processRouteBuilderEvent:(routing::RouterResultCode)code
                        countries:(storage::CountriesSet const &)absentCountries
 {
   MWMMapViewControlsManager * mapViewControlsManager = [MWMMapViewControlsManager manager];
+  if (code != routing::RouterResultCode::NoError && code != routing::RouterResultCode::HasWarnings)
+    self.startWhenRouteReady = NO;
   switch (code)
   {
   case routing::RouterResultCode::NoError: [self onRouteReady:NO]; break;

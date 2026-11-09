@@ -7,11 +7,19 @@ final class TTSVoicePreviewPlayer {
   private(set) var playingVoice: TTSVoice?
   /// Called on the main queue when playback ends on its own. Not called by an explicit `stop()`.
   var onFinished: (() -> Void)?
+  var onFailure: (() -> Void)?
 
   private var playbackID: UUID?
   private var resignActiveObserver: NSObjectProtocol?
+  private var failureObserver: NSObjectProtocol?
 
   init() {
+    failureObserver = NotificationCenter.default.addObserver(
+      forName: Notification.Name("KokoroVoicePreviewFailed"), object: nil, queue: .main
+    ) { [weak self] _ in
+      guard self?.playingVoice?.identifier == KokoroVoicePlayer.voiceIdentifier else { return }
+      self?.onFailure?()
+    }
     // Nothing calls viewWillDisappear when the app is backgrounded, so a preview would otherwise
     // keep speaking over the lock screen.
     resignActiveObserver = NotificationCenter.default.addObserver(
@@ -24,6 +32,7 @@ final class TTSVoicePreviewPlayer {
   }
 
   deinit {
+    failureObserver.map(NotificationCenter.default.removeObserver(_:))
     if let resignActiveObserver {
       NotificationCenter.default.removeObserver(resignActiveObserver)
     }
@@ -32,7 +41,8 @@ final class TTSVoicePreviewPlayer {
 
   /// Plays `voice` reading a phrase in `language`, the language the voice reads.
   func play(_ voice: TTSVoice, language: TTSLanguage) {
-    guard AVSpeechSynthesisVoice(identifier: voice.identifier) != nil else { return }
+    guard AVSpeechSynthesisVoice(identifier: voice.identifier) != nil
+      || (voice.identifier == KokoroVoicePlayer.voiceIdentifier && KokoroVoicePlayer.isAvailable) else { return }
     let phrase = Self.nextAppTip(languageCode: language.code)
 
     let playbackID = UUID()

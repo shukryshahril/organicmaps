@@ -18,22 +18,17 @@ class BottomTabBarButton: MWMButton {
 
 class BottomTabBarButtonRenderer {
   class func render(_ control: BottomTabBarButton, style: Style) {
-    UIViewRenderer.renderShadow(control, style: style)
-    UIViewRenderer.renderBorder(control, style: style)
-
-    if let coloring = style.coloring {
-      control.coloring = coloring
-    }
+    // The container supplies the shared surface and shadow.
+    control.backgroundColor = .clear
+    control.layer.shadowOpacity = 0
+    control.layer.borderWidth = 0
+    control.contentHorizontalAlignment = .center
+    control.contentVerticalAlignment = .center
+    control.imageEdgeInsets = .zero
+    control.imageView?.contentMode = .scaleAspectFit
+    control.coloring = .blue
     if let imageName = style.mwmImage {
       control.imageName = imageName
-    }
-    if let imageInsets = style.imageContainerInsets {
-      control.contentVerticalAlignment = .fill
-      control.contentHorizontalAlignment = .fill
-      control.imageEdgeInsets = imageInsets
-    }
-    if let backgroundColor = style.backgroundColor {
-      control.backgroundColor = backgroundColor
     }
   }
 }

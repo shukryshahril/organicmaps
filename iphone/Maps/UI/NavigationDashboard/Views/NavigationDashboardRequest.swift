@@ -43,7 +43,7 @@ extension MWMRouterType: CaseIterable {
     .ruler,
   ]
 
-  func image(for isSelected: Bool) -> UIImage {
+  func image(for isSelected: Bool, traits: UITraitCollection = .current) -> UIImage {
     var image: UIImage
     switch self {
     case .vehicle:
@@ -59,6 +59,7 @@ extension MWMRouterType: CaseIterable {
     @unknown default:
       fatalError("Unknown router type")
     }
-    return image.withTintColor(isSelected ? .linkBlue : .blackSecondaryText, renderingMode: .alwaysOriginal)
+    let color = isSelected ? InterfaceStyleSheet.accent : InterfaceStyleSheet.ink.withAlphaComponent(0.6)
+    return image.withTintColor(color.resolvedColor(with: traits), renderingMode: .alwaysOriginal)
   }
 }

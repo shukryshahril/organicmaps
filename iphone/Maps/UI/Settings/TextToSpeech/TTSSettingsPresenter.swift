@@ -16,6 +16,13 @@ final class TTSSettingsPresenter {
     viewController?.displayTTSLanguageSettings()
   }
 
+  func presentPreviewFailure() {
+    let alert = UIAlertController(title: L("pref_tts_kokoro_heart"),
+                                  message: L("pref_tts_kokoro_preview_failed"), preferredStyle: .alert)
+    alert.addAction(UIAlertAction(title: L("ok"), style: .default))
+    viewController?.display(alert)
+  }
+
   private func sections(from state: TTSSettingsState) -> [TTSSettingsSectionViewModel] {
     let voiceSection = SettingsSectionViewModel(section: TTSSettingsSection.voiceInstructions,
                                                 footer: TTSSettingsSection.voiceInstructions.footer,

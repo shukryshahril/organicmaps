@@ -81,7 +81,7 @@ private extension AboutController {
     func setupTitle() {
       let titleView = UILabel()
       titleView.text = Self.formattedAppVersion()
-      titleView.setFontStyle(.semibold17, color: .whitePrimary)
+      titleView.setStyle(InterfaceStyleSheet.navigationTitle)
       titleView.isUserInteractionEnabled = true
       titleView.configureSingleLineAutoScaling()
       let titleDidTapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(appVersionButtonTapped))

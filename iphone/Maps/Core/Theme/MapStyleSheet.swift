@@ -23,7 +23,8 @@ extension MapStyleSheet: IStyleSheet {
     switch self {
     case .mapMenuButtonDisabled:
       return .add { s in
-        s.fontColor = .blackSecondaryText
+        s.fontColor = InterfaceStyleSheet.ink
+        s.tintColor = InterfaceStyleSheet.ink
         s.fontStyle = .dynamic(.regular10)
         s.backgroundColor = .clear
         s.borderColor = .clear
@@ -32,11 +33,12 @@ extension MapStyleSheet: IStyleSheet {
       }
     case .mapMenuButtonEnabled:
       return .add { s in
-        s.fontColor = .linkBlue
+        s.fontColor = InterfaceStyleSheet.accent
+        s.tintColor = InterfaceStyleSheet.accent
         s.fontStyle = .dynamic(.regular10)
-        s.backgroundColor = .linkBlue
-        s.borderColor = .linkBlue
-        s.borderWidth = 3
+        s.backgroundColor = InterfaceStyleSheet.accent.withAlphaComponent(0.14)
+        s.borderColor = InterfaceStyleSheet.accent
+        s.borderWidth = 2
         s.cornerRadius = .buttonDefault
       }
     case .mapStreetNameBackgroundView:
@@ -49,26 +51,46 @@ extension MapStyleSheet: IStyleSheet {
       }
     case .mapButtonZoomIn:
       return .add { s in
+        InterfaceStyleSheet.floatingSurface(s)
+        s.cornerRadius = .custom(InterfaceStyleSheet.isPixel ? 2 : 20)
+        s.coloring = .blue
         s.mwmImage = "btn_zoom_in"
       }
     case .mapButtonZoomOut:
       return .add { s in
+        InterfaceStyleSheet.floatingSurface(s)
+        s.cornerRadius = .custom(InterfaceStyleSheet.isPixel ? 2 : 20)
+        s.coloring = .blue
         s.mwmImage = "btn_zoom_out"
       }
     case .mapButtonPending:
       return .add { s in
+        InterfaceStyleSheet.floatingSurface(s)
+        s.cornerRadius = .custom(InterfaceStyleSheet.isPixel ? 2 : 20)
+        s.coloring = .blue
         s.mwmImage = "btn_pending"
       }
     case .mapButtonGetPosition:
       return .add { s in
+        InterfaceStyleSheet.floatingSurface(s)
+        s.cornerRadius = .custom(InterfaceStyleSheet.isPixel ? 2 : 20)
+        s.coloring = .blue
         s.mwmImage = "btn_get_position"
       }
     case .mapButtonFollow:
       return .add { s in
+        InterfaceStyleSheet.floatingSurface(s)
+        s.cornerRadius = .custom(InterfaceStyleSheet.isPixel ? 2 : 20)
+        s.coloring = .whiteText
+        s.backgroundColor = InterfaceStyleSheet.filledAccent
         s.mwmImage = "btn_follow"
       }
     case .mapButtonFollowAndRotate:
       return .add { s in
+        InterfaceStyleSheet.floatingSurface(s)
+        s.cornerRadius = .custom(InterfaceStyleSheet.isPixel ? 2 : 20)
+        s.coloring = .whiteText
+        s.backgroundColor = InterfaceStyleSheet.filledAccent
         s.mwmImage = "btn_follow_and_rotate"
       }
     case .mapButtonMapBookmarks:

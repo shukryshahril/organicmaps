@@ -3,6 +3,12 @@ enum PlacePageStyleSheet: String, CaseIterable {
   case ppActionBarTitle = "PPActionBarTitle"
   case ppActionBarTitleBlue = "PPActionBarTitleBlue"
   case ppActionBarTitleRed = "PPActionBarTitleRed"
+  case ppActionBarPrimaryBackground = "PPActionBarPrimaryBackground"
+  case ppActionBarPrimaryIcon = "PPActionBarPrimaryIcon"
+  case ppActionBarPrimaryTitle = "PPActionBarPrimaryTitle"
+  case ppActionBarSecondaryBackground = "PPActionBarSecondaryBackground"
+  case ppActionBarSecondaryIcon = "PPActionBarSecondaryIcon"
+  case ppActionBarSecondaryTitle = "PPActionBarSecondaryTitle"
   case ppElevationProfileDescriptionCell = "ElevationProfileDescriptionCell"
   case ppElevationProfileExtendedDifficulty = "ElevationProfileExtendedDifficulty"
   case ppRouteBasePreview = "RouteBasePreview"
@@ -41,6 +47,36 @@ extension PlacePageStyleSheet: IStyleSheet {
     case .ppActionBarTitleBlue:
       return .addFrom(Self.ppActionBarTitle) { s in
         s.fontColor = .linkBlue
+      }
+    case .ppActionBarPrimaryBackground:
+      return .add { s in
+        s.backgroundColor = InterfaceStyleSheet.filledAccent
+        s.cornerRadius = .custom(16)
+      }
+    case .ppActionBarPrimaryIcon:
+      return .add { s in
+        s.tintColor = .white
+        s.coloring = .other
+      }
+    case .ppActionBarPrimaryTitle:
+      return .addFrom(Self.ppActionBarTitle) { s in
+        s.fontColor = .white
+        s.fontStyle = .fixed(.systemFont(ofSize: 10, weight: .semibold))
+      }
+    case .ppActionBarSecondaryBackground:
+      return .add { s in
+        s.backgroundColor = InterfaceStyleSheet.background
+        s.cornerRadius = .custom(16)
+      }
+    case .ppActionBarSecondaryIcon:
+      return .add { s in
+        s.tintColor = InterfaceStyleSheet.accent
+        s.coloring = .other
+      }
+    case .ppActionBarSecondaryTitle:
+      return .addFrom(Self.ppActionBarTitle) { s in
+        s.fontColor = InterfaceStyleSheet.accent
+        s.fontStyle = .fixed(.systemFont(ofSize: 10, weight: .semibold))
       }
     case .ppActionBarTitleRed:
       return .addFrom(Self.ppActionBarTitle) { s in
@@ -140,8 +176,8 @@ extension PlacePageStyleSheet: IStyleSheet {
       }
     case .ppHeaderCircleIcon:
       return .add { s in
-        s.tintColor = .iconOpaqueGrayTint
-        s.backgroundColor = .iconOpaqueGrayBackground
+        s.tintColor = InterfaceStyleSheet.ink
+        s.backgroundColor = InterfaceStyleSheet.background
       }
     case .ppChartView:
       return .add { s in

@@ -38,8 +38,18 @@ final class EstimatesView: UIView {
     ])
   }
 
+  override func applyTheme() {
+    super.applyTheme()
+    guard case .estimates = state, let estimates = estimatesLabel.attributedText else { return }
+    let themed = NSMutableAttributedString(attributedString: estimates)
+    themed.addAttribute(.foregroundColor, value: InterfaceStyleSheet.ink,
+                        range: NSRange(location: 0, length: themed.length))
+    estimatesLabel.attributedText = themed
+  }
+
   func setState(_ state: State) {
     guard self.state != state else { return }
+    self.state = state
     UIView.transition(with: self,
                       duration: Constants.animationDuration,
                       options: .transitionCrossDissolve,
@@ -59,7 +69,10 @@ final class EstimatesView: UIView {
                         case .estimates(let estimates):
                           self.estimatesLabel.alpha = 1.0
                           self.estimatesLabel.text = nil
-                          self.estimatesLabel.attributedText = estimates
+                          let themed = NSMutableAttributedString(attributedString: estimates)
+                          themed.addAttribute(.foregroundColor, value: InterfaceStyleSheet.ink,
+                                              range: NSRange(location: 0, length: themed.length))
+                          self.estimatesLabel.attributedText = themed
                         case .loading:
                           self.estimatesLabel.alpha = 0.0
                           self.estimatesLabel.text = nil

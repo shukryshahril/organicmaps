@@ -46,6 +46,7 @@
 - (void)editTrack:(PlacePageData *)data;
 - (void)routeFrom:(PlacePageData *)data;
 - (void)routeTo:(PlacePageData *)data;
+- (void)startNavigationTo:(PlacePageData *)data;
 - (void)routeAddStop:(PlacePageData *)data;
 - (void)routeRemoveStop:(PlacePageData *)data;
 - (void)avoidDirty;
@@ -210,6 +211,11 @@
 + (void)routeTo:(PlacePageData *)data
 {
   [[MWMMapViewControlsManager manager].placePageManager routeTo:data];
+}
+
++ (void)startNavigationTo:(PlacePageData *)data
+{
+  [[MWMMapViewControlsManager manager].placePageManager startNavigationTo:data];
 }
 
 + (void)routeAddStop:(PlacePageData *)data

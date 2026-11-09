@@ -107,3 +107,10 @@ CMakeUserPresets.json
 AGENTS.override.md
 CLAUDE.local.md
 plans
+
+# Downloaded Kokoro speech models; restore with tools/unix/setup_kokoro_ios.sh.
+/iphone/Maps/Resources/Kokoro/
+# Pin the native Kokoro runtime and its transitive Swift dependencies.
+!xcode/omim.xcworkspace/xcshareddata/swiftpm/
+xcode/omim.xcworkspace/xcshareddata/swiftpm/*
+!xcode/omim.xcworkspace/xcshareddata/swiftpm/Package.resolved

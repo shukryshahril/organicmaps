@@ -1,5 +1,6 @@
 @testable import Organic_Maps__Debug_
 import XCTest
+import AVFoundation
 
 final class TTSVoicePreviewPlayerTests: XCTestCase {
   func test_GivenEnglish_WhenAppTipsAreRead_ThenReturnsAllTranslatedTips() {
@@ -30,6 +31,24 @@ final class TTSVoicePreviewPlayerTests: XCTestCase {
       let tips = TTSVoicePreviewPlayer.appTips(languageCode: code)
       XCTAssertEqual(tips.count, 10, code)
       XCTAssertFalse(tips.contains { $0.isEmpty || $0.hasPrefix("app_tip_") }, "Missing translations for \(code): \(tips)")
+    }
+  }
+}
+
+final class KokoroVoicePlayerTests: XCTestCase {
+  func testPCMProducesPlayableMonoAudio() throws {
+    let step = 2.0 * Double.pi * 440.0 / 24_000.0
+    let samples: [Float] = (0..<24_000).map { Float(sin(Double($0) * step)) * 0.5 }
+    let data = try KokoroVoicePlayer.waveData(samples: samples)
+    let player = try AVAudioPlayer(data: data)
+    XCTAssertEqual(player.numberOfChannels, 1)
+    XCTAssertEqual(player.duration, 1, accuracy: 0.001)
+  }
+
+  func testInvalidSamplesCannotBecomeAudio() {
+    let invalid: [[Float]] = [[], [.nan], [.infinity]]
+    for samples in invalid {
+      XCTAssertThrowsError(try KokoroVoicePlayer.waveData(samples: samples))
     }
   }
 }

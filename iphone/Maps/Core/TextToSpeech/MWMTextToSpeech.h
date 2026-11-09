@@ -30,9 +30,10 @@ typedef NS_ENUM(NSInteger, MWMTTSVoiceGroup) {
   MWMTTSVoiceGroupStandard,
   MWMTTSVoiceGroupEloquence,
   MWMTTSVoiceGroupNovelty,
+  MWMTTSVoiceGroupKokoro,
 } NS_SWIFT_NAME(TTSVoiceGroup);
 
-// One of the system voices that can read out the notifications, e.g. "Samantha".
+// One of the available voices that can read out the notifications, e.g. "Samantha".
 NS_SWIFT_NAME(TTSVoice)
 @interface MWMTTSVoice : NSObject
 

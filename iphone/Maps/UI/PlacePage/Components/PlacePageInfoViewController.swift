@@ -209,9 +209,9 @@ class PlacePageInfoViewController: UIViewController {
     // restored when the user returns to a supported area.
     let displayId = effectiveFormatId(in: coordFormats)
     coordinatesView = createInfoItem(coordFormats[displayId],
-                                     icon: UIImage(resource: .icPlacepageCoordinate),
+                                     icon: InterfaceIcon.coordinates.boldImage,
                                      style: .link,
-                                     accessoryImage: UIImage(resource: .icPlacepageChange),
+                                     accessoryImage: InterfaceIcon.coordinateFormat.boldImage,
                                      tapHandler: { [weak self] in
                                        guard let self else { return }
                                        let formatId = self.nextAvailableFormatId(after: self.effectiveFormatId(in: coordFormats), in: coordFormats)
@@ -354,7 +354,7 @@ class PlacePageInfoViewController: UIViewController {
   private func setupOpenWithAppView() {
     guard let delegate, delegate.shouldShowOpenInApp else { return }
     openWithAppView = createInfoItem(L("open_in_app"),
-                                     icon: UIImage(resource: .icOpenInApp),
+                                     icon: InterfaceIcon.externalApp.boldImage,
                                      style: .link,
                                      tapHandler: { [weak self] in
                                        guard let self, let openWithAppView else { return }

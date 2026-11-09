@@ -314,10 +314,17 @@ using Observers = NSHashTable<Observer>;
 @property(nonatomic) AVSpeechUtterance * notificationUtterance;
 @property(nonatomic, copy) void (^previewCompletion)(void);
 @property(nonatomic) AVAudioPlayer * audioPlayer;
+@property(nonatomic) MWMKokoroVoicePlayer * kokoroPlayer;
+@property(nonatomic) BOOL kokoroNavigation;
+@property(nonatomic) BOOL previewUsesKokoro;
 
 @property(nonatomic) Observers * observers;
 
 - (void)invalidateVoiceCatalog;
+- (void)startPendingPreview;
+- (void)stopAllSpeech;
++ (BOOL)isKokoroSelected;
++ (MWMTTSVoice *)kokoroVoice;
 
 @end
 
@@ -329,6 +336,36 @@ using Observers = NSHashTable<Observer>;
   static MWMTextToSpeech * tts = nil;
   dispatch_once(&onceToken, ^{ tts = [[self alloc] initTTS]; });
   return tts;
+}
+
+- (MWMKokoroVoicePlayer *)kokoroPlayer
+{
+  if (!_kokoroPlayer)
+    _kokoroPlayer = [[MWMKokoroVoicePlayer alloc] init];
+  return _kokoroPlayer;
+}
+
++ (MWMTTSVoice *)kokoroVoice
+{
+  return [MWMTTSVoice voiceWithIdentifier:MWMKokoroVoicePlayer.voiceIdentifier
+                                  title:L(@"pref_tts_kokoro_heart")
+                                 region:nil
+                                  group:MWMTTSVoiceGroupKokoro];
+}
+
++ (BOOL)isKokoroSelected
+{
+  return MWMKokoroVoicePlayer.isAvailable && TwineLanguage([self savedLanguage]) == "en" &&
+      [[self savedVoiceIdentifier] isEqualToString:MWMKokoroVoicePlayer.voiceIdentifier];
+}
+
+- (void)stopAllSpeech
+{
+  [self stopPreviewNotifying:YES];
+  self.notificationUtterance = nil;
+  [self->_speechSynthesizer stopSpeakingAtBoundary:AVSpeechBoundaryImmediate];
+  [self->_kokoroPlayer stop];
+  self.kokoroNavigation = NO;
 }
 
 + (void)applicationDidBecomeActive
@@ -490,6 +527,8 @@ using Observers = NSHashTable<Observer>;
     return;
   if (active)
     [self speechVoiceInUse];
+  else
+    [self stopAllSpeech];
   [MWMRouter enableTurnNotifications:active];
   dispatch_async(dispatch_get_main_queue(), ^{ [self onTTSStatusUpdated]; });
 }
@@ -506,6 +545,8 @@ using Observers = NSHashTable<Observer>;
 // one when the latter lost its last voice.
 + (MWMTTSLanguage *)currentLanguage
 {
+  if ([self isKokoroSelected])
+    return LanguageWithCode("en");
   MWMTextToSpeech * tts = [MWMTextToSpeech tts];
   AVSpeechSynthesisVoice * voice = [tts speechVoiceInUse];
   return voice ? LanguageWithCode(TwineLanguage(voice.language)) : nil;
@@ -527,6 +568,7 @@ using Observers = NSHashTable<Observer>;
   if (!voice)
     return;
   // Forget any pinned voice so that a better one installed later is picked up automatically.
+  [tts stopAllSpeech];
   [self setSavedVoiceIdentifier:nil];
   [tts setNotificationsLocale:voice.language];
 }
@@ -534,6 +576,8 @@ using Observers = NSHashTable<Observer>;
 {
   MWMTextToSpeech * tts = [MWMTextToSpeech tts];
   NSArray<MWMTTSVoice *> * listed = [tts.catalog listedVoicesReading:language.code];
+  if ([language.code isEqualToString:@"en"] && MWMKokoroVoicePlayer.isAvailable)
+    listed = [listed arrayByAddingObject:[self kokoroVoice]];
   AVSpeechSynthesisVoice * current = [tts speechVoiceInUse];
   if (!current || TwineLanguage(current.language) != language.code.UTF8String)
     return listed;
@@ -560,6 +604,8 @@ using Observers = NSHashTable<Observer>;
 
 + (MWMTTSVoice *)currentVoice
 {
+  if ([self isKokoroSelected])
+    return [self kokoroVoice];
   AVSpeechSynthesisVoice * voice = [[MWMTextToSpeech tts] speechVoiceInUse];
   return voice ? VoiceFromSpeechVoice(voice) : nil;
 }
@@ -567,17 +613,27 @@ using Observers = NSHashTable<Observer>;
 + (void)setVoice:(MWMTTSVoice *)voice
 {
   MWMTextToSpeech * tts = [MWMTextToSpeech tts];
+  if ([voice.identifier isEqualToString:MWMKokoroVoicePlayer.voiceIdentifier] && MWMKokoroVoicePlayer.isAvailable)
+  {
+    [tts stopAllSpeech];
+    [self setSavedVoiceIdentifier:voice.identifier];
+    [tts setNotificationsLocale:@"en-US"];
+    return;
+  }
   AVSpeechSynthesisVoice * speechVoice = [AVSpeechSynthesisVoice voiceWithIdentifier:voice.identifier];
   ASSERT(speechVoice, ("A voice is only offered while it is installed", voice.identifier.UTF8String));
   if (!speechVoice)
     return;
   // Store both in one step: the language a voice reads out is the language of the notifications.
+  [tts stopAllSpeech];
   [self setSavedVoiceIdentifier:voice.identifier];
   [tts setNotificationsLocale:speechVoice.language];
 }
 
 + (BOOL)isVoicePinned
 {
+  if ([self isKokoroSelected])
+    return YES;
   NSString * savedVoiceIdentifier = [self savedVoiceIdentifier];
   if (savedVoiceIdentifier.length == 0)
     return NO;
@@ -631,6 +687,12 @@ using Observers = NSHashTable<Observer>;
   }
 
   self.speechVoice = voice;
+  if ([[self class] isKokoroSelected])
+  {
+    [MWMRouter setTurnNotificationsLocale:@"en"];
+    [self.kokoroPlayer prepare];
+    return;
+  }
   if (voice)
   {
     std::string const twineLang = bcp47ToTwineLanguage(voice.language);
@@ -660,7 +722,7 @@ using Observers = NSHashTable<Observer>;
   ASSERT(NSThread.isMainThread, ());
   auto stopSession = ^{
     // Reads the ivar: there is nothing to stop while no synthesizer has been created.
-    if (self->_speechSynthesizer.isSpeaking)
+    if (self->_speechSynthesizer.isSpeaking || self->_kokoroPlayer.isBusy)
       return;
     [[AVAudioSession sharedInstance] setActive:NO
                                    withOptions:AVAudioSessionSetActiveOptionNotifyOthersOnDeactivation
@@ -669,11 +731,17 @@ using Observers = NSHashTable<Observer>;
 
   if (![MWMRouter isOnRoute] || !self.active)
   {
+    if (self.kokoroNavigation)
+    {
+      [self->_kokoroPlayer stop];
+      self.kokoroNavigation = NO;
+      [self startPendingPreview];
+    }
     stopSession();
     return;
   }
 
-  if (![self speechVoiceInUse])
+  if (![self speechVoiceInUse] && ![[self class] isKokoroSelected])
   {
     stopSession();
     return;
@@ -697,6 +765,20 @@ using Observers = NSHashTable<Observer>;
     return;
   }
 
+  if ([[self class] isKokoroSelected] && !self.notificationUtterance)
+  {
+    NSString * text = [turnNotifications componentsJoinedByString:@" "];
+    self.kokoroNavigation = YES;
+    [self.kokoroPlayer speak:text navigation:YES completion:^(BOOL success) {
+      self.kokoroNavigation = NO;
+      // Never lose a turn instruction to a model failure or a slow cold start.
+      if (!success && [MWMRouter isOnRoute] && self.active)
+        [self speakOneString:text];
+      else
+        [self startPendingPreview];
+    }];
+    return;
+  }
   for (NSString * notification in turnNotifications)
     [self speakOneString:notification];
 }
@@ -731,9 +813,11 @@ using Observers = NSHashTable<Observer>;
 - (void)speakPreview:(NSString *)text voiceIdentifier:(NSString *)voiceIdentifier completion:(void (^)(void))completion
 {
   ASSERT(NSThread.isMainThread, ());
-  AVSpeechSynthesisVoice * voice = [AVSpeechSynthesisVoice voiceWithIdentifier:voiceIdentifier];
-  ASSERT(voice, ("A voice is only previewed while it is installed", voiceIdentifier.UTF8String));
-  if (!voice || text.length == 0)
+  BOOL const kokoro = [voiceIdentifier isEqualToString:MWMKokoroVoicePlayer.voiceIdentifier] &&
+      MWMKokoroVoicePlayer.isAvailable;
+  AVSpeechSynthesisVoice * voice = kokoro ? nil : [AVSpeechSynthesisVoice voiceWithIdentifier:voiceIdentifier];
+  ASSERT(voice || kokoro, ("A voice is only previewed while it is installed", voiceIdentifier.UTF8String));
+  if ((!voice && !kokoro) || text.length == 0)
     return;
 
   [self stopPreview];
@@ -742,11 +826,30 @@ using Observers = NSHashTable<Observer>;
   utterance.voice = voice;
   utterance.rate = AVSpeechUtteranceDefaultSpeechRate;
   self.previewUtterance = utterance;
+  self.previewUsesKokoro = kokoro;
   self.previewCompletion = completion;
   // A preview waits out the instruction being spoken here rather than in the synthesizer's queue,
   // see -endUtterance:.
-  if (!self.notificationUtterance)
-    [self.speechSynthesizer speakUtterance:utterance];
+  [self startPendingPreview];
+}
+
+- (void)startPendingPreview
+{
+  if (!self.previewUtterance || self.notificationUtterance || self.kokoroNavigation)
+    return;
+  if (!self.previewUsesKokoro)
+  {
+    [self.speechSynthesizer speakUtterance:self.previewUtterance];
+    return;
+  }
+  AVSpeechUtterance * preview = self.previewUtterance;
+  [self.kokoroPlayer speak:preview.speechString navigation:NO completion:^(BOOL success) {
+    if (preview != self.previewUtterance)
+      return;
+    [self endUtterance:preview];
+    if (!success)
+      [NSNotificationCenter.defaultCenter postNotificationName:@"KokoroVoicePreviewFailed" object:nil];
+  }];
 }
 
 - (void)stopPreview
@@ -762,12 +865,18 @@ using Observers = NSHashTable<Observer>;
     return;
   // A preview still waiting for a turn notification is not in the synthesizer's queue; stopping it
   // there would only cut the instruction short.
-  BOOL const isPreviewSpeaking = self.notificationUtterance == nil;
+  BOOL const isPreviewSpeaking = self.notificationUtterance == nil && !self.kokoroNavigation;
   self.previewUtterance = nil;
   auto completion = self.previewCompletion;
   self.previewCompletion = nil;
   if (isPreviewSpeaking)
-    [self.speechSynthesizer stopSpeakingAtBoundary:AVSpeechBoundaryImmediate];
+  {
+    if (self.previewUsesKokoro)
+      [self->_kokoroPlayer stop];
+    else
+      [self.speechSynthesizer stopSpeakingAtBoundary:AVSpeechBoundaryImmediate];
+  }
+  self.previewUsesKokoro = NO;
   if (notify && completion)
     dispatch_async(dispatch_get_main_queue(), completion);
 }
@@ -791,8 +900,7 @@ using Observers = NSHashTable<Observer>;
   {
     self.notificationUtterance = nil;
     // Nothing of ours is being spoken any more, so a preview held back by the instruction can go.
-    if (self.previewUtterance)
-      [self.speechSynthesizer speakUtterance:self.previewUtterance];
+    [self startPendingPreview];
     return;
   }
 

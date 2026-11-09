@@ -61,8 +61,13 @@ final class RoutePointCollectionViewCell: UICollectionViewCell {
 
   override var isHighlighted: Bool {
     didSet {
-      contentBackgroundView.backgroundColor = isHighlighted ? .routePointHighlightedBackground : .pressBackground
+      contentBackgroundView.backgroundColor = isHighlighted ? InterfaceStyleSheet.accent.withAlphaComponent(0.15) : InterfaceStyleSheet.background
     }
+  }
+
+  override func applyTheme() {
+    super.applyTheme()
+    setNeedsLayout()
   }
 
   override func layoutSubviews() {
@@ -82,7 +87,7 @@ final class RoutePointCollectionViewCell: UICollectionViewCell {
                     from: iconBottom + Constants.connectorIconInset, to: bottomEnd, roundAtStart: true)
     connectorLayer.frame = bounds
     connectorLayer.path = path.cgPath
-    connectorLayer.fillColor = UIColor.blackSecondaryText.cgColor
+    connectorLayer.fillColor = InterfaceStyleSheet.ink.withAlphaComponent(0.5).resolvedColor(with: traitCollection).cgColor
   }
 
   override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
@@ -100,7 +105,7 @@ final class RoutePointCollectionViewCell: UICollectionViewCell {
     contentView.clipsToBounds = false
 
     // Assign the dynamic background directly to preserve the highlight when themes are reapplied.
-    contentBackgroundView.backgroundColor = .pressBackground
+    contentBackgroundView.setStyle(.pressBackground)
     contentBackgroundView.layer.setCornerRadius(.buttonDefaultBig)
     contentBackgroundView.clipsToBounds = false
     connectorLayer.masksToBounds = true
@@ -114,11 +119,11 @@ final class RoutePointCollectionViewCell: UICollectionViewCell {
     textStackView.axis = .vertical
     textStackView.alignment = .leading
 
-    reorderButton.setImage(UIImage(resource: .icMoveList), for: .normal)
-    reorderButton.setStyle(.gray)
+    reorderButton.setImage(InterfaceIcon.reorder.boldImage, for: .normal)
+    reorderButton.setStyle(InterfaceStyleSheet.routePanelMutedIcon)
 
-    closeButton.setImage(UIImage(resource: .icSearchClear), for: .normal)
-    closeButton.setStyle(.gray)
+    closeButton.setImage(InterfaceIcon.close.boldImage, for: .normal)
+    closeButton.setStyle(InterfaceStyleSheet.routePanelMutedIcon)
     closeButton.accessibilityLabel = L("placepage_remove_stop")
     closeButton.addTarget(self, action: #selector(didTapCloseButton), for: .touchUpInside)
   }
@@ -172,18 +177,18 @@ final class RoutePointCollectionViewCell: UICollectionViewCell {
     case .point(let viewModel):
       titleLabel.text = viewModel.title
       logoImageView.image = viewModel.image
-      logoImageView.setStyleAndApply(viewModel.usesCurrentPositionIcon ? .blue : .black)
+      logoImageView.setStyleAndApply(InterfaceStyleSheet.routePanelIcon)
       didTapClose = viewModel.onCloseHandler
-      titleLabel.setFontStyleAndApply(Constants.fontStyle, color: viewModel.isPlaceholder ? .blackSecondary : .blackPrimary)
+      titleLabel.setStyleAndApply(viewModel.isPlaceholder ? InterfaceStyleSheet.routePanelPlaceholder : InterfaceStyleSheet.routePanelTitle)
       closeButton.isHidden = !viewModel.showCloseButton
       reorderButton.isHidden = false
       contentBackgroundView.layer.maskedCorners = viewModel.maskedCorners
       separatorView.isHidden = !viewModel.showSeparator
     case .addPoint:
       titleLabel.text = L("route_add_destination")
-      logoImageView.image = UIImage(resource: .icAddButton)
-      logoImageView.setStyleAndApply(.blue)
-      titleLabel.setFontStyleAndApply(Constants.fontStyle, color: .linkBlue)
+      logoImageView.image = InterfaceIcon.zoomIn.boldImage
+      logoImageView.setStyleAndApply(InterfaceStyleSheet.routePanelIcon)
+      titleLabel.setStyleAndApply(InterfaceStyleSheet.routePanelLink)
       closeButton.isHidden = true
       reorderButton.isHidden = true
       contentBackgroundView.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]

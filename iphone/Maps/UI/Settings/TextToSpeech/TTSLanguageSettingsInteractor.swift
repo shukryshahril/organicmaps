@@ -4,6 +4,7 @@ final class TTSLanguageSettingsInteractor {
   private let textToSpeech: MWMTextToSpeech.Type
   private lazy var previewPlayer: TTSVoicePreviewPlayer = {
     let player = TTSVoicePreviewPlayer()
+    player.onFailure = { [weak self] in self?.presenter?.presentPreviewFailure() }
     player.onFinished = { [weak self] in self?.present(animatingDifferences: false) }
     return player
   }()

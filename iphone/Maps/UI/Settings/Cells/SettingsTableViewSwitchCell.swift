@@ -72,7 +72,7 @@ class SettingsTableViewSwitchCell: MWMTableViewCell {
     textLabel?.numberOfLines = 0
     textLabel?.lineBreakMode = .byWordWrapping
 
-    switchButton.onTintColor = .linkBlue
+    switchButton.setStyleAndApply(.switch)
     switchButton.addTarget(self, action: #selector(switchChanged), for: .valueChanged)
     accessoryView = switchButton
 

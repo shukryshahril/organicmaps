@@ -3,6 +3,11 @@
 #import "MWMCircularProgress.h"
 #import "SwiftBridge.h"
 
+static UIImage * ActionBarImage(NSString * name)
+{
+  return [MWMInterfaceIcons boldImageForAssetName:name] ?: [UIImage imageNamed:name];
+}
+
 NSString * titleForButton(MWMActionBarButtonType type, BOOL isSelected)
 {
   switch (type)
@@ -15,6 +20,7 @@ NSString * titleForButton(MWMActionBarButtonType type, BOOL isSelected)
   case MWMActionBarButtonTypeDeleteTrackRecording: return L(@"delete");
   case MWMActionBarButtonTypeRouteFrom: return L(@"p2p_from_here");
   case MWMActionBarButtonTypeRouteTo: return L(@"p2p_to_here");
+  case MWMActionBarButtonTypeStartNavigation: return L(@"p2p_start");
   case MWMActionBarButtonTypeMore: return L(@"placepage_more_button");
   case MWMActionBarButtonTypeRouteAddStop: return L(@"placepage_add_stop");
   case MWMActionBarButtonTypeRouteAddDestination: return L(@"route_add_destination");
@@ -95,13 +101,16 @@ typedef NS_ENUM(NSInteger, MWMBookmarksButtonState) {
     self.button.coloring = MWMButtonColoringRed;
     break;
   case MWMActionBarButtonTypeRouteFrom:
-    [self.button setImage:[UIImage imageNamed:@"ic_route_from"] forState:UIControlStateNormal];
+    [self.button setImage:ActionBarImage(@"ic_route_from") forState:UIControlStateNormal];
     break;
   case MWMActionBarButtonTypeRouteTo:
-    [self.button setImage:[UIImage imageNamed:@"ic_route_to"] forState:UIControlStateNormal];
+    [self.button setImage:ActionBarImage(@"ic_route_to") forState:UIControlStateNormal];
+    break;
+  case MWMActionBarButtonTypeStartNavigation:
+    [self.button setImage:ActionBarImage(@"personal_start") forState:UIControlStateNormal];
     break;
   case MWMActionBarButtonTypeRouteAddDestination:
-    [self.button setImage:[UIImage imageNamed:@"ic_route_to"] forState:UIControlStateNormal];
+    [self.button setImage:ActionBarImage(@"ic_route_to") forState:UIControlStateNormal];
     break;
   case MWMActionBarButtonTypeMore:
     [self.button setImage:[UIImage imageNamed:@"ic_placepage_more"] forState:UIControlStateNormal];
@@ -122,6 +131,26 @@ typedef NS_ENUM(NSInteger, MWMBookmarksButtonState) {
   case MWMActionBarButtonTypeAvoidFerry:
     [self.button setImage:[UIImage imageNamed:@"ic_avoid_ferry"] forState:UIControlStateNormal];
     break;
+  }
+
+  if (self.type == MWMActionBarButtonTypeRouteTo || self.type == MWMActionBarButtonTypeStartNavigation)
+  {
+    UIView * background = [[UIView alloc] init];
+    background.userInteractionEnabled = NO;
+    background.translatesAutoresizingMaskIntoConstraints = NO;
+    BOOL const isDirections = self.type == MWMActionBarButtonTypeRouteTo;
+    background.styleName = isDirections ? @"PPActionBarPrimaryBackground" : @"PPActionBarSecondaryBackground";
+    [self insertSubview:background atIndex:0];
+    [NSLayoutConstraint activateConstraints:@[
+      [background.leadingAnchor constraintEqualToAnchor:self.leadingAnchor constant:4],
+      [background.trailingAnchor constraintEqualToAnchor:self.trailingAnchor constant:-4],
+      [background.topAnchor constraintEqualToAnchor:self.topAnchor],
+      [background.bottomAnchor constraintEqualToAnchor:self.bottomAnchor]
+    ]];
+    self.button.coloring = MWMButtonColoringOther;
+    self.button.styleName = isDirections ? @"PPActionBarPrimaryIcon" : @"PPActionBarSecondaryIcon";
+    self.label.styleName = isDirections ? @"PPActionBarPrimaryTitle" : @"PPActionBarSecondaryTitle";
+    return;
   }
 
   // Keep the title color consistent with the icon tint.
@@ -157,9 +186,10 @@ typedef NS_ENUM(NSInteger, MWMBookmarksButtonState) {
 
 - (void)setBookmarkButtonState:(MWMBookmarksButtonState)state
 {
-  NSString * imageName = state == MWMBookmarksButtonStateDelete ? @"ic_bookmarks_on" : @"ic_bookmarks_off";
-  [self.button setImage:[UIImage imageNamed:imageName] forState:UIControlStateNormal];
-  [self.button setImage:[UIImage imageNamed:@"ic_bookmarks_on"] forState:UIControlStateHighlighted];
+  NSString * imageName = state == MWMBookmarksButtonStateDelete ? @"ic_bookmarks_on"
+                      : state == MWMBookmarksButtonStateRecover ? @"personal_bookmark_restore" : @"ic_bookmarks_off";
+  [self.button setImage:ActionBarImage(imageName) forState:UIControlStateNormal];
+  [self.button setImage:ActionBarImage(imageName) forState:UIControlStateHighlighted];
 
   switch (state)
   {

@@ -126,6 +126,9 @@ final class RootSettingsInteractor {
                       largeFontSize: settings.largeFontSize(),
                       transliteration: settings.transliteration(),
                       theme: settings.theme(),
+                      interfaceStyle: InterfaceStyle.current,
+                      interfaceMaterial: InterfaceMaterial.current,
+                      interfacePalette: InterfacePalette.current,
                       iCloudSynchronizationEnabled: settings.iCLoudSynchronizationEnabled(),
                       iCloudSynchronizationState: iCloudSynchronizationState,
                       map3DEnabled: settings.perspectiveViewEnabled(),
@@ -142,6 +145,12 @@ final class RootSettingsInteractor {
 
   private func setSetting(_ setting: RootSettings, enabled: Bool) {
     switch setting {
+    case .glassInterface:
+      InterfaceMaterial.current = enabled ? .glass : .solid
+      StyleManager.shared.setTheme(MainTheme())
+    case .pixelInterface:
+      InterfaceStyle.current = enabled ? .pixel : .minimal
+      StyleManager.shared.setTheme(MainTheme())
     case .zoomButtons:
       settings.setZoomButtonsEnabled(enabled)
     case .buildings3D:
@@ -173,6 +182,7 @@ final class RootSettingsInteractor {
          .powerManagement,
          .bookmarksTextPlacement,
          .appearance,
+         .colorTheme,
          .mapTiles,
          .voiceInstructions,
          .routingOptions:

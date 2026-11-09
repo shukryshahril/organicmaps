@@ -9,7 +9,7 @@ final class NavigationDashboardViewController: UIViewController {
     static let grabberTopInset: CGFloat = 5
 
     static let closeButtonInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: -16)
-    static let closeButtonSize: CGSize = .init(width: 28, height: 28)
+    static let closeButtonSize: CGSize = .init(width: 44, height: 44)
 
     static let reverseRouteButtonSize: CGFloat = 44
     static let settingsButtonSize: CGFloat = 32
@@ -219,7 +219,8 @@ final class NavigationDashboardViewController: UIViewController {
   }
 
   private func setupCloseButton() {
-    closeButton.setImage(UIImage(resource: .icClose))
+    closeButton.setImage(InterfaceIcon.close.image(canvasSize: Constants.closeButtonSize.width, weight: .bold))
+    closeButton.accessibilityLabel = L("close")
     closeButton.addTarget(self, action: #selector(didTapCloseButton), for: .touchUpInside)
     closeButton.setStyle(.black)
   }
@@ -252,7 +253,7 @@ final class NavigationDashboardViewController: UIViewController {
 
   private func setupSettingsButton() {
     settingsButton.setStyle(.blue)
-    settingsButton.setImage(UIImage(resource: .icMenuSettings), for: .normal)
+    settingsButton.setImage(InterfaceIcon.routeSettings.boldImage, for: .normal)
     settingsButton.addTarget(self, action: #selector(didTapSettingsButton), for: .touchUpInside)
     settingsBadge.badgeAddTo(settingsButton)
     settingsBadge.isHidden = true
@@ -261,7 +262,7 @@ final class NavigationDashboardViewController: UIViewController {
   private func setupReverseRoutePointsButton() {
     reverseRoutePointsButton.setStyle(.blue)
     var configuration = UIButton.Configuration.plain()
-    configuration.image = UIImage(resource: .icSwap)
+    configuration.image = InterfaceIcon.swap.boldImage
     configuration.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 12, bottom: 0, trailing: 0)
     reverseRoutePointsButton.configuration = configuration
     reverseRoutePointsButton.accessibilityLabel = L("reverse_route")
@@ -286,9 +287,9 @@ final class NavigationDashboardViewController: UIViewController {
       return button
     }
 
-    searchButton = createButton(image: UIImage(resource: .icMenuSearch), action: #selector(didTapSearchButton))
-    bookmarksButton = createButton(image: UIImage(resource: .icMenuBookmarkList), action: #selector(didTapBookmarksButton))
-    saveRouteAsTrackButton = createButton(image: UIImage(resource: .ic24PxImport), action: #selector(didTapSaveRouteAsTrackButton))
+    searchButton = createButton(image: InterfaceIcon.search.boldImage, action: #selector(didTapSearchButton))
+    bookmarksButton = createButton(image: InterfaceIcon.bookmarks.boldImage, action: #selector(didTapBookmarksButton))
+    saveRouteAsTrackButton = createButton(image: InterfaceIcon.saveRoute.boldImage, action: #selector(didTapSaveRouteAsTrackButton))
 
     startRouteButton.addTarget(self, action: #selector(didTapStartRouteButton), for: .touchUpInside)
 
@@ -443,7 +444,7 @@ final class NavigationDashboardViewController: UIViewController {
       grabberView.heightAnchor.constraint(equalToConstant: Constants.grabberHeight),
 
       closeButton.trailingAnchor.constraint(equalTo: availableAreaView.safeAreaLayoutGuide.trailingAnchor, constant: Constants.closeButtonInsets.right),
-      closeButton.topAnchor.constraint(equalTo: transportOptionsView.topAnchor, constant: Constants.closeButtonInsets.top),
+      closeButton.centerYAnchor.constraint(equalTo: transportOptionsView.centerYAnchor),
       closeButton.widthAnchor.constraint(equalToConstant: Constants.closeButtonSize.width),
       closeButton.heightAnchor.constraint(equalToConstant: Constants.closeButtonSize.height),
 

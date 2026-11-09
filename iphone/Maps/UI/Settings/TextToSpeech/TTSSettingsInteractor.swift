@@ -6,6 +6,7 @@ final class TTSSettingsInteractor {
   private var voicesObserver: NSObjectProtocol?
   private lazy var previewPlayer: TTSVoicePreviewPlayer = {
     let player = TTSVoicePreviewPlayer()
+    player.onFailure = { [weak self] in self?.presenter?.presentPreviewFailure() }
     player.onFinished = { [weak self] in self?.loadSettings(animatingDifferences: false) }
     return player
   }()

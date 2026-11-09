@@ -42,9 +42,9 @@ extension NavigationDashboard.RoutePoints {
   func defaultImage(for index: Int) -> UIImage {
     switch index {
     case 0:
-      return UIImage(resource: .icRouteManagerStart)
+      return InterfaceIcon.routeFrom.boldImage
     case count - 1:
-      return UIImage.routePointFinish
+      return InterfaceIcon.destination.boldImage
     default:
       let imageName = "route-point-\(index)"
       return UIImage(named: imageName) ?? UIImage(resource: .routePoint20)

@@ -6,9 +6,19 @@ protocol SearchOnMapHeaderViewDelegate: UISearchBarDelegate {
 }
 
 private final class RouteActionButton: UIButton {
+  override func applyTheme() {
+    super.applyTheme()
+    setBackgroundImage(nil, for: .normal)
+    backgroundColor = InterfaceStyleSheet.background
+    InterfaceGlassRenderer.render(self, solidColor: InterfaceStyleSheet.background,
+                                  tintColor: InterfaceStyleSheet.accent,
+                                  cornerRadius: InterfaceStyleSheet.isPixel ? 0 : bounds.height / 2)
+  }
+
   override func layoutSubviews() {
     super.layoutSubviews()
-    layer.cornerRadius = bounds.height / 2
+    layer.cornerRadius = InterfaceStyleSheet.isPixel ? 0 : bounds.height / 2
+    InterfaceGlassRenderer.updateCornerRadius(layer.cornerRadius, on: self)
   }
 }
 
@@ -100,11 +110,11 @@ final class SearchOnMapHeaderView: UIView {
     routeActionsStackView.isHidden = true
 
     configureRouteActionButton(currentLocationButton,
-                               image: UIImage(resource: .icCurrentPosition),
+                               image: InterfaceIcon.location.image,
                                accessibilityLabel: L("p2p_your_location"),
                                action: #selector(currentLocationButtonDidTap))
     configureRouteActionButton(chooseOnMapButton,
-                               image: UIImage(resource: .icSearchModeMap),
+                               image: InterfaceIcon.chooseOnMap.image,
                                accessibilityLabel: L("choose_on_map"),
                                action: #selector(chooseOnMapButtonDidTap))
 
@@ -116,8 +126,7 @@ final class SearchOnMapHeaderView: UIView {
                                           image: UIImage,
                                           accessibilityLabel: String,
                                           action: Selector) {
-    button.backgroundColor = .pressBackground
-    button.tintColor = .linkBlue
+    button.setStyle(InterfaceStyleSheet.routeActionButton)
     button.clipsToBounds = true
     button.setImage(image.withRenderingMode(.alwaysTemplate), for: .normal)
     button.imageEdgeInsets = UIEdgeInsets(top: Constants.routeActionIconInset,
